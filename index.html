@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>نظام YLY لتتبع الأهداف</title>
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root {
+            --egyptian-blue: #1034A8;
+            --dark-blue: #0A2270;
+            --dark-orange: #FE8F01;
+            --black: #000000;
+            --white: #FFFFFF;
+            --bg-gray: #F4F6F9;
+            --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            --silver-border: 0.75px solid #cbd5e1;
+            --success: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark-blue);
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        .app-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background-color: var(--bg-gray);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 450px) {
+            .app-viewport {
+                border-radius: 24px;
+                height: 95dvh;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--dark-orange);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(254, 143, 1, 0.3);
+            transition: transform 0.3s ease;
+            text-align: center;
+            width: 85%;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.error { background: #d32f2f; }
+
+        /* Full Screen Modals */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(10,34,112,0.96), rgba(16,52,168,0.96));
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .modal-box {
+            background: var(--white);
+            width: 100%;
+            max-width: 350px;
+            border-radius: 16px;
+            padding: 14px 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        .auth-header { margin-bottom: 6px; }
+        .auth-header h2 { font-size: 1.1rem; color: var(--egyptian-blue); font-weight: 800; }
+        .auth-header p { font-size: 0.68rem; color: #666; }
+
+        .auth-toggle {
+            display: flex;
+            background: #eef2f7;
+            border-radius: 8px;
+            padding: 2px;
+            margin-bottom: 6px;
+        }
+        .auth-toggle button {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #555;
+            transition: 0.2s;
+        }
+        .auth-toggle button.active {
+            background: var(--egyptian-blue);
+            color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 4px;
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-bottom: 1px;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            height: 30px;
+            padding: 0 8px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--egyptian-blue); }
+
+        .btn-main {
+            width: 100%;
+            height: 32px;
+            background: var(--egyptian-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 3px 8px rgba(16, 52, 168, 0.25);
+            transition: 0.2s;
+        }
+        .btn-main:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            width: 100%;
+            height: 32px;
+            background: #e0e6ed;
+            color: #444;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .btn-google {
+            width: 100%;
+            height: 32px;
+            background: var(--white);
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.72rem;
+            cursor: pointer;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Avatar Picker */
+        .reg-avatar-container {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: center;
+        }
+        .reg-avatar-box {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1.5px dashed var(--egyptian-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .reg-avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        .reg-avatar-box i {
+            color: var(--egyptian-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue));
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: contain;
+            border: var(--silver-border);
+            padding: 1px;
+            flex-shrink: 0;
+        }
+        .top-header-info { flex: 1; }
+        .top-header h1 { font-size: 0.88rem; font-weight: 800; line-height: 1.2; margin: 0; }
+        .top-header p { font-size: 0.62rem; opacity: 0.85; margin: 0; }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: var(--white);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: none; /* يظهر فقط في الصفحات الفرعية */
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 10px;
+            padding-bottom: 75px;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.2s ease-in; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cover Banner */
+        .main-cover-banner {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            box-shadow: var(--card-shadow);
+            border: var(--silver-border);
+        }
+
+        /* Cards Design */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+            box-shadow: var(--card-shadow);
+            border: var(--silver-border);
+            position: relative;
+        }
+        .card-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--egyptian-blue);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-title-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .edit-action-btn {
+            color: var(--dark-orange);
+            cursor: pointer;
+            font-size: 0.72rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #fff3e0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+        }
+
+        /* Dashboard Visual Box مع الدائرة المقسمة الحقيقية */
+        .dashboard-visual-box {
+            background: linear-gradient(135deg, #1034A8, #0A2270);
+            color: var(--white);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
+            border: var(--silver-border);
+        }
+        .dashboard-visual-info h3 { font-size: 0.82rem; font-weight: 800; margin-bottom: 2px; }
+        .dashboard-visual-info p { font-size: 0.62rem; opacity: 0.85; }
+
+        /* الدائرة المقسمة الديناميكية */
+        .pie-chart-container {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            /* التدرج الافتراضي بنسبة 50% */
+            background: conic-gradient(var(--success) 0% 0%, var(--dark-orange) 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .pie-chart-inner {
+            width: 32px;
+            height: 32px;
+            background: #0A2270;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.58rem;
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .stat-card {
+            background: var(--white);
+            padding: 6px 2px;
+            border-radius: 8px;
+            text-align: center;
+            border: var(--silver-border);
+            box-shadow: var(--card-shadow);
+        }
+        .stat-card .num {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--egyptian-blue);
+            display: block;
+        }
+        .stat-card .label {
+            font-size: 0.6rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Progress Box */
+        .progress-box {
+            background: #f0f4ff;
+            border-radius: 8px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
+        }
+        .streak-badge {
+            display: inline-block;
+            background: #fff3e0;
+            color: var(--dark-orange);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            margin-bottom: 3px;
+        }
+        .progress-bar-bg {
+            background: #e0e6ed;
+            height: 7px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+        .progress-bar-fill {
+            background: var(--dark-orange);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Goals Dual Column */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .goal-column {
+            background: #f9fafe;
+            border-radius: 8px;
+            padding: 6px;
+            border: 1px solid #eaedf5;
+        }
+        .goal-column h4 {
+            font-size: 0.72rem;
+            color: var(--dark-blue);
+            margin-bottom: 4px;
+            text-align: center;
+            border-bottom: 1.5px solid var(--dark-orange);
+            padding-bottom: 2px;
+        }
+        .goal-item {
+            font-size: 0.68rem;
+            background: var(--white);
+            padding: 5px 6px;
+            border-radius: 5px;
+            margin-bottom: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Member Card (الرئيسية) */
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: var(--white);
+            border: var(--silver-border);
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .member-card:hover { transform: translateY(-1px); }
+        .member-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--egyptian-blue);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .member-details-col { flex: 1; }
+        .member-row-top { display: flex; justify-content: space-between; align-items: center; }
+        .member-name { font-size: 0.78rem; font-weight: 700; color: var(--dark-blue); }
+        .member-date { font-size: 0.62rem; color: #888; font-weight: 600; }
+        .member-row-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+        .member-action-hint { font-size: 0.65rem; color: #666; }
+        .member-stats-info { font-size: 0.62rem; color: var(--egyptian-blue); font-weight: 700; }
+
+        /* Leaderboard Tabs with enhanced spacing */
+        .leaderboard-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 14px; /* مسافة أوسع تمنع التلاصق بالبطاقة الأولى */
+        }
+
+        /* Leaderboard Item Card */
+        .leaderboard-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: var(--white);
+            border: var(--silver-border);
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+        }
+        .rank-circle-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFDF00, #D4AF37);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .rank-secondary { background: linear-gradient(135deg, #c0c0c0, #999999); }
+        .rank-bronze { background: linear-gradient(135deg, #cd7f32, #a05a2c); }
+        .rank-regular { background: linear-gradient(135deg, var(--dark-orange), #e07b00); }
+
+        .lb-center { flex: 1; }
+        .lb-name { font-size: 0.78rem; font-weight: 700; color: #222; }
+        .lb-points { font-size: 0.65rem; color: #666; }
+        .lb-left { text-align: left; }
+        .lb-left-label { font-size: 0.6rem; color: #888; font-weight: 600; }
+        .lb-left-val { font-size: 0.72rem; font-weight: 800; color: var(--success); }
+
+        /* Profile Layout */
+        .profile-head {
+            text-align: center;
+            padding: 4px 0;
+        }
+        .profile-img-box {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 4px;
+        }
+        .profile-img-box img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--egyptian-blue);
+            cursor: pointer;
+        }
+        .upload-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--dark-orange);
+            color: var(--white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            cursor: pointer;
+            border: 1.5px solid var(--white);
+        }
+
+        .data-display-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #e4e7ed;
+            font-size: 0.75rem;
+        }
+        .data-display-row:last-child { border-bottom: none; }
+        .data-label { color: #777; font-weight: 600; }
+        .data-val { color: var(--dark-blue); font-weight: 700; }
+
+        #profile-edit-section {
+            display: none;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #eef2f7;
+        }
+
+        /* Floating Bottom Nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            height: 50px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+        .nav-link {
+            color: #888;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.62rem;
+            gap: 2px;
+        }
+        .nav-link i { font-size: 1.05rem; }
+        .nav-link.active { color: var(--egyptian-blue); font-weight: 700; }
+
+        /* Floating WhatsApp Button */
+        .whatsapp-float {
+            position: absolute;
+            bottom: 68px;
+            left: 12px;
+            width: 38px;
+            height: 38px;
+            background: #25D366;
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1001;
+            text-decoration: none;
+        }
+
+        /* Image Viewer Modal */
+        #image-viewer-modal {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        #image-viewer-img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+        }
+        .close-viewer-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Utility */
+        .tab { flex: 1; text-align: center; padding: 5px; font-size: 0.72rem; background: #eef2f7; border-radius: 6px; cursor: pointer; }
+        .tab.active { background: var(--egyptian-blue); color: var(--white); font-weight: 700; }
+        textarea.form-control { height: 60px; padding: 6px 8px; resize: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-viewport">
+        <!-- Toast Notification -->
+        <div id="toast" class="toast">تنبيه</div>
+
+        <!-- Image Viewer Modal -->
+        <div id="image-viewer-modal" onclick="closeImageViewer()">
+            <i class="fa-solid fa-xmark close-viewer-btn"></i>
+            <img id="image-viewer-img" src="" alt="عرض الصورة" onclick="event.stopPropagation()">
+        </div>
+
+        <!-- Auth Screen Modal -->
+        <div id="auth-screen" class="modal-overlay" style="display: flex;">
+            <div class="modal-box">
+                <div class="auth-header">
+                    <h2>منصة YLY للأهداف</h2>
+                    <p>سجل الدخول لمتابعة مسيرتك</p>
+                </div>
+
+                <div class="auth-toggle">
+                    <button id="tab-login-btn" class="active" onclick="switchAuthTab('login')">تسجيل دخول</button>
+                    <button id="tab-register-btn" onclick="switchAuthTab('register')">حساب جديد</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" onsubmit="handleEmailLogin(event)">
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="example@mail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="login-pass" class="form-control" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="btn-main">دخول</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" style="display: none;" onsubmit="handleEmailRegister(event)">
+                    <div class="reg-avatar-container">
+                        <label for="reg-avatar-input" class="reg-avatar-box" title="اختر صورتك الشخصية">
+                            <i id="reg-avatar-icon" class="fa-solid fa-camera"></i>
+                            <img id="reg-avatar-preview" src="" alt="avatar">
+                        </label>
+                        <input type="file" id="reg-avatar-input" accept="image/*" style="display: none;" onchange="previewRegisterAvatar(event)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الاسم الثلاثي</label>
+                        <input type="text" id="reg-name" class="form-control" placeholder="أحمد محمد علي" required>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" id="reg-phone" class="form-control" placeholder="01012345678" required>
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="reg-email" class="form-control" placeholder="example@mail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="reg-pass" class="form-control" placeholder="******" required>
+                    </div>
+                    <div class="form-group">
+                        <label>تأكيد كلمة المرور</label>
+                        <input type="password" id="reg-pass-confirm" class="form-control" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="btn-main">إنشاء حساب</button>
+                </form>
+
+                <button class="btn-google" onclick="handleGoogleSignIn()">
+                    <i class="fa-brands fa-google" style="color: #ea4335;"></i> الدخول بواسطة Google
+                </button>
+            </div>
+        </div>
+
+        <!-- Top Header -->
+        <div class="top-header">
+            <button id="btn-back" class="btn-back" onclick="goBack()"><i class="fa-solid fa-arrow-right"></i></button>
+            <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" class="header-logo" alt="YLY Logo">
+            <div class="top-header-info">
+                <h1 id="header-title">أهداف الأعضاء</h1>
+                <p id="header-subtitle">استكشف الأهداف المشتركة مع زملائك</p>
+            </div>
+        </div>
+
+        <!-- WhatsApp Support Float -->
+        <a href="https://wa.me/201206244875" target="_blank" class="whatsapp-float" title="الدعم الفني">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+            <!-- PAGE 1: Home / Shared Goals (الرئيسية) -->
+            <div id="page-home" class="page active">
+                <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789067710/zolgppjb1s4f4nlxfzhw.jpg" class="main-cover-banner" alt="YLY Goals Banner">
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-text"><i class="fa-solid fa-users"></i> زملاء المنصة</div>
+                    </div>
+                    <div id="shared-goals-list">
+                        <div style="text-align:center; padding:12px; font-size:0.75rem; color:#777;">جاري تحميل الأعضاء...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: Control & Daily Goals -->
+            <div id="page-control" class="page">
+                <!-- شريحة الرسم التوضيحي مع الدائرة المقسمة الديناميكية -->
+                <div class="dashboard-visual-box">
+                    <div class="dashboard-visual-info">
+                        <h3>نظام إدارة الإنجاز اليومي</h3>
+                        <p>تابع مؤشرات الأداء وقم بتحديث أهدافك بانتظام</p>
+                    </div>
+                    <!-- الدائرة التفاعلية الحقيقية -->
+                    <div class="pie-chart-container" id="dynamic-pie-chart">
+                        <div class="pie-chart-inner" id="pie-chart-text">0%</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="num" id="stat-total">0</span>
+                        <span class="label">إجمالي الأهداف</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="num" id="stat-completed" style="color: var(--success);">0</span>
+                        <span class="label">المكتملة</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="num" id="stat-pending" style="color: var(--dark-orange);">0</span>
+                        <span class="label">قيد التنفيذ</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="num" id="stat-rate">0%</span>
+                        <span class="label">نسبة الإنجاز</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-chart-line"></i> مؤشر الالتزام</div></div>
+                    <div class="progress-box">
+                        <div class="streak-badge" id="streak-counter">متابعة مستمرة للأهداف اليومية</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700;">
+                            <span>معدل اكتمال المهام</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="progress-bar" class="progress-bar-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-plus-circle"></i> إضافة هدف جديد</div></div>
+                    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                        <input type="text" id="goal-input" class="form-control" placeholder="عنوان الهدف..." style="flex: 2;">
+                        <select id="goal-type" class="form-control" style="flex: 1;">
+                            <option value="yly">YLY</option>
+                            <option value="personal">شخصي</option>
+                        </select>
+                    </div>
+                    <button class="btn-main" onclick="addGoal()" style="height: 32px;">حفظ الهدف</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-list-check"></i> جدول أهدافي المسجلة</div></div>
+                    <div class="goals-grid">
+                        <div class="goal-column">
+                            <h4>أهداف YLY</h4>
+                            <div id="yly-goals-container"></div>
+                        </div>
+                        <div class="goal-column">
+                            <h4>أهداف شخصية</h4>
+                            <div id="personal-goals-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: Support / Problems -->
+            <div id="page-support" class="page">
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-headset"></i> الإبلاغ عن مشكلة</div></div>
+                    <p style="font-size: 0.7rem; color: #666; margin-bottom: 6px;">تصل مشكلتك مباشرة إلى لوحة الآدمن للمتابعة:</p>
+                    <textarea id="problem-input" class="form-control" placeholder="اكتب مشكلتك بالتفصيل هنا..."></textarea>
+                    <button class="btn-main" onclick="submitProblem()" style="margin-top: 6px;">إرسال للآدمن</button>
+                </div>
+            </div>
+
+            <!-- PAGE 4: Honor Roll -->
+            <div id="page-leaderboard" class="page">
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-trophy"></i> لوحة الشرف</div></div>
+                    <!-- أزرار الفلترة مع مسافة مريحة تفصلها عن أول بطاقة -->
+                    <div class="leaderboard-tabs">
+                        <div class="tab active" onclick="switchLeaderboardTab(this)">شهري</div>
+                        <div class="tab" onclick="switchLeaderboardTab(this)">أسبوعي</div>
+                        <div class="tab" onclick="switchLeaderboardTab(this)">يومي</div>
+                    </div>
+                    <div id="leaderboard-list"></div>
+                </div>
+            </div>
+
+            <!-- PAGE 5: Profile -->
+            <div id="page-profile" class="page">
+                <div class="card" id="profile-unified-card">
+                    <div class="profile-head">
+                        <div class="profile-img-box">
+                            <img id="user-avatar" src="https://via.placeholder.com/70" alt="avatar" onclick="openImageViewer(this.src)">
+                            <label for="img-upload-input" class="upload-icon" title="تغيير الصورة"><i class="fa-solid fa-camera"></i></label>
+                            <input type="file" id="img-upload-input" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
+                        </div>
+                        <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
+                        <p id="profile-display-email" style="font-size: 0.68rem; color: #777;">...</p>
+                    </div>
+
+                    <div class="card-title" style="margin-top: 6px;">
+                        <div class="card-title-text"><i class="fa-solid fa-id-card"></i> البيانات الشخصية</div>
+                        <div class="edit-action-btn" id="toggle-edit-btn" onclick="toggleProfileEdit()"><i class="fa-solid fa-pen-to-square"></i> تعديل</div>
+                    </div>
+
+                    <div id="profile-view-section">
+                        <div class="data-display-row">
+                            <span class="data-label">الاسم الثلاثي:</span>
+                            <span class="data-val" id="view-name">...</span>
+                        </div>
+                        <div class="data-display-row">
+                            <span class="data-label">رقم الهاتف:</span>
+                            <span class="data-val" id="view-phone">...</span>
+                        </div>
+                        <div class="data-display-row">
+                            <span class="data-label">البريد الإلكتروني:</span>
+                            <span class="data-val" id="view-email">...</span>
+                        </div>
+                        <div class="data-display-row">
+                            <span class="data-label">كلمة المرور:</span>
+                            <span class="data-val">••••••••</span>
+                        </div>
+                    </div>
+
+                    <div id="profile-edit-section">
+                        <form onsubmit="saveUnifiedProfile(event)">
+                            <div class="form-group">
+                                <label>الاسم الثلاثي</label>
+                                <input type="text" id="inline-edit-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الهاتف</label>
+                                <input type="tel" id="inline-edit-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة (اتركها فارغة إذا لم ترد التغيير)</label>
+                                <input type="password" id="inline-edit-pass" class="form-control" placeholder="******">
+                            </div>
+                            <div style="display: flex; gap: 6px; margin-top: 8px;">
+                                <button type="submit" class="btn-main" style="margin-top:0;">حفظ التعديلات</button>
+                                <button type="button" class="btn-secondary" style="margin-top:0;" onclick="toggleProfileEdit()">إلغاء</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
+            </div>
+
+            <!-- PAGE 6: Public Profile (صفحة فرعية) -->
+            <div id="page-public-profile" class="page">
+                <div class="card profile-head">
+                    <div class="profile-img-box">
+                        <img id="public-user-avatar" src="https://via.placeholder.com/70" alt="avatar" onclick="openImageViewer(this.src)">
+                    </div>
+                    <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
+                    <p id="public-user-email" style="font-size: 0.68rem; color: #777;">...</p>
+                    <p id="public-user-phone" style="font-size: 0.68rem; color: var(--dark-orange); font-weight:700; margin-top:2px;">...</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-bullseye"></i> الأهداف المسجلة للعضو</div></div>
+                    <div class="goals-grid">
+                        <div class="goal-column">
+                            <h4>أهداف YLY</h4>
+                            <div id="public-yly-container"></div>
+                        </div>
+                        <div class="goal-column">
+                            <h4>أهداف شخصية</h4>
+                            <div id="public-personal-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floating Bottom Navigation -->
+        <div class="bottom-nav" id="bottom-nav-bar">
+            <div class="nav-link active" onclick="navigateTab('home')"><i class="fa-solid fa-house"></i><span>الرئيسية</span></div>
+            <div class="nav-link" onclick="navigateTab('control')"><i class="fa-solid fa-sliders"></i><span>التحكم</span></div>
+            <div class="nav-link" onclick="navigateTab('support')"><i class="fa-solid fa-headset"></i><span>الدعم</span></div>
+            <div class="nav-link" onclick="navigateTab('leaderboard')"><i class="fa-solid fa-medal"></i><span>الشرف</span></div>
+            <div class="nav-link" onclick="navigateTab('profile')"><i class="fa-solid fa-user"></i><span>حسابي</span></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Firebase & Cloudinary Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAinjc2LH9gpwdZ1-000_y5Ggsv2WgJYLA",
+            authDomain: "goals-yly.firebaseapp.com",
+            projectId: "goals-yly",
+            storageBucket: "goals-yly.firebasestorage.app",
+            messagingSenderId: "708760417066",
+            appId: "1:708760417066:web:04654cc9c30a2a4dc1a453",
+            measurementId: "G-07SL7TYLZV"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dsxrjmcxs/image/upload";
+        const CLOUDINARY_PRESET = "My_public_preset";
+
+        let currentUser = null;
+        let currentUserData = {};
+        let myGoals = [];
+        let isProfileEditExpanded = false;
+        let regAvatarFile = null;
+
+        // متغير يحفظ التبويب الأساسي النشط ليعود إليه زر الرجوع
+        let currentActiveTab = 'home';
+
+        // --- Toast System ---
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.className = `toast show ${isError ? 'error' : ''}`;
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // --- Image Viewer Functions ---
+        function openImageViewer(src) {
+            if (!src || src.includes('placeholder')) return;
+            document.getElementById('image-viewer-img').src = src;
+            document.getElementById('image-viewer-modal').style.display = 'flex';
+        }
+        function closeImageViewer() {
+            document.getElementById('image-viewer-modal').style.display = 'none';
+        }
+
+        // --- Auth Tabs Switching ---
+        function switchAuthTab(type) {
+            document.getElementById('tab-login-btn').classList.toggle('active', type === 'login');
+            document.getElementById('tab-register-btn').classList.toggle('active', type === 'register');
+            document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
+        }
+
+        // --- Register Avatar Preview ---
+        function previewRegisterAvatar(e) {
+            const file = e.target.files[0];
+            if (file) {
+                regAvatarFile = file;
+                const reader = new FileReader();
+                reader.onload = (uploadEvent) => {
+                    const img = document.getElementById('reg-avatar-preview');
+                    const icon = document.getElementById('reg-avatar-icon');
+                    img.src = uploadEvent.target.result;
+                    img.style.display = 'block';
+                    icon.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- Auth Listeners ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('auth-screen').style.display = 'none';
+                loadUserData();
+                loadSharedMembers();
+                loadLeaderboard();
+            } else {
+                currentUser = null;
+                document.getElementById('auth-screen').style.display = 'flex';
+            }
+        });
+
+        // --- Registration Logic ---
+        async function handleEmailRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            const confirmPass = document.getElementById('reg-pass-confirm').value;
+
+            if (name.split(" ").length < 3) return showToast("يرجى كتابة الاسم الثلاثي كاملاً", true);
+            if (phone.length < 10) return showToast("يرجى إدخال رقم هاتف صحيح", true);
+            if (pass !== confirmPass) return showToast("كلمات المرور غير متطابقة", true);
+
+            showToast("جاري إنشاء الحساب...");
+
+            let photoURL = "https://via.placeholder.com/70";
+
+            if (regAvatarFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', regAvatarFile);
+                    formData.append('upload_preset', CLOUDINARY_PRESET);
+                    const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+                    const d = await res.json();
+                    if (d.secure_url) photoURL = d.secure_url;
+                } catch(err) {
+                    console.log("Image upload skipped", err);
+                }
+            }
+
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then(res => {
+                    return db.collection('users').doc(res.user.uid).set({
+                        fullName: name,
+                        phone: phone,
+                        email: email,
+                        photoURL: photoURL,
+                        points: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => showToast("تم إنشاء الحساب بنجاح"))
+                .catch(err => showToast(err.message, true));
+        }
+
+        // --- Login Logic ---
+        function handleEmailLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch(err => showToast("البريد أو كلمة السر غير صحيحة", true));
+        }
+
+        // --- Google Sign In ---
+        function handleGoogleSignIn() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then(res => {
+                    const u = res.user;
+                    return db.collection('users').doc(u.uid).set({
+                        fullName: u.displayName || "مستخدم جديد",
+                        email: u.email,
+                        phone: u.phoneNumber || "غير مسجل",
+                        photoURL: u.photoURL || "https://via.placeholder.com/70",
+                        points: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                })
+                .catch(err => showToast("فشل الدخول بواسطة Google", true));
+        }
+
+        // --- Load Current User Profile & Goals ---
+        function loadUserData() {
+            if (!currentUser) return;
+            db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
+                if (doc.exists) {
+                    currentUserData = doc.data();
+                    document.getElementById('profile-display-name').innerText = currentUserData.fullName || "مستخدم";
+                    document.getElementById('profile-display-email').innerText = currentUserData.email || "";
+                    document.getElementById('view-name').innerText = currentUserData.fullName || "غير محدد";
+                    document.getElementById('view-phone').innerText = currentUserData.phone || "غير مسجل";
+                    document.getElementById('view-email').innerText = currentUserData.email || "";
+                    if (currentUserData.photoURL) document.getElementById('user-avatar').src = currentUserData.photoURL;
+                }
+            });
+
+            db.collection('users').doc(currentUser.uid).collection('goals').onSnapshot(snap => {
+                myGoals = [];
+                snap.forEach(doc => myGoals.push({ id: doc.id, ...doc.data() }));
+                renderGoals();
+            });
+        }
+
+        // --- Inline Expand/Collapse Profile Edit ---
+        function toggleProfileEdit() {
+            isProfileEditExpanded = !isProfileEditExpanded;
+            const viewSec = document.getElementById('profile-view-section');
+            const editSec = document.getElementById('profile-edit-section');
+            const btn = document.getElementById('toggle-edit-btn');
+
+            if (isProfileEditExpanded) {
+                viewSec.style.display = 'none';
+                editSec.style.display = 'block';
+                btn.innerHTML = '<i class="fa-solid fa-xmark"></i> إلغاء';
+                document.getElementById('inline-edit-name').value = currentUserData.fullName || "";
+                document.getElementById('inline-edit-phone').value = currentUserData.phone || "";
+                document.getElementById('inline-edit-pass').value = "";
+            } else {
+                viewSec.style.display = 'block';
+                editSec.style.display = 'none';
+                btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> تعديل';
+            }
+        }
+
+        // --- Save Unified Profile ---
+        function saveUnifiedProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('inline-edit-name').value.trim();
+            const phone = document.getElementById('inline-edit-phone').value.trim();
+            const newPass = document.getElementById('inline-edit-pass').value;
+
+            if (!name) return showToast("الاسم مطلوب", true);
+
+            db.collection('users').doc(currentUser.uid).update({
+                fullName: name,
+                phone: phone
+            }).then(() => {
+                if (newPass) {
+                    if (newPass.length < 6) {
+                        showToast("كلمة السر يجب أن تكون 6 أحرف على الأقل", true);
+                        return;
+                    }
+                    currentUser.updatePassword(newPass).then(() => {
+                        showToast("تم تحديث البيانات وكلمة المرور");
+                        toggleProfileEdit();
+                    }).catch(err => showToast(err.message, true));
+                } else {
+                    showToast("تم حفظ البيانات بنجاح");
+                    toggleProfileEdit();
+                }
+            }).catch(() => showToast("حدث خطأ أثناء الحفظ", true));
+        }
+
+        // --- Navigation System (التنقل بين التبويبات الأساسية - لا يظهر زر الرجوع إطلاقاً) ---
+        function navigateTab(tabId) {
+            currentActiveTab = tabId;
+
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + tabId).classList.add('active');
+
+            // تحديث الشريط السفلي
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            const targetNav = document.querySelector(`.nav-link[onclick*="${tabId}"]`);
+            if (targetNav) targetNav.classList.add('active');
+
+            const titles = {
+                'home': { t: 'أهداف الأعضاء', s: 'استكشف الأهداف المشتركة مع زملائك' },
+                'control': { t: 'لوحة التحكم والإحصائيات', s: 'أضف وتابع إنجازاتك اليومية' },
+                'support': { t: 'الدعم الفني والشكاوى', s: 'تواصل مباشرة مع إدارة النظام' },
+                'leaderboard': { t: 'لوحة الشرف للمتميزين', s: 'قائمة المتصدرين في الإنجاز' },
+                'profile': { t: 'الملف الشخصي', s: 'إدارة وتعديل بيانات حسابك' }
+            };
+
+            document.getElementById('header-title').innerText = titles[tabId].t;
+            document.getElementById('header-subtitle').innerText = titles[tabId].s;
+
+            // إخفاء زر الرجوع وإظهار شريط التنقل السفلي دوماً في التبويبات الرئيسية
+            document.getElementById('btn-back').style.display = 'none';
+            document.getElementById('bottom-nav-bar').style.display = 'flex';
+        }
+
+        // --- الدخول لصفحة فرعية (مثل بروفايل العضو - هنا فقط يظهر زر الرجوع) ---
+        function openPublicProfile(userId, userData) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-public-profile').classList.add('active');
+
+            document.getElementById('header-title').innerText = 'الملف الشخصي للعضو';
+            document.getElementById('header-subtitle').innerText = 'استعراض الإنجازات والأهداف';
+
+            // إظهار زر الرجوع وإخفاء الشريط السفلي
+            document.getElementById('btn-back').style.display = 'flex';
+            document.getElementById('bottom-nav-bar').style.display = 'none';
+
+            // ملء بيانات العضو
+            document.getElementById('public-user-name').innerText = userData.fullName || "عضو";
+            document.getElementById('public-user-email').innerText = userData.email || "";
+            document.getElementById('public-user-phone').innerText = userData.phone ? "هاتف: " + userData.phone : "";
+            document.getElementById('public-user-avatar').src = userData.photoURL || 'https://via.placeholder.com/70';
+
+            const ylyBox = document.getElementById('public-yly-container');
+            const perBox = document.getElementById('public-personal-container');
+            ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#888;'>جاري التحميل...</div>";
+            perBox.innerHTML = "<div style='font-size:0.68rem; color:#888;'>جاري التحميل...</div>";
+
+            db.collection('users').doc(userId).collection('goals').get().then(snap => {
+                ylyBox.innerHTML = "";
+                perBox.innerHTML = "";
+
+                if (snap.empty) {
+                    ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لم يضف أهداف بعد</div>";
+                    perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لم يضف أهداف بعد</div>";
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const g = doc.data();
+                    const item = document.createElement('div');
+                    item.className = 'goal-item';
+                    
+                    const iconHtml = g.completed 
+                        ? `<i class="fa-solid fa-square-check" style="color: #28a745; font-size: 0.85rem;"></i>`
+                        : `<i class="fa-regular fa-square" style="color: #bbb; font-size: 0.85rem;"></i>`;
+
+                    item.innerHTML = `
+                        ${iconHtml}
+                        <span style="${g.completed ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                    `;
+                    if (g.type === 'yly') ylyBox.appendChild(item);
+                    else perBox.appendChild(item);
+                });
+
+                if (ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف</div>";
+                if (perBox.innerHTML === "") perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف</div>";
+            });
+        }
+
+        // زر الرجوع يعود دائماً للتبويب الأساسي الذي كان متواجداً فيه
+        function goBack() {
+            navigateTab(currentActiveTab);
+        }
+
+        // --- Add Goal Logic ---
+        function addGoal() {
+            const title = document.getElementById('goal-input').value.trim();
+            const type = document.getElementById('goal-type').value;
+
+            if (!title) return showToast("اكتب عنوان الهدف أولاً", true);
+
+            db.collection('users').doc(currentUser.uid).collection('goals').add({
+                title: title,
+                type: type,
+                completed: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('goal-input').value = "";
+                showToast("تمت إضافة الهدف بنجاح");
+            });
+        }
+
+        // --- Render Goals, Stats & Update Dynamic Pie Chart ---
+        function renderGoals() {
+            const ylyBox = document.getElementById('yly-goals-container');
+            const personalBox = document.getElementById('personal-goals-container');
+            ylyBox.innerHTML = "";
+            personalBox.innerHTML = "";
+
+            let completedCount = 0;
+
+            myGoals.forEach(g => {
+                if (g.completed) completedCount++;
+                const item = document.createElement('div');
+                item.className = 'goal-item';
+                item.innerHTML = `
+                    <input type="checkbox" ${g.completed ? 'checked' : ''} onchange="toggleGoal('${g.id}', ${!g.completed})">
+                    <span style="${g.completed ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                `;
+                if (g.type === 'yly') ylyBox.appendChild(item);
+                else personalBox.appendChild(item);
+            });
+
+            if(ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف YLY</div>";
+            if(personalBox.innerHTML === "") personalBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف شخصية</div>";
+
+            const total = myGoals.length;
+            const pending = total - completedCount;
+            const percent = total ? Math.round((completedCount / total) * 100) : 0;
+
+            // تحديث بطاقات الإحصاء
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-completed').innerText = completedCount;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-rate').innerText = percent + "%";
+
+            // تحديث شريط التقدم الخطي
+            document.getElementById('progress-percent').innerText = percent + "%";
+            document.getElementById('progress-bar').style.width = percent + "%";
+
+            // تحديث الدائرة المقسمة الديناميكية الحقيقية (أخضر للمكتمل، برتقالي لقيد التنفيذ)
+            const pieChart = document.getElementById('dynamic-pie-chart');
+            const pieText = document.getElementById('pie-chart-text');
+            if (pieChart && pieText) {
+                pieText.innerText = percent + "%";
+                if (total === 0) {
+                    pieChart.style.background = `conic-gradient(#e0e6ed 0% 100%)`;
+                } else {
+                    pieChart.style.background = `conic-gradient(var(--success) 0% ${percent}%, var(--dark-orange) ${percent}% 100%)`;
+                }
+            }
+        }
+
+        function toggleGoal(id, status) {
+            db.collection('users').doc(currentUser.uid).collection('goals').doc(id).update({
+                completed: status
+            });
+        }
+
+        // --- Shared Goals Members List (الرئيسية) ---
+        function loadSharedMembers() {
+            db.collection('users').limit(30).onSnapshot(snap => {
+                const list = document.getElementById('shared-goals-list');
+                list.innerHTML = "";
+
+                let hasOthers = false;
+                snap.forEach(doc => {
+                    if (doc.id === currentUser.uid) return;
+                    hasOthers = true;
+                    const u = doc.data();
+
+                    let joinDate = "جديد";
+                    if (u.createdAt && u.createdAt.toDate) {
+                        const d = u.createdAt.toDate();
+                        joinDate = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'member-card';
+                    card.onclick = () => openPublicProfile(doc.id, u);
+
+                    card.innerHTML = `
+                        <img src="${u.photoURL || 'https://via.placeholder.com/40'}" class="member-avatar" onclick="event.stopPropagation(); openImageViewer(this.src)">
+                        <div class="member-details-col">
+                            <div class="member-row-top">
+                                <span class="member-name">${u.fullName || 'عضو من YLY'}</span>
+                                <span class="member-date">${joinDate}</span>
+                            </div>
+                            <div class="member-row-bottom">
+                                <span class="member-action-hint">انقر لعرض البروفايل</span>
+                                <span class="member-stats-info" id="stats-user-${doc.id}">المنفذة: .. / قيد التنفيذ: ..</span>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(card);
+
+                    db.collection('users').doc(doc.id).collection('goals').get().then(gSnap => {
+                        let comp = 0, pend = 0;
+                        gSnap.forEach(gDoc => {
+                            if (gDoc.data().completed) comp++; else pend++;
+                        });
+                        const el = document.getElementById(`stats-user-${doc.id}`);
+                        if (el) el.innerText = `المنفذة: ${comp} / قيد التنفيذ: ${pend}`;
+                    });
+                });
+
+                if (!hasOthers) {
+                    list.innerHTML = "<div style='text-align:center; padding:12px; font-size:0.75rem; color:#777;'>لا يوجد أعضاء آخرين مسجلين حالياً.</div>";
+                }
+            });
+        }
+
+        // --- Leaderboard Data ---
+        function loadLeaderboard() {
+            db.collection('users').orderBy('points', 'desc').limit(15).onSnapshot(snap => {
+                const list = document.getElementById('leaderboard-list');
+                list.innerHTML = "";
+                let rank = 1;
+
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const item = document.createElement('div');
+                    item.className = 'leaderboard-card';
+                    item.onclick = () => openPublicProfile(doc.id, u);
+
+                    let badgeClass = "rank-regular";
+                    if (rank === 1) badgeClass = "";
+                    else if (rank === 2) badgeClass = "rank-secondary";
+                    else if (rank === 3) badgeClass = "rank-bronze";
+
+                    item.innerHTML = `
+                        <div class="rank-circle-badge ${badgeClass}">#${rank}</div>
+                        <img src="${u.photoURL || 'https://via.placeholder.com/40'}" class="member-avatar" onclick="event.stopPropagation(); openImageViewer(this.src)">
+                        <div class="lb-center">
+                            <div class="lb-name">${u.fullName || 'عضو متألق'}</div>
+                            <div class="lb-points">النقاط: ${u.points || 0}</div>
+                        </div>
+                        <div class="lb-left">
+                            <div class="lb-left-label">الأهداف المحققة</div>
+                            <div class="lb-left-val" id="lb-goals-${doc.id}">..</div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+
+                    db.collection('users').doc(doc.id).collection('goals').where('completed', '==', true).get().then(cSnap => {
+                        const targetEl = document.getElementById(`lb-goals-${doc.id}`);
+                        if (targetEl) targetEl.innerText = cSnap.size;
+                    });
+
+                    rank++;
+                });
+
+                if (list.innerHTML === "") {
+                    list.innerHTML = "<div style='text-align:center; padding:10px; font-size:0.75rem; color:#888;'>لا توجد بيانات متاحة حالياً</div>";
+                }
+            });
+        }
+
+        // --- Submit Problem ---
+        function submitProblem() {
+            const text = document.getElementById('problem-input').value.trim();
+            if (!text) return showToast("يرجى كتابة تفاصيل المشكلة", true);
+
+            db.collection('problems').add({
+                userId: currentUser.uid,
+                userName: currentUserData.fullName || "مستخدم",
+                description: text,
+                status: "Pending",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('problem-input').value = "";
+                showToast("تم إرسال المشكلة للآدمن بنجاح");
+            }).catch(() => showToast("فشل في إرسال المشكلة", true));
+        }
+
+        // --- Upload Profile Image in Profile page ---
+        function uploadProfileImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_PRESET);
+
+            showToast("جاري رفع الصورة الشخصية...");
+            fetch(CLOUDINARY_URL, { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.secure_url) {
+                        return db.collection('users').doc(currentUser.uid).update({ photoURL: data.secure_url });
+                    }
+                })
+                .then(() => showToast("تم تحديث الصورة الشخصية"))
+                .catch(() => showToast("فشل رفع الصورة", true));
+        }
+
+        // --- Logout ---
+        function handleLogout() {
+            auth.signOut();
+        }
+
+        function switchLeaderboardTab(el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>
