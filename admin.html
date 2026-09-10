@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>لوحة إدارة نظام YLY</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root {
+            --egyptian-blue: #1034A8;
+            --dark-blue: #0A2270;
+            --dark-orange: #FE8F01;
+            --white: #FFFFFF;
+            --bg-gray: #F4F6F9;
+            --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            --silver-border: 0.75px solid #cbd5e1;
+            --success: #28a745;
+            --danger: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark-blue);
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        .app-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background-color: var(--bg-gray);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 450px) {
+            .app-viewport {
+                border-radius: 24px;
+                height: 95dvh;
+            }
+        }
+
+        /* Toast */
+        .toast {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--dark-orange);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(254, 143, 1, 0.3);
+            transition: transform 0.3s ease;
+            text-align: center;
+            width: 85%;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.error { background: var(--danger); }
+
+        /* شاشة تسجيل الدخول المعتمة تماماً للآدمن */
+        #admin-auth-screen {
+            position: absolute;
+            inset: 0;
+            background: #061547;
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+        }
+
+        .auth-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 340px;
+            border-radius: 16px;
+            padding: 20px 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        .auth-card h2 { font-size: 1.15rem; color: var(--egyptian-blue); font-weight: 800; margin-bottom: 4px; }
+        .auth-card p { font-size: 0.7rem; color: #666; margin-bottom: 14px; }
+
+        .form-group { margin-bottom: 8px; text-align: right; }
+        .form-group label { display: block; font-size: 0.68rem; font-weight: 700; margin-bottom: 2px; color: #333; }
+        .form-control {
+            width: 100%; height: 32px; padding: 0 8px;
+            border: 1px solid #dcdfe6; border-radius: 6px; font-size: 0.78rem; outline: none;
+        }
+        .form-control:focus { border-color: var(--egyptian-blue); }
+
+        .btn-main {
+            width: 100%; height: 34px; background: var(--egyptian-blue);
+            color: var(--white); border: none; border-radius: 8px;
+            font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 8px;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue));
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+        .header-logo {
+            width: 32px; height: 32px; border-radius: 50%; object-fit: contain;
+            border: var(--silver-border); padding: 1px; flex-shrink: 0;
+        }
+        .top-header-info { flex: 1; }
+        .top-header h1 { font-size: 0.88rem; font-weight: 800; line-height: 1.2; margin: 0; }
+        .top-header p { font-size: 0.62rem; opacity: 0.85; margin: 0; }
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.15); border: none; color: var(--white);
+            width: 28px; height: 28px; border-radius: 6px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 20px;
+        }
+
+        /* أزرار الفلترة العلوية الثلاثة */
+        .admin-nav-tabs {
+            display: flex; gap: 6px; margin-bottom: 10px;
+        }
+        .admin-tab {
+            flex: 1; text-align: center; padding: 6px 2px; font-size: 0.72rem;
+            background: #e2e8f0; border-radius: 8px; cursor: pointer; font-weight: 700; color: #475569;
+            border: var(--silver-border); transition: 0.2s;
+        }
+        .admin-tab.active {
+            background: var(--egyptian-blue); color: var(--white); border-color: var(--egyptian-blue);
+        }
+
+        /* حقل البحث الهندسي المخصص */
+        .search-outer-box {
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 25px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .search-inner-box {
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 34px;
+            border: var(--silver-border);
+        }
+        .search-inner-box input {
+            flex: 1; border: none; outline: none; font-size: 0.75rem; background: transparent;
+        }
+        .search-inner-box i { color: #888; font-size: 0.85rem; margin-left: 6px; }
+
+        /* بطاقات ونوافذ الأقسام */
+        .admin-section { display: none; }
+        .admin-section.active { display: block; animation: fadeIn 0.2s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--white); border-radius: 12px; padding: 10px;
+            margin-bottom: 8px; box-shadow: var(--card-shadow); border: var(--silver-border);
+        }
+        .card-title {
+            font-size: 0.82rem; font-weight: 700; color: var(--egyptian-blue);
+            margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* العدادات الثلاثة */
+        .stats-triplet {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;
+        }
+        .triplet-box {
+            background: var(--white); padding: 8px 4px; border-radius: 10px;
+            text-align: center; border: var(--silver-border); box-shadow: var(--card-shadow);
+        }
+        .triplet-box .num { font-size: 1rem; font-weight: 800; display: block; }
+        .triplet-box .label { font-size: 0.6rem; color: #666; font-weight: 600; }
+
+        /* رسم الإحصائيات الدائري للآدمن */
+        .admin-visual-panel {
+            background: linear-gradient(135deg, #1034A8, #0A2270);
+            color: var(--white); border-radius: 12px; padding: 10px 14px;
+            margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+            border: var(--silver-border); box-shadow: var(--card-shadow);
+        }
+        .admin-chart-box {
+            width: 52px; height: 52px; border-radius: 50%;
+            background: conic-gradient(var(--success) 0% 0%, var(--dark-orange) 0% 100%);
+            display: flex; align-items: center; justify-content: center;
+            border: 1.5px solid rgba(255,255,255,0.4);
+        }
+        .admin-chart-core {
+            width: 36px; height: 36px; background: #0A2270; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.62rem; font-weight: 800; color: white;
+        }
+
+        /* شرف الثلاثة الأوائل */
+        .leaderboard-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .lb-tab {
+            flex: 1; text-align: center; padding: 4px; font-size: 0.68rem;
+            background: #eef2f7; border-radius: 6px; cursor: pointer;
+        }
+        .lb-tab.active { background: var(--egyptian-blue); color: white; font-weight: 700; }
+
+        .top-member-item {
+            display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+            border-radius: 8px; margin-bottom: 5px; background: #f8fafc; border: 0.5px solid #e2e8f0;
+        }
+        .rank-medal {
+            width: 22px; height: 22px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: white;
+        }
+
+        /* بطاقات الأعضاء الإدارية */
+        .admin-member-card {
+            background: var(--white); border-radius: 12px; padding: 10px;
+            margin-bottom: 8px; border: var(--silver-border); box-shadow: var(--card-shadow);
+        }
+        .member-header-row { display: flex; align-items: center; gap: 8px; }
+        .member-avatar {
+            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--egyptian-blue); flex-shrink: 0;
+        }
+        .member-info-col { flex: 1; }
+        .member-name-row { display: flex; justify-content: space-between; align-items: center; }
+        .member-name { font-size: 0.8rem; font-weight: 700; color: var(--dark-blue); }
+        .member-date { font-size: 0.62rem; color: #888; }
+        .member-sub-row { display: flex; justify-content: space-between; font-size: 0.65rem; color: #555; margin-top: 2px; }
+
+        /* سطر الأزرار الثلاثة للبطاقة */
+        .action-row {
+            display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0;
+        }
+        .action-btn {
+            flex: 1; height: 28px; border: none; border-radius: 6px; font-size: 0.68rem;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 4px; text-decoration: none;
+        }
+        .btn-edit { background: #e0e7ff; color: var(--egyptian-blue); }
+        .btn-delete { background: #fee2e2; color: var(--danger); }
+        .btn-wa { background: #dcfce7; color: #166534; }
+        .btn-confirm-del { background: var(--danger); color: white; }
+        .btn-cancel-del { background: #e2e8f0; color: #333; }
+
+        /* الحاوية المنسدلة لتعديل بيانات العضو */
+        .member-inline-edit {
+            display: none; margin-top: 8px; padding: 8px; background: #f8fafc;
+            border-radius: 8px; border: 1px solid #e2e8f0; animation: fadeIn 0.2s ease;
+        }
+
+        /* بطاقات الدعم والشكاوى */
+        .support-card {
+            background: var(--white); border-radius: 12px; padding: 10px;
+            margin-bottom: 8px; border: var(--silver-border); box-shadow: var(--card-shadow);
+        }
+        .problem-text-box {
+            background: #fff8eb; border: 1px solid #fde68a; border-radius: 8px;
+            padding: 8px; font-size: 0.72rem; color: #78350f; margin: 8px 0; line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-viewport">
+        <div id="toast" class="toast">تنبيه</div>
+
+        <!-- شاشة تسجيل الدخول المعتمة للآدمن -->
+        <div id="admin-auth-screen">
+            <div class="auth-card">
+                <h2>دخول المشرف الإداري</h2>
+                <p>يرجى إدخال بيانات حساب الإدارة المعتمد</p>
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label>البريد الإلكتروني للآدمن</label>
+                        <input type="email" id="admin-email" class="form-control" placeholder="admin@yly.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="admin-pass" class="form-control" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="btn-main">تحقق ودخول</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Top Header -->
+        <div class="top-header">
+            <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" class="header-logo" alt="Logo">
+            <div class="top-header-info">
+                <h1>لوحة التحكم الإدارية</h1>
+                <p>إدارة أعضاء منصة YLY والأهداف المشتركة</p>
+            </div>
+            <button class="logout-btn" onclick="handleAdminLogout()" title="تسجيل الخروج"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+
+        <!-- Main Content Scroll Area -->
+        <div class="main-content">
+            
+            <!-- أزرار الفلترة العلوية الثلاثة -->
+            <div class="admin-nav-tabs">
+                <div class="admin-tab active" onclick="switchAdminTab('stats', this)">الإحصائيات العامة</div>
+                <div class="admin-tab" onclick="switchAdminTab('members', this)">إدارة الأعضاء</div>
+                <div class="admin-tab" onclick="switchAdminTab('support', this)">رسائل الدعم</div>
+            </div>
+
+            <!-- حقل البحث الهندسي المخصص -->
+            <div class="search-outer-box" id="admin-search-container">
+                <div class="search-inner-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="admin-search-input" placeholder="بحث بالاسم أو رقم الهاتف..." oninput="handleAdminSearch()">
+                </div>
+            </div>
+
+            <!-- SECTION 1: الإحصائيات العامة (الافتراضي) -->
+            <div id="section-stats" class="admin-section active">
+                
+                <!-- العدادات الثلاثة المطلوبة -->
+                <div class="stats-triplet">
+                    <div class="triplet-box">
+                        <span class="num" id="cnt-users" style="color: var(--egyptian-blue);">0</span>
+                        <span class="label">المستخدمين</span>
+                    </div>
+                    <div class="triplet-box">
+                        <span class="num" id="cnt-pending" style="color: var(--dark-orange);">0</span>
+                        <span class="label">قيد التنفيذ</span>
+                    </div>
+                    <div class="triplet-box">
+                        <span class="num" id="cnt-completed" style="color: var(--success);">0</span>
+                        <span class="label">المنفذة</span>
+                    </div>
+                </div>
+
+                <!-- شريحة الرسم البياني بالنسب والأرقام -->
+                <div class="admin-visual-panel">
+                    <div>
+                        <h3 style="font-size: 0.85rem; font-weight:800; margin-bottom: 2px;">معدل الأهداف الكلي</h3>
+                        <p style="font-size: 0.65rem; opacity: 0.85;" id="admin-pie-desc">جاري الحساب...</p>
+                    </div>
+                    <div class="admin-chart-box" id="admin-pie-chart">
+                        <div class="admin-chart-core" id="admin-pie-text">0%</div>
+                    </div>
+                </div>
+
+                <!-- حاوية الثلاثة الأوائل المتصدرين -->
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-trophy"></i> المتصدرون في لوحة الشرف</div>
+                    <div class="leaderboard-tabs">
+                        <div class="lb-tab active" onclick="filterTopThree('monthly', this)">شهري</div>
+                        <div class="lb-tab" onclick="filterTopThree('weekly', this)">أسبوعي</div>
+                        <div class="lb-tab" onclick="filterTopThree('daily', this)">يومي</div>
+                    </div>
+                    <div id="top-three-container">
+                        <div style="text-align:center; padding: 10px; font-size:0.75rem; color:#888;">جاري التحميل...</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECTION 2: إدارة الأعضاء -->
+            <div id="section-members" class="admin-section">
+                <div id="admin-members-list">
+                    <div style="text-align:center; padding: 15px; font-size:0.75rem; color:#888;">جاري تحميل قائمة الأعضاء...</div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: رسائل الدعم والشكاوى -->
+            <div id="section-support" class="admin-section">
+                <div id="admin-support-list">
+                    <div style="text-align:center; padding: 15px; font-size:0.75rem; color:#888;">جاري تحميل المشكلات...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAinjc2LH9gpwdZ1-000_y5Ggsv2WgJYLA",
+            authDomain: "goals-yly.firebaseapp.com",
+            projectId: "goals-yly",
+            storageBucket: "goals-yly.firebasestorage.app",
+            messagingSenderId: "708760417066",
+            appId: "1:708760417066:web:04654cc9c30a2a4dc1a453",
+            measurementId: "G-07SL7TYLZV"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // مفتاح وصلاحية الآدمن الصارمة
+        const ADMIN_UID = "6Qi1KnU1NcTV48e14FywWzzmX7f1";
+
+        let allUsersData = [];
+        let allProblemsData = [];
+        let totalCompletedGoals = 0;
+        let totalPendingGoals = 0;
+
+        function showToast(msg, isErr = false) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.className = `toast show ${isErr ? 'error' : ''}`;
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // --- Auth Verification ---
+        auth.onAuthStateChanged(user => {
+            if (user && user.uid === ADMIN_UID) {
+                document.getElementById('admin-auth-screen').style.display = 'none';
+                loadAdminDashboardData();
+            } else {
+                document.getElementById('admin-auth-screen').style.display = 'flex';
+            }
+        });
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value.trim();
+            const pass = document.getElementById('admin-pass').value;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(res => {
+                    if (res.user.uid !== ADMIN_UID) {
+                        auth.signOut();
+                        showToast("حسابك غير مصرح له بالدخول كآدمن", true);
+                    }
+                })
+                .catch(() => showToast("بيانات دخول المشرف غير صحيحة", true));
+        }
+
+        function handleAdminLogout() {
+            auth.signOut();
+        }
+
+        // --- Tabs Switching ---
+        function switchAdminTab(secId, btn) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('section-' + secId).classList.add('active');
+            btn.classList.add('active');
+
+            // إخفاء حقل البحث في الإحصائيات وإظهاره في إدارة الأعضاء والدعم
+            const searchBox = document.getElementById('admin-search-container');
+            if (secId === 'stats') {
+                searchBox.style.display = 'none';
+            } else {
+                searchBox.style.display = 'block';
+            }
+        }
+
+        // --- Load Complete Admin Data ---
+        function loadAdminDashboardData() {
+            // تحميل المستخدمين ومتابعتهم اللحظية
+            db.collection('users').onSnapshot(snap => {
+                allUsersData = [];
+                totalCompletedGoals = 0;
+                totalPendingGoals = 0;
+
+                let promises = [];
+
+                snap.forEach(doc => {
+                    const u = { id: doc.id, ...doc.data() };
+                    allUsersData.push(u);
+
+                    // حساب أهداف كل مستخدم
+                    const p = db.collection('users').doc(doc.id).collection('goals').get().then(gSnap => {
+                        let comp = 0, pend = 0;
+                        gSnap.forEach(g => {
+                            if (g.data().completed) { comp++; totalCompletedGoals++; }
+                            else { pend++; totalPendingGoals++; }
+                        });
+                        u.completedGoals = comp;
+                        u.pendingGoals = pend;
+                    });
+                    promises.push(p);
+                });
+
+                Promise.all(promises).then(() => {
+                    updateStatsDisplay();
+                    renderMembersList(allUsersData);
+                    renderTopThree();
+                });
+            });
+
+            // تحميل رسائل الدعم والمشاكل
+            db.collection('problems').orderBy('timestamp', 'desc').onSnapshot(snap => {
+                allProblemsData = [];
+                snap.forEach(doc => allProblemsData.push({ id: doc.id, ...doc.data() }));
+                renderSupportList(allProblemsData);
+            });
+        }
+
+        // --- Stats & Donut Chart Rendering ---
+        function updateStatsDisplay() {
+            document.getElementById('cnt-users').innerText = allUsersData.length;
+            document.getElementById('cnt-completed').innerText = totalCompletedGoals;
+            document.getElementById('cnt-pending').innerText = totalPendingGoals;
+
+            const total = totalCompletedGoals + totalPendingGoals;
+            const percent = total > 0 ? Math.round((totalCompletedGoals / total) * 100) : 0;
+
+            document.getElementById('admin-pie-text').innerText = percent + "%";
+            document.getElementById('admin-pie-desc').innerText = `إجمالي: ${total} هدف (${totalCompletedGoals} مكتمل / ${totalPendingGoals} متبقي)`;
+
+            const chart = document.getElementById('admin-pie-chart');
+            if (total === 0) {
+                chart.style.background = `conic-gradient(#e0e6ed 0% 100%)`;
+            } else {
+                chart.style.background = `conic-gradient(var(--success) 0% ${percent}%, var(--dark-orange) ${percent}% 100%)`;
+            }
+        }
+
+        // --- Top 3 Members ---
+        function renderTopThree() {
+            const sorted = [...allUsersData].sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 3);
+            const box = document.getElementById('top-three-container');
+            box.innerHTML = "";
+
+            if (sorted.length === 0) {
+                box.innerHTML = "<div style='text-align:center; padding:10px; font-size:0.75rem;'>لا يوجد بيانات بعد</div>";
+                return;
+            }
+
+            sorted.forEach((u, idx) => {
+                const colors = ['linear-gradient(135deg, #FFDF00, #D4AF37)', 'linear-gradient(135deg, #c0c0c0, #999)', 'linear-gradient(135deg, #cd7f32, #a05a2c)'];
+                const div = document.createElement('div');
+                div.className = 'top-member-item';
+                div.innerHTML = `
+                    <div class="rank-medal" style="background:${colors[idx]};">#${idx + 1}</div>
+                    <img src="${u.photoURL || 'https://via.placeholder.com/35'}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.75rem; color:#222;">${u.fullName || 'عضو'}</strong>
+                        <div style="font-size:0.62rem; color:#666;">النقاط: ${u.points || 0} | الأهداف المكتملة: ${u.completedGoals || 0}</div>
+                    </div>
+                `;
+                box.appendChild(div);
+            });
+        }
+
+        function filterTopThree(type, tab) {
+            document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderTopThree(); // يمكن تخصيصها مستقبلاً وفق تواريخ الإنجاز
+        }
+
+        // --- Render Members & Actions ---
+        function renderMembersList(users) {
+            const container = document.getElementById('admin-members-list');
+            container.innerHTML = "";
+
+            if (users.length === 0) {
+                container.innerHTML = "<div style='text-align:center; padding:15px; font-size:0.75rem; color:#888;'>لا يوجد أعضاء مطابقين</div>";
+                return;
+            }
+
+            users.forEach(u => {
+                let joinDate = "جديد";
+                if (u.createdAt && u.createdAt.toDate) {
+                    const d = u.createdAt.toDate();
+                    joinDate = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+                }
+
+                // رابط واتساب مباشر
+                let phoneClean = (u.phone || '').replace(/\D/g, '');
+                if (phoneClean.startsWith('01')) phoneClean = '2' + phoneClean; // كود مصر
+
+                const card = document.createElement('div');
+                card.className = 'admin-member-card';
+                card.id = `member-card-${u.id}`;
+
+                card.innerHTML = `
+                    <div class="member-header-row">
+                        <img src="${u.photoURL || 'https://via.placeholder.com/40'}" class="member-avatar">
+                        <div class="member-info-col">
+                            <div class="member-name-row">
+                                <span class="member-name">${u.fullName || 'بدون اسم'}</span>
+                                <span class="member-date">${joinDate}</span>
+                            </div>
+                            <div class="member-sub-row">
+                                <span>هاتف: ${u.phone || 'غير مسجل'}</span>
+                                <span style="font-weight:700; color:var(--egyptian-blue);">النقاط: ${u.points || 0}</span>
+                            </div>
+                            <div class="member-sub-row">
+                                <span>البريد: ${u.email || ''}</span>
+                                <span>المنفذة: ${u.completedGoals || 0} / قيد التنفيذ: ${u.pendingGoals || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سطر الإجراءات الثلاثة الأساسي -->
+                    <div class="action-row" id="action-row-${u.id}">
+                        <button class="action-btn btn-edit" onclick="toggleEditMember('${u.id}')"><i class="fa-solid fa-pen"></i> تعديل</button>
+                        <button class="action-btn btn-delete" onclick="showDeleteConfirm('${u.id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <a href="https://wa.me/${phoneClean}" target="_blank" class="action-btn btn-wa"><i class="fa-brands fa-whatsapp"></i> تواصل</a>
+                    </div>
+
+                    <!-- نموذج التعديل المنسدل -->
+                    <div class="member-inline-edit" id="edit-box-${u.id}">
+                        <div class="form-group">
+                            <label>الاسم</label>
+                            <input type="text" id="input-name-${u.id}" class="form-control" value="${u.fullName || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>الهاتف</label>
+                            <input type="tel" id="input-phone-${u.id}" class="form-control" value="${u.phone || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>البريد الإلكتروني</label>
+                            <input type="email" id="input-email-${u.id}" class="form-control" value="${u.email || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>النقاط الإدارية</label>
+                            <input type="number" id="input-points-${u.id}" class="form-control" value="${u.points || 0}">
+                        </div>
+                        <div style="display:flex; gap:6px; margin-top:6px;">
+                            <button class="btn-main" style="margin:0;" onclick="saveMemberData('${u.id}')">حفظ</button>
+                            <button class="btn-main" style="margin:0; background:#94a3b8;" onclick="toggleEditMember('${u.id}')">إلغاء</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- الحذف بنظام التحويل الفوري للسطر ---
+        function showDeleteConfirm(uid) {
+            const row = document.getElementById(`action-row-${uid}`);
+            row.innerHTML = `
+                <button class="action-btn btn-confirm-del" onclick="confirmDeleteMember('${uid}')"><i class="fa-solid fa-check"></i> تأكيد الحذف</button>
+                <button class="action-btn btn-cancel-del" onclick="cancelDeleteRow('${uid}')"><i class="fa-solid fa-xmark"></i> تراجع</button>
+            `;
+        }
+
+        function cancelDeleteRow(uid) {
+            const u = allUsersData.find(x => x.id === uid);
+            let phoneClean = (u.phone || '').replace(/\D/g, '');
+            if (phoneClean.startsWith('01')) phoneClean = '2' + phoneClean;
+
+            const row = document.getElementById(`action-row-${uid}`);
+            row.innerHTML = `
+                <button class="action-btn btn-edit" onclick="toggleEditMember('${uid}')"><i class="fa-solid fa-pen"></i> تعديل</button>
+                <button class="action-btn btn-delete" onclick="showDeleteConfirm('${uid}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                <a href="https://wa.me/${phoneClean}" target="_blank" class="action-btn btn-wa"><i class="fa-brands fa-whatsapp"></i> تواصل</a>
+            `;
+        }
+
+        function confirmDeleteMember(uid) {
+            db.collection('users').doc(uid).delete()
+                .then(() => showToast("تم حذف العضو نهائياً"))
+                .catch(() => showToast("حدث خطأ أثناء الحذف", true));
+        }
+
+        // --- التعديل المنسدل ---
+        function toggleEditMember(uid) {
+            const box = document.getElementById(`edit-box-${uid}`);
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function saveMemberData(uid) {
+            const name = document.getElementById(`input-name-${uid}`).value.trim();
+            const phone = document.getElementById(`input-phone-${uid}`).value.trim();
+            const email = document.getElementById(`input-email-${uid}`).value.trim();
+            const points = parseInt(document.getElementById(`input-points-${uid}`).value) || 0;
+
+            if (!name) return showToast("الاسم مطلوب", true);
+
+            db.collection('users').doc(uid).update({
+                fullName: name,
+                phone: phone,
+                email: email,
+                points: points
+            }).then(() => {
+                showToast("تم تحديث بيانات العضو بنجاح");
+                toggleEditMember(uid);
+            }).catch(() => showToast("فشل التحديث", true));
+        }
+
+        // --- Search Functionality ---
+        function handleAdminSearch() {
+            const query = document.getElementById('admin-search-input').value.trim().toLowerCase();
+            const filtered = allUsersData.filter(u => 
+                (u.fullName || '').toLowerCase().includes(query) || 
+                (u.phone || '').includes(query)
+            );
+            renderMembersList(filtered);
+        }
+
+        // --- Support / Problems Page ---
+        function renderSupportList(problems) {
+            const box = document.getElementById('admin-support-list');
+            box.innerHTML = "";
+
+            if (problems.length === 0) {
+                box.innerHTML = "<div style='text-align:center; padding:15px; font-size:0.75rem; color:#888;'>لا توجد مشكلات مرسلة حالياً</div>";
+                return;
+            }
+
+            problems.forEach(p => {
+                const u = allUsersData.find(x => x.id === p.userId) || {};
+                let phoneClean = (u.phone || '').replace(/\D/g, '');
+                if (phoneClean.startsWith('01')) phoneClean = '2' + phoneClean;
+
+                const card = document.createElement('div');
+                card.className = 'support-card';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="font-size:0.8rem; color:var(--dark-blue);">${p.userName || u.fullName || 'عضو'}</strong>
+                        <span style="font-size:0.65rem; color:#888;">${p.status || 'معلقة'}</span>
+                    </div>
+                    <div style="font-size:0.65rem; color:#555; margin-top:2px;">الهاتف: ${u.phone || 'غير مسجل'}</div>
+                    <div class="problem-text-box">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-left:4px;"></i>
+                        ${p.description}
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <a href="https://wa.me/${phoneClean}" target="_blank" class="action-btn btn-wa" style="flex:2;"><i class="fa-brands fa-whatsapp"></i> تواصل لحل المشكلة</a>
+                        <button class="action-btn btn-delete" style="flex:1;" onclick="deleteProblem('${p.id}')"><i class="fa-solid fa-check"></i> تم الحل</button>
+                    </div>
+                `;
+                box.appendChild(card);
+            });
+        }
+
+        function deleteProblem(id) {
+            db.collection('problems').doc(id).delete()
+                .then(() => showToast("تم إغلاق المشكلة بنجاح"));
+        }
+    </script>
+</body>
+</html>
