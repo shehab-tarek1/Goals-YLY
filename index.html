@@ -36,8 +36,9 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* خلفية الموقع العامة: تدرج شعاعي فاخر أفتح قليلاً وأكثر إشراقاً */
         body {
-            background-color: var(--dark-blue);
+            background: radial-gradient(circle at 50% 25%, #1d4ed8 0%, #1034A8 45%, #071952 100%);
             color: #222;
             display: flex;
             justify-content: center;
@@ -55,7 +56,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
         }
 
         @media (min-width: 450px) {
@@ -63,6 +64,53 @@
                 border-radius: 24px;
                 height: 95dvh;
             }
+        }
+
+        /* شاشة البداية والتحميل (Diamond Gradient Splash Screen) */
+        #splash-screen {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #2563eb 0%, #1034A8 45%, #06174a 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .splash-logo-box {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .splash-logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        .splash-spinner {
+            position: absolute;
+            inset: 0;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top: 3px solid var(--dark-orange);
+            border-right: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spinSplash 0.9s linear infinite;
+        }
+        @keyframes spinSplash {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .splash-title {
+            color: var(--white);
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-top: 14px;
+            letter-spacing: 0.5px;
         }
 
         /* Toast Notification */
@@ -173,6 +221,7 @@
             display: flex; align-items: center; justify-content: center; gap: 4px;
         }
         .btn-main:active { transform: scale(0.98); }
+        .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .btn-secondary {
             width: 100%; height: 32px; background: #e0e6ed; color: #444;
@@ -335,7 +384,7 @@
             background: #e2e8f0;
         }
 
-        /* Dashboard Greeting Box مع الدائرتين التوأم المتطابقتين */
+        /* Dashboard Greeting Box */
         .dashboard-visual-box {
             background: linear-gradient(135deg, #1034A8, #0A2270);
             color: var(--white);
@@ -397,60 +446,61 @@
             color: var(--white);
         }
 
-        /* عنوان العدادات الصغير التوضيحي داخل حسابي */
         .stats-section-header {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 800;
             color: var(--dark-blue);
-            margin: 6px 0 4px 0;
+            margin: 3px 0 2px 0;
             display: inline-block;
-            border-bottom: 2px solid var(--dark-orange);
+            border-bottom: 1.5px solid var(--dark-orange);
             padding-bottom: 1px;
         }
 
-        /* Stats Grid سطور العدادات المنقولة لحسابي */
+        /* Stats Grid سطور العدادات المضغوطة */
         .stats-grid-5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 3px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .stat-card-mini {
             background: var(--white);
-            padding: 2px 1px;
+            padding: 1px 1px;
             border-radius: 6px;
             text-align: center;
             border: var(--silver-border);
             box-shadow: var(--card-shadow);
-            height: 36px;
+            height: 32px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         .stat-card-mini .num {
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 800;
             color: var(--egyptian-blue);
             line-height: 1;
         }
         .stat-card-mini .label {
-            font-size: 0.48rem;
+            font-size: 0.46rem;
             color: #666;
             font-weight: 700;
             line-height: 1;
             margin-top: 1px;
         }
-        .stat-card-share {
-            background: linear-gradient(135deg, #FE8F01, #e07b00);
+        
+        /* زر المشاركة باللون النيلي الراقي المريح للعين */
+        .stat-card-share-sleek {
+            background: linear-gradient(135deg, #1034A8, #0A2270);
             color: var(--white);
             cursor: pointer;
             border: none;
             transition: transform 0.15s;
-            height: 36px;
+            height: 32px;
         }
-        .stat-card-share:active { transform: scale(0.95); }
-        .stat-card-share i { font-size: 0.7rem; }
-        .stat-card-share span { font-size: 0.48rem; font-weight: 800; }
+        .stat-card-share-sleek:active { transform: scale(0.95); }
+        .stat-card-share-sleek i { font-size: 0.68rem; }
+        .stat-card-share-sleek span { font-size: 0.46rem; font-weight: 800; }
 
         /* Custom Dropdown Styling */
         .custom-dropdown-box { position: relative; flex: 1; }
@@ -511,14 +561,18 @@
         .badge-gold { background: #fef08a; color: #854d0e; }
         .badge-legend { background: linear-gradient(135deg, #FE8F01, #b45309); color: #fff; }
 
-        /* Member Card */
+        /* Member Card في الرئيسية: تدرج لوني احترافي يعشقه البصر */
         .member-card {
             display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-            border-radius: 10px; margin-bottom: 6px; background: var(--white);
+            border-radius: 10px; margin-bottom: 6px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: var(--silver-border); box-shadow: var(--card-shadow); cursor: pointer;
-            transition: transform 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .member-card:hover { transform: translateY(-1px); }
+        .member-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16, 52, 168, 0.12);
+        }
         .member-avatar {
             width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
             border: 2px solid var(--egyptian-blue); cursor: pointer; flex-shrink: 0;
@@ -686,6 +740,15 @@
 </head>
 <body>
 
+    <!-- شاشة البداية والتحميل (Diamond Gradient Splash Screen) -->
+    <div id="splash-screen">
+        <div class="splash-logo-box">
+            <div class="splash-spinner"></div>
+            <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" class="splash-logo-img" alt="Logo">
+        </div>
+        <div class="splash-title">منصة YLY للأهداف</div>
+    </div>
+
     <div class="app-viewport">
         <!-- Toast Notification -->
         <div id="toast" class="toast">تنبيه</div>
@@ -786,7 +849,7 @@
                         <label>كلمة المرور</label>
                         <input type="password" id="login-pass" class="form-control" placeholder="******" required>
                     </div>
-                    <button type="submit" class="btn-main">دخول</button>
+                    <button type="submit" id="btn-login-submit" class="btn-main">دخول</button>
                 </form>
 
                 <form id="register-form" style="display: none;" onsubmit="handleEmailRegister(event)">
@@ -818,7 +881,7 @@
                         <label>تأكيد كلمة المرور</label>
                         <input type="password" id="reg-pass-confirm" class="form-control" placeholder="******" required>
                     </div>
-                    <button type="submit" class="btn-main">إنشاء حساب</button>
+                    <button type="submit" id="btn-register-submit" class="btn-main">إنشاء حساب</button>
                 </form>
             </div>
         </div>
@@ -863,7 +926,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 2: Control & Goals (لوحة التحكم هادئة ونظيفة بدون سطور العدادات) -->
+            <!-- PAGE 2: Control & Goals -->
             <div id="page-control" class="page">
                 
                 <!-- شريحة الترحيب مع الدائرتين التوأم المتطابقتين باللونين -->
@@ -946,7 +1009,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 3: Support / Problems (إصلاح سجل الدعم ليظهر فوراً) -->
+            <!-- PAGE 3: Support / Problems -->
             <div id="page-support" class="page">
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-headset"></i> الإبلاغ عن مشكلة</div></div>
@@ -978,7 +1041,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 5: Profile (حسابي - محاذاة متقاربة + نقل سطري العدادات هنا بعد تسجيل الخروج) -->
+            <!-- PAGE 5: Profile (حسابي - بدون تكرار الإيميل + الحاوية المصغرة) -->
             <div id="page-profile" class="page">
                 <div class="card" id="profile-unified-card">
                     <div class="profile-head">
@@ -988,8 +1051,8 @@
                             <input type="file" id="img-upload-input" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
                         </div>
                         <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
-                        <p id="profile-display-email" style="font-size: 0.68rem; color: #777;">...</p>
-                        <div id="profile-user-rank-badge" style="margin-top: 4px;"></div>
+                        <!-- تم إلغاء تكرار البريد الإلكتروني هنا -->
+                        <div id="profile-user-rank-badge" style="margin-top: 3px;"></div>
                     </div>
 
                     <div class="card-title" style="margin-top: 6px;">
@@ -1038,11 +1101,11 @@
                     </div>
                 </div>
 
-                <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 12px;">تسجيل الخروج</button>
+                <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
 
-                <!-- بطاقة إحصائياتي المنقولة هنا بعد زر الخروج بمسافة مريحة -->
-                <div class="card" style="margin-top: 6px;">
-                    <div class="card-title">
+                <!-- بطاقة إحصائياتي المنقولة هنا بعد زر الخروج - مصغرة ومضغوطة -->
+                <div class="card" style="margin-top: 4px; padding: 8px 10px;">
+                    <div class="card-title" style="margin-bottom: 4px;">
                         <div class="card-title-text"><i class="fa-solid fa-chart-simple"></i> ملخص إنجازاتي الشاملة</div>
                     </div>
 
@@ -1065,14 +1128,14 @@
                             <span class="num" id="stat-habits-rate">0%</span>
                             <span class="label">نسبة اليوم</span>
                         </div>
-                        <div class="stat-card-mini stat-card-share" onclick="openShareModal()" title="مشاركة">
+                        <div class="stat-card-mini stat-card-share-sleek" onclick="openShareModal()" title="مشاركة">
                             <i class="fa-solid fa-share-nodes"></i>
                             <span>مشاركة</span>
                         </div>
                     </div>
 
                     <!-- سطر إحصائيات الأهداف -->
-                    <div class="stats-section-header" style="margin-top: 6px;">إحصائيات الأهداف</div>
+                    <div class="stats-section-header" style="margin-top: 4px;">إحصائيات الأهداف</div>
                     <div class="stats-grid-5">
                         <div class="stat-card-mini">
                             <span class="num" id="stat-goals-total">0</span>
@@ -1090,7 +1153,7 @@
                             <span class="num" id="stat-goals-rate">0%</span>
                             <span class="label">نسبة الإنجاز</span>
                         </div>
-                        <div class="stat-card-mini stat-card-share" onclick="openShareModal()" title="مشاركة">
+                        <div class="stat-card-mini stat-card-share-sleek" onclick="openShareModal()" title="مشاركة">
                             <i class="fa-solid fa-share-nodes"></i>
                             <span>مشاركة</span>
                         </div>
@@ -1211,6 +1274,15 @@
 
         let currentEditGoalId = null;
         let currentDeleteGoalId = null;
+
+        // إخفاء شاشة البداية سريعاً
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 400);
+            }
+        }
 
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
@@ -1347,11 +1419,16 @@
             } else {
                 currentUser = null;
                 document.getElementById('auth-screen').style.display = 'flex';
+                hideSplashScreen(); // إخفاء التحميل إن لم يكن مسجلاً
             }
         });
 
+        // إنشاء حساب مع التحميل الكسول
         async function handleEmailRegister(e) {
             e.preventDefault();
+            const btn = document.getElementById('btn-register-submit');
+            const originalText = btn.innerHTML;
+
             const name = document.getElementById('reg-name').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
             const email = document.getElementById('reg-email').value.trim();
@@ -1362,7 +1439,10 @@
             if (phone.length < 10) return showToast("يرجى إدخال رقم هاتف صحيح", true);
             if (pass !== confirmPass) return showToast("كلمات المرور غير متطابقة", true);
 
-            showToast("جاري إنشاء الحساب...");
+            // تفعيل حالة التحميل الكسول على الزر
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إنشاء الحساب...`;
+            btn.disabled = true;
+
             let photoURL = "https://via.placeholder.com/70";
 
             if (regAvatarFile) {
@@ -1389,17 +1469,34 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 })
-                .then(() => showToast("تم إنشاء الحساب بنجاح"))
-                .catch(err => showToast(err.message, true));
+                .then(() => {
+                    showToast("تم إنشاء الحساب بنجاح");
+                })
+                .catch(err => {
+                    showToast(err.message, true);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
 
+        // تسجيل دخول مع التحميل الكسول
         function handleEmailLogin(e) {
             e.preventDefault();
+            const btn = document.getElementById('btn-login-submit');
+            const originalText = btn.innerHTML;
+
             const email = document.getElementById('login-email').value.trim();
             const pass = document.getElementById('login-pass').value;
 
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...`;
+            btn.disabled = true;
+
             auth.signInWithEmailAndPassword(email, pass)
-                .catch(err => showToast("البريد أو كلمة السر غير صحيحة", true));
+                .catch(err => {
+                    showToast("البريد أو كلمة السر غير صحيحة", true);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
 
         function loadUserData() {
@@ -1408,7 +1505,6 @@
                 if (doc.exists) {
                     currentUserData = doc.data();
                     document.getElementById('profile-display-name').innerText = currentUserData.fullName || "مستخدم";
-                    document.getElementById('profile-display-email').innerText = currentUserData.email || "";
                     document.getElementById('view-name').innerText = currentUserData.fullName || "غير محدد";
                     document.getElementById('view-phone').innerText = currentUserData.phone || "غير مسجل";
                     document.getElementById('view-email').innerText = currentUserData.email || "";
@@ -1419,6 +1515,7 @@
                     document.getElementById('profile-user-rank-badge').innerHTML = `<span class="rank-badge-tag ${rank.css}">${rank.title}</span>`;
 
                     updateSmartGreeting();
+                    hideSplashScreen(); // إخفاء شاشة البداية بمجرد توفر البيانات الأساسية
                 }
             });
 
@@ -1509,20 +1606,17 @@
             navigateTab(currentActiveTab);
         }
 
-        // --- محرك الترحيب وتحديث الدائرتين التوأم المتطابقتين باللونين وتحديث العدادات في حسابي ---
         function updateSmartGreeting() {
             const hour = new Date().getHours();
             const isMorning = hour >= 4 && hour < 12;
             const timeWord = isMorning ? "صباح الخير" : "مساء الخير";
             const firstName = currentUserData.fullName ? currentUserData.fullName.split(" ")[0] : "يا بطل";
 
-            // 1. حساب العادات اليومية
             const habits = myGoals.filter(g => g.period === 'habit');
             const totalHabits = habits.length;
             const completedHabits = habits.filter(g => isGoalCompletedCurrentCycle(g)).length;
             const habitRate = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
 
-            // 2. حساب الأهداف العامة
             const goalsOnly = myGoals.filter(g => g.period !== 'habit');
             const totalGoals = goalsOnly.length;
             const completedGoals = goalsOnly.filter(g => isGoalCompletedCurrentCycle(g)).length;
@@ -1542,7 +1636,6 @@
             document.getElementById('greeting-title').innerText = `${timeWord} يا ${firstName}`;
             document.getElementById('greeting-msg').innerText = desc;
 
-            // تحديث دائرة العادات
             const habitsChart = document.getElementById('chart-habits');
             const habitsText = document.getElementById('text-habits-chart');
             if (habitsChart && habitsText) {
@@ -1552,7 +1645,6 @@
                     : `conic-gradient(var(--success) 0% ${habitRate}%, var(--dark-orange) ${habitRate}% 100%)`;
             }
 
-            // تحديث دائرة الأهداف (أخضر وبرتقالي أيضاً)
             const goalsChart = document.getElementById('chart-goals');
             const goalsText = document.getElementById('text-goals-chart');
             if (goalsChart && goalsText) {
@@ -1562,7 +1654,6 @@
                     : `conic-gradient(var(--success) 0% ${goalRate}%, var(--dark-orange) ${goalRate}% 100%)`;
             }
 
-            // تحديث بطاقات العدادات الموجودة في صفحة حسابي
             const elHabitsTotal = document.getElementById('stat-habits-total');
             if (elHabitsTotal) {
                 elHabitsTotal.innerText = totalHabits;
@@ -1585,8 +1676,8 @@
 
             db.collection('users').doc(currentUser.uid).collection('goals').add({
                 title: title,
-                period: selectedGoalPeriod, // 'habit' أو 'goal'
-                type: selectedGoalType,     // 'yly' أو 'personal'
+                period: selectedGoalPeriod,
+                type: selectedGoalType,
                 completed: false,
                 createdDate: todayStr,
                 completedDate: null,
@@ -1787,7 +1878,6 @@
             showToast("تم تحميل التقرير بنجاح");
         }
 
-        // --- بطاقة المشاركة HD 3x ---
         function openShareModal() {
             if (!currentUserData.fullName) return showToast("جاري تحميل بياناتك...");
 
@@ -1831,7 +1921,6 @@
             }).catch(() => showToast("تعذر تحميل البطاقة", true));
         }
 
-        // --- بروفايل الزملاء وعرض الرتبة فوق الإيميل ---
         function openPublicProfile(userId, userData) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-public-profile').classList.add('active');
@@ -1911,7 +2000,7 @@
             });
         }
 
-        // --- سجل طلبات الدعم السريع المطور والمحصن برمجياً ---
+        // --- سجل طلبات الدعم السريع ---
         function loadUserSupportHistory() {
             db.collection('problems').where('userId', '==', currentUser.uid).onSnapshot(snap => {
                 const box = document.getElementById('user-support-history');
@@ -1927,7 +2016,6 @@
                     problemsList.push({ id: doc.id, ...doc.data() });
                 });
 
-                // ترتيب زمني آمن حتى لو كان timestamp السيرفر قيد المعالجة
                 problemsList.sort((a, b) => {
                     const timeA = a.timestamp && a.timestamp.seconds ? a.timestamp.seconds : (a.localTime || Date.now());
                     const timeB = b.timestamp && b.timestamp.seconds ? b.timestamp.seconds : (b.localTime || Date.now());
@@ -1964,7 +2052,6 @@
             const text = document.getElementById('problem-input').value.trim();
             if (!text) return showToast("يرجى كتابة تفاصيل المشكلة", true);
 
-            // إضافة localTime لحمايتها من الـ null حتى يكتمل السيرفر
             db.collection('problems').add({
                 userId: currentUser.uid,
                 userName: currentUserData.fullName || "مستخدم",
@@ -1978,7 +2065,7 @@
             }).catch(() => showToast("فشل في إرسال المشكلة", true));
         }
 
-        // --- Shared Members List (عرض المنفذة فقط) ---
+        // --- Shared Members List ---
         function loadSharedMembers() {
             db.collection('users').limit(30).onSnapshot(snap => {
                 const list = document.getElementById('shared-goals-list');
@@ -2110,4 +2197,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
