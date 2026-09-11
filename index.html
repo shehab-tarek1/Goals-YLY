@@ -102,7 +102,7 @@
             width: 100%;
             max-width: 350px;
             border-radius: 16px;
-            padding: 14px 12px;
+            padding: 16px 14px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.25);
             text-align: center;
         }
@@ -116,7 +116,7 @@
             background: #eef2f7;
             border-radius: 8px;
             padding: 2px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .auth-toggle button {
             flex: 1;
@@ -167,9 +167,13 @@
             font-weight: 700;
             font-size: 0.78rem;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 6px;
             box-shadow: 0 3px 8px rgba(16, 52, 168, 0.25);
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
         .btn-main:active { transform: scale(0.98); }
 
@@ -186,24 +190,6 @@
             margin-top: 5px;
         }
 
-        .btn-google {
-            width: 100%;
-            height: 32px;
-            background: var(--white);
-            color: #333;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.72rem;
-            cursor: pointer;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* Avatar Picker */
         .reg-avatar-container {
             margin-bottom: 6px;
             display: flex;
@@ -237,18 +223,18 @@
         .top-header {
             background: linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue));
             color: var(--white);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 0 0 14px 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
             flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            min-height: 44px;
+            gap: 6px;
+            min-height: 42px;
         }
         .header-logo {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             object-fit: contain;
             border: var(--silver-border);
@@ -256,20 +242,36 @@
             flex-shrink: 0;
         }
         .top-header-info { flex: 1; }
-        .top-header h1 { font-size: 0.88rem; font-weight: 800; line-height: 1.2; margin: 0; }
-        .top-header p { font-size: 0.62rem; opacity: 0.85; margin: 0; }
+        .top-header h1 { font-size: 0.84rem; font-weight: 800; line-height: 1.2; margin: 0; }
+        .top-header p { font-size: 0.6rem; opacity: 0.85; margin: 0; }
+
+        /* إطار التاريخ الميلادي المصغر والأنيق */
+        .header-date-badge {
+            border: var(--silver-border);
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2px 5px;
+            border-radius: 6px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
 
         .btn-back {
             background: rgba(255, 255, 255, 0.15);
             border: none;
             color: var(--white);
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 6px;
-            display: none; /* يظهر فقط في الصفحات الفرعية */
+            display: none;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
@@ -289,10 +291,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cover Banner */
+        /* الغلاف */
         .main-cover-banner {
             width: 100%;
-            height: auto;
+            height: 165px;
+            object-fit: cover;
             display: block;
             border-radius: 12px;
             margin-bottom: 8px;
@@ -322,8 +325,37 @@
         .card-title-text {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+            flex-wrap: wrap;
         }
+
+        /* نص المشاركة الشيك بجانب العنوان */
+        .sub-hint-tag {
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        /* زر عرض السجل الهادئ للعين */
+        .records-btn-calm {
+            background: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .records-btn-calm:hover {
+            background: #e2e8f0;
+            color: var(--egyptian-blue);
+        }
+
         .edit-action-btn {
             color: var(--dark-orange);
             cursor: pointer;
@@ -337,7 +369,7 @@
             font-weight: 700;
         }
 
-        /* Dashboard Visual Box مع الدائرة المقسمة الحقيقية */
+        /* Dashboard Visual Greeting Box */
         .dashboard-visual-box {
             background: linear-gradient(135deg, #1034A8, #0A2270);
             color: var(--white);
@@ -349,17 +381,17 @@
             justify-content: space-between;
             box-shadow: var(--card-shadow);
             border: var(--silver-border);
+            gap: 8px;
         }
+        .dashboard-visual-info { flex: 1; }
         .dashboard-visual-info h3 { font-size: 0.82rem; font-weight: 800; margin-bottom: 2px; }
-        .dashboard-visual-info p { font-size: 0.62rem; opacity: 0.85; }
+        .dashboard-visual-info p { font-size: 0.65rem; opacity: 0.9; line-height: 1.35; }
 
-        /* الدائرة المقسمة الديناميكية */
         .pie-chart-container {
             position: relative;
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            /* التدرج الافتراضي بنسبة 50% */
             background: conic-gradient(var(--success) 0% 0%, var(--dark-orange) 0% 100%);
             display: flex;
             align-items: center;
@@ -408,35 +440,75 @@
             font-weight: 600;
         }
 
-        /* Progress Box */
-        .progress-box {
-            background: #f0f4ff;
+        /* Custom Dropdown Styling */
+        .custom-dropdown-box {
+            position: relative;
+            flex: 1;
+        }
+        .custom-dropdown-btn {
+            width: 100%;
+            height: 30px;
+            background: var(--white);
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px;
+            cursor: pointer;
+        }
+        .custom-dropdown-menu {
+            position: absolute;
+            top: 34px;
+            right: 0;
+            left: 0;
+            background: var(--white);
+            border: var(--silver-border);
             border-radius: 8px;
-            padding: 6px 8px;
-            margin-bottom: 4px;
-        }
-        .streak-badge {
-            display: inline-block;
-            background: #fff3e0;
-            color: var(--dark-orange);
-            padding: 1px 6px;
-            border-radius: 10px;
-            font-size: 0.65rem;
-            font-weight: 800;
-            margin-bottom: 3px;
-        }
-        .progress-bar-bg {
-            background: #e0e6ed;
-            height: 7px;
-            border-radius: 5px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            z-index: 100;
+            display: none;
             overflow: hidden;
-            margin-top: 3px;
         }
-        .progress-bar-fill {
-            background: var(--dark-orange);
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
+        .custom-dropdown-item {
+            padding: 6px 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #444;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .custom-dropdown-item:hover {
+            background: #eef4ff;
+            color: var(--egyptian-blue);
+        }
+
+        /* Period Selector Tabs (العادات في المقدمة) */
+        .period-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            background: #e2e8f0;
+            padding: 3px;
+            border-radius: 8px;
+        }
+        .period-tab {
+            flex: 1;
+            text-align: center;
+            padding: 4px 2px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #475569;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .period-tab.active {
+            background: var(--egyptian-blue);
+            color: var(--white);
         }
 
         /* Goals Dual Column */
@@ -459,6 +531,7 @@
             text-align: center;
             border-bottom: 1.5px solid var(--dark-orange);
             padding-bottom: 2px;
+            transition: 0.2s;
         }
         .goal-item {
             font-size: 0.68rem;
@@ -472,7 +545,7 @@
             gap: 5px;
         }
 
-        /* Member Card (الرئيسية) */
+        /* Member Card */
         .member-card {
             display: flex;
             align-items: center;
@@ -504,14 +577,12 @@
         .member-action-hint { font-size: 0.65rem; color: #666; }
         .member-stats-info { font-size: 0.62rem; color: var(--egyptian-blue); font-weight: 700; }
 
-        /* Leaderboard Tabs with enhanced spacing */
+        /* Leaderboard */
         .leaderboard-tabs {
             display: flex;
             gap: 5px;
-            margin-bottom: 14px; /* مسافة أوسع تمنع التلاصق بالبطاقة الأولى */
+            margin-bottom: 14px;
         }
-
-        /* Leaderboard Item Card */
         .leaderboard-card {
             display: flex;
             align-items: center;
@@ -550,133 +621,100 @@
         .lb-left-val { font-size: 0.72rem; font-weight: 800; color: var(--success); }
 
         /* Profile Layout */
-        .profile-head {
-            text-align: center;
-            padding: 4px 0;
-        }
-        .profile-img-box {
-            position: relative;
-            width: 65px;
-            height: 65px;
-            margin: 0 auto 4px;
-        }
-        .profile-img-box img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--egyptian-blue);
-            cursor: pointer;
-        }
+        .profile-head { text-align: center; padding: 4px 0; }
+        .profile-img-box { position: relative; width: 65px; height: 65px; margin: 0 auto 4px; }
+        .profile-img-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--egyptian-blue); cursor: pointer; }
         .upload-icon {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: var(--dark-orange);
-            color: var(--white);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            cursor: pointer;
-            border: 1.5px solid var(--white);
+            position: absolute; bottom: 0; right: 0; background: var(--dark-orange);
+            color: var(--white); width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 0.6rem;
+            cursor: pointer; border: 1.5px solid var(--white);
         }
 
         .data-display-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px dashed #e4e7ed;
-            font-size: 0.75rem;
+            display: flex; justify-content: space-between; padding: 6px 0;
+            border-bottom: 1px dashed #e4e7ed; font-size: 0.75rem;
         }
         .data-display-row:last-child { border-bottom: none; }
         .data-label { color: #777; font-weight: 600; }
         .data-val { color: var(--dark-blue); font-weight: 700; }
 
-        #profile-edit-section {
-            display: none;
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px solid #eef2f7;
+        #profile-edit-section { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #eef2f7; }
+
+        /* شريط البحث المطور */
+        .search-outer-box {
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 25px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .search-inner-box {
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 32px;
+            border: var(--silver-border);
+        }
+        .search-inner-box input {
+            flex: 1; border: none; outline: none; font-size: 0.72rem; background: transparent;
+        }
+        .search-inner-box i { color: #888; font-size: 0.8rem; margin-left: 6px; }
+
+        /* الجدول المنظم لصفحة السجل والأرشيف */
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.68rem;
+            text-align: right;
+            margin-top: 4px;
+        }
+        .records-table th {
+            background: #f1f5f9;
+            padding: 6px;
+            color: var(--dark-blue);
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 700;
+        }
+        .records-table td {
+            padding: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #333;
         }
 
         /* Floating Bottom Nav */
         .bottom-nav {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            height: 50px;
-            background: var(--white);
-            border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 92%; height: 50px; background: var(--white); border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15); display: flex;
+            justify-content: space-around; align-items: center; z-index: 1000;
         }
         .nav-link {
-            color: #888;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.62rem;
-            gap: 2px;
+            color: #888; cursor: pointer; transition: 0.2s; display: flex;
+            flex-direction: column; align-items: center; font-size: 0.62rem; gap: 2px;
         }
         .nav-link i { font-size: 1.05rem; }
         .nav-link.active { color: var(--egyptian-blue); font-weight: 700; }
 
         /* Floating WhatsApp Button */
         .whatsapp-float {
-            position: absolute;
-            bottom: 68px;
-            left: 12px;
-            width: 38px;
-            height: 38px;
-            background: #25D366;
-            color: var(--white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 1001;
-            text-decoration: none;
+            position: absolute; bottom: 68px; left: 12px; width: 38px; height: 38px;
+            background: #25D366; color: var(--white); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1001; text-decoration: none;
         }
 
         /* Image Viewer Modal */
         #image-viewer-modal {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.92);
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
+            position: absolute; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 3000; display: none; align-items: center; justify-content: center;
             backdrop-filter: blur(4px);
         }
-        #image-viewer-img {
-            max-width: 90%;
-            max-height: 85%;
-            border-radius: 8px;
-        }
-        .close-viewer-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            color: var(--white);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+        #image-viewer-img { max-width: 90%; max-height: 85%; border-radius: 8px; }
+        .close-viewer-btn { position: absolute; top: 16px; right: 16px; color: var(--white); font-size: 1.5rem; cursor: pointer; }
 
-        /* Utility */
         .tab { flex: 1; text-align: center; padding: 5px; font-size: 0.72rem; background: #eef2f7; border-radius: 6px; cursor: pointer; }
         .tab.active { background: var(--egyptian-blue); color: var(--white); font-weight: 700; }
         textarea.form-control { height: 60px; padding: 6px 8px; resize: none; }
@@ -694,7 +732,7 @@
             <img id="image-viewer-img" src="" alt="عرض الصورة" onclick="event.stopPropagation()">
         </div>
 
-        <!-- Auth Screen Modal -->
+        <!-- Auth Screen Modal (بدون Google) -->
         <div id="auth-screen" class="modal-overlay" style="display: flex;">
             <div class="modal-box">
                 <div class="auth-header">
@@ -752,10 +790,6 @@
                     </div>
                     <button type="submit" class="btn-main">إنشاء حساب</button>
                 </form>
-
-                <button class="btn-google" onclick="handleGoogleSignIn()">
-                    <i class="fa-brands fa-google" style="color: #ea4335;"></i> الدخول بواسطة Google
-                </button>
             </div>
         </div>
 
@@ -766,6 +800,11 @@
             <div class="top-header-info">
                 <h1 id="header-title">أهداف الأعضاء</h1>
                 <p id="header-subtitle">استكشف الأهداف المشتركة مع زملائك</p>
+            </div>
+            <!-- التاريخ الميلادي المصغر -->
+            <div class="header-date-badge" id="live-date-badge">
+                <i class="fa-regular fa-calendar-days"></i>
+                <span id="current-live-date">...</span>
             </div>
         </div>
 
@@ -783,7 +822,11 @@
 
                 <div class="card">
                     <div class="card-title">
-                        <div class="card-title-text"><i class="fa-solid fa-users"></i> زملاء المنصة</div>
+                        <div class="card-title-text">
+                            <i class="fa-solid fa-users"></i>
+                            <span>زملاء المنصة</span>
+                            <span class="sub-hint-tag">(شارك أهدافك وعاداتك مع الفريق)</span>
+                        </div>
                     </div>
                     <div id="shared-goals-list">
                         <div style="text-align:center; padding:12px; font-size:0.75rem; color:#777;">جاري تحميل الأعضاء...</div>
@@ -791,20 +834,21 @@
                 </div>
             </div>
 
-            <!-- PAGE 2: Control & Daily Goals -->
+            <!-- PAGE 2: Control & Goals (لوحة التحكم مع المحرك الذكي) -->
             <div id="page-control" class="page">
-                <!-- شريحة الرسم التوضيحي مع الدائرة المقسمة الديناميكية -->
+                
+                <!-- شريحة الترحيب والتحفيز الذكية بدون تكرار -->
                 <div class="dashboard-visual-box">
                     <div class="dashboard-visual-info">
-                        <h3>نظام إدارة الإنجاز اليومي</h3>
-                        <p>تابع مؤشرات الأداء وقم بتحديث أهدافك بانتظام</p>
+                        <h3 id="greeting-title">مرحباً بك</h3>
+                        <p id="greeting-msg">جاري تجهيز تقرير أهدافك...</p>
                     </div>
-                    <!-- الدائرة التفاعلية الحقيقية -->
                     <div class="pie-chart-container" id="dynamic-pie-chart">
                         <div class="pie-chart-inner" id="pie-chart-text">0%</div>
                     </div>
                 </div>
 
+                <!-- Stats Grid الإحصائيات -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="num" id="stat-total">0</span>
@@ -824,41 +868,63 @@
                     </div>
                 </div>
 
+                <!-- Add Goal Form -->
                 <div class="card">
-                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-chart-line"></i> مؤشر الالتزام</div></div>
-                    <div class="progress-box">
-                        <div class="streak-badge" id="streak-counter">متابعة مستمرة للأهداف اليومية</div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700;">
-                            <span>معدل اكتمال المهام</span>
-                            <span id="progress-percent">0%</span>
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-plus-circle"></i> إضافة هدف أو عادة جديدة</div></div>
+                    <div style="display: flex; gap: 4px; margin-bottom: 5px;">
+                        <input type="text" id="goal-input" class="form-control" placeholder="عنوان الهدف أو العادة..." style="flex: 2;">
+                        
+                        <!-- Custom Dropdown 1: الفترة (العادات في المقدمة) -->
+                        <div class="custom-dropdown-box" style="flex: 1.2;">
+                            <div class="custom-dropdown-btn" id="dd-period-btn" onclick="toggleCustomDropdown('dd-period-menu')">
+                                <span id="dd-period-val">عادة يومية 🔄</span>
+                                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:#888;"></i>
+                            </div>
+                            <div class="custom-dropdown-menu" id="dd-period-menu">
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('period', 'habit', 'عادة يومية 🔄')">عادة يومية 🔄</div>
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('period', 'daily', 'يومي')">يومي</div>
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('period', 'weekly', 'أسبوعي')">أسبوعي</div>
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('period', 'monthly', 'شهري')">شهري</div>
+                            </div>
                         </div>
-                        <div class="progress-bar-bg">
-                            <div id="progress-bar" class="progress-bar-fill"></div>
+
+                        <!-- Custom Dropdown 2: النوع -->
+                        <div class="custom-dropdown-box" style="flex: 0.9;">
+                            <div class="custom-dropdown-btn" id="dd-type-btn" onclick="toggleCustomDropdown('dd-type-menu')">
+                                <span id="dd-type-val">YLY</span>
+                                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:#888;"></i>
+                            </div>
+                            <div class="custom-dropdown-menu" id="dd-type-menu">
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('type', 'yly', 'YLY')">YLY</div>
+                                <div class="custom-dropdown-item" onclick="selectCustomDropdown('type', 'personal', 'شخصي')">شخصي</div>
+                            </div>
                         </div>
                     </div>
+                    <button class="btn-main" onclick="addGoal()">حفظ</button>
                 </div>
 
+                <!-- جدول عرض الأهداف مع زر السجل الهادئ -->
                 <div class="card">
-                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-plus-circle"></i> إضافة هدف جديد</div></div>
-                    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                        <input type="text" id="goal-input" class="form-control" placeholder="عنوان الهدف..." style="flex: 2;">
-                        <select id="goal-type" class="form-control" style="flex: 1;">
-                            <option value="yly">YLY</option>
-                            <option value="personal">شخصي</option>
-                        </select>
+                    <div class="card-title">
+                        <div class="card-title-text"><i class="fa-solid fa-list-check"></i> جدول الأهداف والعادات</div>
+                        <button class="records-btn-calm" onclick="openRecordsModal()"><i class="fa-solid fa-table-list"></i> عرض السجل</button>
                     </div>
-                    <button class="btn-main" onclick="addGoal()" style="height: 32px;">حفظ الهدف</button>
-                </div>
+                    
+                    <!-- أزرار الفلترة: العادات في المقدمة -->
+                    <div class="period-tabs">
+                        <div class="period-tab active" onclick="switchPeriodFilter('habit', this)">عاداتي 🔄</div>
+                        <div class="period-tab" onclick="switchPeriodFilter('daily', this)">يومية</div>
+                        <div class="period-tab" onclick="switchPeriodFilter('weekly', this)">أسبوعية</div>
+                        <div class="period-tab" onclick="switchPeriodFilter('monthly', this)">شهرية</div>
+                    </div>
 
-                <div class="card">
-                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-list-check"></i> جدول أهدافي المسجلة</div></div>
                     <div class="goals-grid">
                         <div class="goal-column">
-                            <h4>أهداف YLY</h4>
+                            <h4 id="col-title-yly">عادات YLY</h4>
                             <div id="yly-goals-container"></div>
                         </div>
                         <div class="goal-column">
-                            <h4>أهداف شخصية</h4>
+                            <h4 id="col-title-personal">عادات شخصية</h4>
                             <div id="personal-goals-container"></div>
                         </div>
                     </div>
@@ -877,9 +943,10 @@
 
             <!-- PAGE 4: Honor Roll -->
             <div id="page-leaderboard" class="page">
+                <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789067710/zolgppjb1s4f4nlxfzhw.jpg" class="main-cover-banner" alt="YLY Leaderboard Banner">
+
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-trophy"></i> لوحة الشرف</div></div>
-                    <!-- أزرار الفلترة مع مسافة مريحة تفصلها عن أول بطاقة -->
                     <div class="leaderboard-tabs">
                         <div class="tab active" onclick="switchLeaderboardTab(this)">شهري</div>
                         <div class="tab" onclick="switchLeaderboardTab(this)">أسبوعي</div>
@@ -921,8 +988,8 @@
                             <span class="data-val" id="view-email">...</span>
                         </div>
                         <div class="data-display-row">
-                            <span class="data-label">كلمة المرور:</span>
-                            <span class="data-val">••••••••</span>
+                            <span class="data-label">إجمالي النقاط المكتسبة:</span>
+                            <span class="data-val" id="view-points" style="color: var(--success);">0 نقطة</span>
                         </div>
                     </div>
 
@@ -951,7 +1018,7 @@
                 <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
             </div>
 
-            <!-- PAGE 6: Public Profile (صفحة فرعية) -->
+            <!-- PAGE 6: Public Profile -->
             <div id="page-public-profile" class="page">
                 <div class="card profile-head">
                     <div class="profile-img-box">
@@ -963,17 +1030,61 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-bullseye"></i> الأهداف المسجلة للعضو</div></div>
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-bullseye"></i> الأهداف والعادات المسجلة</div></div>
+                    
+                    <div class="period-tabs">
+                        <div class="period-tab active" onclick="switchPublicPeriodFilter('habit', this)">العادات 🔄</div>
+                        <div class="period-tab" onclick="switchPublicPeriodFilter('daily', this)">يومية</div>
+                        <div class="period-tab" onclick="switchPublicPeriodFilter('weekly', this)">أسبوعية</div>
+                        <div class="period-tab" onclick="switchPublicPeriodFilter('monthly', this)">شهرية</div>
+                    </div>
+
                     <div class="goals-grid">
                         <div class="goal-column">
-                            <h4>أهداف YLY</h4>
+                            <h4 id="pub-col-title-yly">عادات YLY</h4>
                             <div id="public-yly-container"></div>
                         </div>
                         <div class="goal-column">
-                            <h4>أهداف شخصية</h4>
+                            <h4 id="pub-col-title-personal">عادات شخصية</h4>
                             <div id="public-personal-container"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- PAGE 7: Records / Log Page (بدون الحاوية المكررة) -->
+            <div id="page-records" class="page">
+                <!-- شريط البحث المطور المنسوخ من صفحة الآدمن -->
+                <div class="search-outer-box">
+                    <div class="search-inner-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="records-search-input" placeholder="بحث في الأهداف والعادات..." oninput="filterRecordsTable()">
+                    </div>
+                </div>
+
+                <!-- أزرار الفلترة بالسجل (العادات في المقدمة) -->
+                <div class="period-tabs">
+                    <div class="period-tab active" onclick="switchRecordsFilter('all', this)">الكل</div>
+                    <div class="period-tab" onclick="switchRecordsFilter('habit', this)">العادات</div>
+                    <div class="period-tab" onclick="switchRecordsFilter('daily', this)">يومية</div>
+                    <div class="period-tab" onclick="switchRecordsFilter('weekly', this)">أسبوعية</div>
+                    <div class="period-tab" onclick="switchRecordsFilter('monthly', this)">شهرية</div>
+                </div>
+
+                <!-- الجدول المنظم من 3 أعمدة -->
+                <div class="card" style="overflow-x: auto;">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>الهدف / العادة</th>
+                                <th>تاريخ الإضافة</th>
+                                <th>تاريخ التنفيذ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table-body">
+                            <!-- توليد ديناميكي -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -990,7 +1101,7 @@
     </div>
 
     <script>
-        // --- 1. Firebase & Cloudinary Config ---
+        // --- 1. Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyAinjc2LH9gpwdZ1-000_y5Ggsv2WgJYLA",
             authDomain: "goals-yly.firebaseapp.com",
@@ -1011,13 +1122,19 @@
         let currentUser = null;
         let currentUserData = {};
         let myGoals = [];
+        let publicUserGoals = [];
         let isProfileEditExpanded = false;
         let regAvatarFile = null;
-
-        // متغير يحفظ التبويب الأساسي النشط ليعود إليه زر الرجوع
         let currentActiveTab = 'home';
+        
+        // العادات في البداية كخيار افتراضي
+        let currentPeriodFilter = 'habit';
+        let publicPeriodFilter = 'habit';
+        let recordsFilter = 'all';
 
-        // --- Toast System ---
+        let selectedGoalPeriod = 'habit';
+        let selectedGoalType = 'yly';
+
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -1025,7 +1142,6 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // --- Image Viewer Functions ---
         function openImageViewer(src) {
             if (!src || src.includes('placeholder')) return;
             document.getElementById('image-viewer-img').src = src;
@@ -1035,7 +1151,59 @@
             document.getElementById('image-viewer-modal').style.display = 'none';
         }
 
-        // --- Auth Tabs Switching ---
+        // --- Custom Dropdown Handlers ---
+        function toggleCustomDropdown(menuId) {
+            const menu = document.getElementById(menuId);
+            const isShown = menu.style.display === 'block';
+            document.querySelectorAll('.custom-dropdown-menu').forEach(m => m.style.display = 'none');
+            menu.style.display = isShown ? 'none' : 'block';
+        }
+
+        function selectCustomDropdown(kind, val, text) {
+            if (kind === 'period') {
+                selectedGoalPeriod = val;
+                document.getElementById('dd-period-val').innerText = text;
+            } else if (kind === 'type') {
+                selectedGoalType = val;
+                document.getElementById('dd-type-val').innerText = text;
+            }
+            document.querySelectorAll('.custom-dropdown-menu').forEach(m => m.style.display = 'none');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-dropdown-box')) {
+                document.querySelectorAll('.custom-dropdown-menu').forEach(m => m.style.display = 'none');
+            }
+        });
+
+        // --- Dates Logic ---
+        function getTodayDateStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function getCurrentWeekStr() {
+            const d = new Date();
+            const startOfYear = new Date(d.getFullYear(), 0, 1);
+            const pastDaysOfYear = (d - startOfYear) / 86400000;
+            const weekNum = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+            return `${d.getFullYear()}-W${weekNum}`;
+        }
+
+        function getCurrentMonthStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function updateLiveHeaderDate() {
+            const d = new Date();
+            const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+            const formatted = `${d.getDate()} ${months[d.getMonth()]}`;
+            document.getElementById('current-live-date').innerText = formatted;
+        }
+        updateLiveHeaderDate();
+
+        // --- Auth System ---
         function switchAuthTab(type) {
             document.getElementById('tab-login-btn').classList.toggle('active', type === 'login');
             document.getElementById('tab-register-btn').classList.toggle('active', type === 'register');
@@ -1043,7 +1211,6 @@
             document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
         }
 
-        // --- Register Avatar Preview ---
         function previewRegisterAvatar(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1060,7 +1227,6 @@
             }
         }
 
-        // --- Auth Listeners ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
@@ -1074,7 +1240,6 @@
             }
         });
 
-        // --- Registration Logic ---
         async function handleEmailRegister(e) {
             e.preventDefault();
             const name = document.getElementById('reg-name').value.trim();
@@ -1088,7 +1253,6 @@
             if (pass !== confirmPass) return showToast("كلمات المرور غير متطابقة", true);
 
             showToast("جاري إنشاء الحساب...");
-
             let photoURL = "https://via.placeholder.com/70";
 
             if (regAvatarFile) {
@@ -1119,7 +1283,6 @@
                 .catch(err => showToast(err.message, true));
         }
 
-        // --- Login Logic ---
         function handleEmailLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -1129,25 +1292,6 @@
                 .catch(err => showToast("البريد أو كلمة السر غير صحيحة", true));
         }
 
-        // --- Google Sign In ---
-        function handleGoogleSignIn() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then(res => {
-                    const u = res.user;
-                    return db.collection('users').doc(u.uid).set({
-                        fullName: u.displayName || "مستخدم جديد",
-                        email: u.email,
-                        phone: u.phoneNumber || "غير مسجل",
-                        photoURL: u.photoURL || "https://via.placeholder.com/70",
-                        points: 0,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
-                })
-                .catch(err => showToast("فشل الدخول بواسطة Google", true));
-        }
-
-        // --- Load Current User Profile & Goals ---
         function loadUserData() {
             if (!currentUser) return;
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
@@ -1158,7 +1302,10 @@
                     document.getElementById('view-name').innerText = currentUserData.fullName || "غير محدد";
                     document.getElementById('view-phone').innerText = currentUserData.phone || "غير مسجل";
                     document.getElementById('view-email').innerText = currentUserData.email || "";
+                    document.getElementById('view-points').innerText = `${currentUserData.points || 0} نقطة`;
                     if (currentUserData.photoURL) document.getElementById('user-avatar').src = currentUserData.photoURL;
+                    
+                    updateSmartGreeting();
                 }
             });
 
@@ -1166,10 +1313,12 @@
                 myGoals = [];
                 snap.forEach(doc => myGoals.push({ id: doc.id, ...doc.data() }));
                 renderGoals();
+                if (document.getElementById('page-records').classList.contains('active')) {
+                    renderRecordsTable();
+                }
             });
         }
 
-        // --- Inline Expand/Collapse Profile Edit ---
         function toggleProfileEdit() {
             isProfileEditExpanded = !isProfileEditExpanded;
             const viewSec = document.getElementById('profile-view-section');
@@ -1190,7 +1339,6 @@
             }
         }
 
-        // --- Save Unified Profile ---
         function saveUnifiedProfile(e) {
             e.preventDefault();
             const name = document.getElementById('inline-edit-name').value.trim();
@@ -1219,14 +1367,12 @@
             }).catch(() => showToast("حدث خطأ أثناء الحفظ", true));
         }
 
-        // --- Navigation System (التنقل بين التبويبات الأساسية - لا يظهر زر الرجوع إطلاقاً) ---
         function navigateTab(tabId) {
             currentActiveTab = tabId;
 
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + tabId).classList.add('active');
 
-            // تحديث الشريط السفلي
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             const targetNav = document.querySelector(`.nav-link[onclick*="${tabId}"]`);
             if (targetNav) targetNav.classList.add('active');
@@ -1242,12 +1388,247 @@
             document.getElementById('header-title').innerText = titles[tabId].t;
             document.getElementById('header-subtitle').innerText = titles[tabId].s;
 
-            // إخفاء زر الرجوع وإظهار شريط التنقل السفلي دوماً في التبويبات الرئيسية
             document.getElementById('btn-back').style.display = 'none';
             document.getElementById('bottom-nav-bar').style.display = 'flex';
         }
 
-        // --- الدخول لصفحة فرعية (مثل بروفايل العضو - هنا فقط يظهر زر الرجوع) ---
+        function goBack() {
+            navigateTab(currentActiveTab);
+        }
+
+        function updateSmartGreeting() {
+            const hour = new Date().getHours();
+            const isMorning = hour >= 4 && hour < 12;
+            const timeWord = isMorning ? "صباح الخير" : "مساء الخير";
+            const firstName = currentUserData.fullName ? currentUserData.fullName.split(" ")[0] : "يا بطل";
+
+            const dailyItems = myGoals.filter(g => g.period === 'daily' || !g.period);
+            const totalDaily = dailyItems.length;
+            const completedDaily = dailyItems.filter(g => g.completed).length;
+            const percent = totalDaily > 0 ? Math.round((completedDaily / totalDaily) * 100) : 0;
+
+            let desc = "";
+            if (totalDaily === 0) {
+                desc = "لم تقم بإضافة أهداف يومية بعد، ابدأ يومك بإضافة أهدافك الآن.";
+            } else if (percent === 0) {
+                desc = "للأسف لم تقم بتنفيذ أهدافك اليومية بعد، لا تيأس واستمر في التطوير!";
+            } else if (percent === 100) {
+                desc = "عمل بطولي ورائع! حققت 100% من أهدافك اليومية بنجاح، استمر في الصدارة!";
+            } else {
+                desc = `عملاً رائعاً! لقد حققت ${percent}٪ من أهدافك اليومية، استمر في التطوير!`;
+            }
+
+            document.getElementById('greeting-title').innerText = `${timeWord} يا ${firstName}`;
+            document.getElementById('greeting-msg').innerText = desc;
+        }
+
+        function addGoal() {
+            const title = document.getElementById('goal-input').value.trim();
+            if (!title) return showToast("اكتب عنوان الهدف أو العادة أولاً", true);
+
+            const todayStr = getTodayDateStr();
+            const currentWeek = getCurrentWeekStr();
+            const currentMonth = getCurrentMonthStr();
+
+            db.collection('users').doc(currentUser.uid).collection('goals').add({
+                title: title,
+                period: selectedGoalPeriod,
+                type: selectedGoalType,
+                completed: false,
+                createdDate: todayStr,
+                completedDate: null,
+                completedHabitDates: [],
+                weekCycle: currentWeek,
+                monthCycle: currentMonth,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('goal-input').value = "";
+                showToast("تم الحفظ بنجاح");
+            });
+        }
+
+        // تحديث تبويب الفترات وتغيير عناوين الأعمدة تلقائياً
+        function switchPeriodFilter(period, btn) {
+            currentPeriodFilter = period;
+            document.querySelectorAll('#page-control .period-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            // تغيير العناوين بحسب الفلتر
+            const isHabit = (period === 'habit');
+            document.getElementById('col-title-yly').innerText = isHabit ? 'عادات YLY' : 'أهداف YLY';
+            document.getElementById('col-title-personal').innerText = isHabit ? 'عادات شخصية' : 'أهداف شخصية';
+
+            renderGoals();
+        }
+
+        function isGoalCompletedCurrentCycle(g) {
+            const today = getTodayDateStr();
+            const thisWeek = getCurrentWeekStr();
+            const thisMonth = getCurrentMonthStr();
+
+            if (g.period === 'habit') {
+                return (g.completedHabitDates || []).includes(today);
+            } else if (g.period === 'weekly') {
+                return g.completed && g.weekCycle === thisWeek;
+            } else if (g.period === 'monthly') {
+                return g.completed && g.monthCycle === thisMonth;
+            } else {
+                return !!g.completed;
+            }
+        }
+
+        function renderGoals() {
+            const ylyBox = document.getElementById('yly-goals-container');
+            const personalBox = document.getElementById('personal-goals-container');
+            ylyBox.innerHTML = "";
+            personalBox.innerHTML = "";
+
+            let totalCompletedCount = 0;
+            const activeList = myGoals.filter(g => (g.period || 'daily') === currentPeriodFilter);
+
+            activeList.forEach(g => {
+                const isDone = isGoalCompletedCurrentCycle(g);
+                const item = document.createElement('div');
+                item.className = 'goal-item';
+                item.innerHTML = `
+                    <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleGoalExecution('${g.id}', ${!isDone}, '${g.period || 'daily'}')">
+                    <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                `;
+                if (g.type === 'yly') ylyBox.appendChild(item);
+                else personalBox.appendChild(item);
+            });
+
+            if(ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
+            if(personalBox.innerHTML === "") personalBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
+
+            myGoals.forEach(g => {
+                if (isGoalCompletedCurrentCycle(g)) totalCompletedCount++;
+            });
+
+            const totalCount = myGoals.length;
+            const pendingCount = totalCount - totalCompletedCount;
+            const overallRate = totalCount ? Math.round((totalCompletedCount / totalCount) * 100) : 0;
+
+            document.getElementById('stat-total').innerText = totalCount;
+            document.getElementById('stat-completed').innerText = totalCompletedCount;
+            document.getElementById('stat-pending').innerText = pendingCount;
+            document.getElementById('stat-rate').innerText = overallRate + "%";
+
+            const pieChart = document.getElementById('dynamic-pie-chart');
+            const pieText = document.getElementById('pie-chart-text');
+            if (pieChart && pieText) {
+                pieText.innerText = overallRate + "%";
+                if (totalCount === 0) {
+                    pieChart.style.background = `conic-gradient(#e0e6ed 0% 100%)`;
+                } else {
+                    pieChart.style.background = `conic-gradient(var(--success) 0% ${overallRate}%, var(--dark-orange) ${overallRate}% 100%)`;
+                }
+            }
+
+            updateSmartGreeting();
+        }
+
+        function toggleGoalExecution(goalId, toCompleted, period) {
+            const todayStr = getTodayDateStr();
+            const goalRef = db.collection('users').doc(currentUser.uid).collection('goals').doc(goalId);
+
+            if (period === 'habit') {
+                if (toCompleted) {
+                    goalRef.update({
+                        completedHabitDates: firebase.firestore.FieldValue.arrayUnion(todayStr),
+                        completedDate: todayStr
+                    });
+                } else {
+                    goalRef.update({
+                        completedHabitDates: firebase.firestore.FieldValue.arrayRemove(todayStr),
+                        completedDate: null
+                    });
+                }
+            } else {
+                goalRef.update({
+                    completed: toCompleted,
+                    completedDate: toCompleted ? todayStr : null,
+                    weekCycle: getCurrentWeekStr(),
+                    monthCycle: getCurrentMonthStr()
+                });
+            }
+
+            const pointDiff = toCompleted ? 5 : -5;
+            db.collection('users').doc(currentUser.uid).update({
+                points: firebase.firestore.FieldValue.increment(pointDiff)
+            });
+
+            if (toCompleted) {
+                showToast("أحسنت! تم الإنجاز وحصلت على +5 نقاط 🔥");
+            }
+        }
+
+        // --- سجل الإنجاز والتوثيق ---
+        function openRecordsModal() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-records').classList.add('active');
+
+            document.getElementById('header-title').innerText = 'سجل الإنجاز والتوثيق';
+            document.getElementById('header-subtitle').innerText = 'عرض تفصيلي لتواريخ الإضافة والتنفيذ';
+
+            document.getElementById('btn-back').style.display = 'flex';
+            document.getElementById('bottom-nav-bar').style.display = 'none';
+
+            renderRecordsTable();
+        }
+
+        function switchRecordsFilter(filter, btn) {
+            recordsFilter = filter;
+            document.querySelectorAll('#page-records .period-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            renderRecordsTable();
+        }
+
+        function renderRecordsTable() {
+            const query = (document.getElementById('records-search-input').value || '').trim().toLowerCase();
+            const tbody = document.getElementById('records-table-body');
+            tbody.innerHTML = "";
+
+            let list = myGoals;
+            if (recordsFilter !== 'all') {
+                list = list.filter(g => (g.period || 'daily') === recordsFilter);
+            }
+
+            if (query) {
+                list = list.filter(g => (g.title || '').toLowerCase().includes(query));
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:12px; color:#888;">لا توجد عناصر مطابقة</td></tr>`;
+                return;
+            }
+
+            list.forEach(g => {
+                const tr = document.createElement('tr');
+                const addDate = g.createdDate || "غير مسجل";
+                let doneDate = "—";
+
+                if (g.period === 'habit') {
+                    const count = (g.completedHabitDates || []).length;
+                    doneDate = count > 0 ? `نُفذت ${count} مرة` : "لم تنفذ";
+                } else {
+                    doneDate = g.completedDate || (g.completed ? "مكتمل" : "قيد التنفيذ");
+                }
+
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:var(--dark-blue);">${g.title}</td>
+                    <td style="color:#666;">${addDate}</td>
+                    <td style="color:${doneDate.includes('—') || doneDate.includes('لم') ? '#999' : 'var(--success)'}; font-weight:700;">${doneDate}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterRecordsTable() {
+            renderRecordsTable();
+        }
+
+        // --- بروفايل الزملاء ---
         function openPublicProfile(userId, userData) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-public-profile').classList.add('active');
@@ -1255,11 +1636,9 @@
             document.getElementById('header-title').innerText = 'الملف الشخصي للعضو';
             document.getElementById('header-subtitle').innerText = 'استعراض الإنجازات والأهداف';
 
-            // إظهار زر الرجوع وإخفاء الشريط السفلي
             document.getElementById('btn-back').style.display = 'flex';
             document.getElementById('bottom-nav-bar').style.display = 'none';
 
-            // ملء بيانات العضو
             document.getElementById('public-user-name').innerText = userData.fullName || "عضو";
             document.getElementById('public-user-email').innerText = userData.email || "";
             document.getElementById('public-user-phone').innerText = userData.phone ? "هاتف: " + userData.phone : "";
@@ -1271,118 +1650,59 @@
             perBox.innerHTML = "<div style='font-size:0.68rem; color:#888;'>جاري التحميل...</div>";
 
             db.collection('users').doc(userId).collection('goals').get().then(snap => {
-                ylyBox.innerHTML = "";
-                perBox.innerHTML = "";
-
-                if (snap.empty) {
-                    ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لم يضف أهداف بعد</div>";
-                    perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لم يضف أهداف بعد</div>";
-                    return;
-                }
-
-                snap.forEach(doc => {
-                    const g = doc.data();
-                    const item = document.createElement('div');
-                    item.className = 'goal-item';
-                    
-                    const iconHtml = g.completed 
-                        ? `<i class="fa-solid fa-square-check" style="color: #28a745; font-size: 0.85rem;"></i>`
-                        : `<i class="fa-regular fa-square" style="color: #bbb; font-size: 0.85rem;"></i>`;
-
-                    item.innerHTML = `
-                        ${iconHtml}
-                        <span style="${g.completed ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
-                    `;
-                    if (g.type === 'yly') ylyBox.appendChild(item);
-                    else perBox.appendChild(item);
-                });
-
-                if (ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف</div>";
-                if (perBox.innerHTML === "") perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف</div>";
+                publicUserGoals = [];
+                snap.forEach(d => publicUserGoals.push({ id: d.id, ...d.data() }));
+                renderPublicUserGoals();
             });
         }
 
-        // زر الرجوع يعود دائماً للتبويب الأساسي الذي كان متواجداً فيه
-        function goBack() {
-            navigateTab(currentActiveTab);
+        function switchPublicPeriodFilter(period, btn) {
+            publicPeriodFilter = period;
+            document.querySelectorAll('#page-public-profile .period-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const isHabit = (period === 'habit');
+            document.getElementById('pub-col-title-yly').innerText = isHabit ? 'عادات YLY' : 'أهداف YLY';
+            document.getElementById('pub-col-title-personal').innerText = isHabit ? 'عادات شخصية' : 'أهداف شخصية';
+
+            renderPublicUserGoals();
         }
 
-        // --- Add Goal Logic ---
-        function addGoal() {
-            const title = document.getElementById('goal-input').value.trim();
-            const type = document.getElementById('goal-type').value;
-
-            if (!title) return showToast("اكتب عنوان الهدف أولاً", true);
-
-            db.collection('users').doc(currentUser.uid).collection('goals').add({
-                title: title,
-                type: type,
-                completed: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                document.getElementById('goal-input').value = "";
-                showToast("تمت إضافة الهدف بنجاح");
-            });
-        }
-
-        // --- Render Goals, Stats & Update Dynamic Pie Chart ---
-        function renderGoals() {
-            const ylyBox = document.getElementById('yly-goals-container');
-            const personalBox = document.getElementById('personal-goals-container');
+        function renderPublicUserGoals() {
+            const ylyBox = document.getElementById('public-yly-container');
+            const perBox = document.getElementById('public-personal-container');
             ylyBox.innerHTML = "";
-            personalBox.innerHTML = "";
+            perBox.innerHTML = "";
 
-            let completedCount = 0;
+            const filtered = publicUserGoals.filter(g => (g.period || 'daily') === publicPeriodFilter);
 
-            myGoals.forEach(g => {
-                if (g.completed) completedCount++;
+            if (filtered.length === 0) {
+                ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
+                perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
+                return;
+            }
+
+            filtered.forEach(g => {
+                const isDone = isGoalCompletedCurrentCycle(g);
                 const item = document.createElement('div');
                 item.className = 'goal-item';
+                const iconHtml = isDone 
+                    ? `<i class="fa-solid fa-square-check" style="color: #28a745; font-size: 0.85rem;"></i>`
+                    : `<i class="fa-regular fa-square" style="color: #bbb; font-size: 0.85rem;"></i>`;
+
                 item.innerHTML = `
-                    <input type="checkbox" ${g.completed ? 'checked' : ''} onchange="toggleGoal('${g.id}', ${!g.completed})">
-                    <span style="${g.completed ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                    ${iconHtml}
+                    <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
                 `;
                 if (g.type === 'yly') ylyBox.appendChild(item);
-                else personalBox.appendChild(item);
+                else perBox.appendChild(item);
             });
 
-            if(ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف YLY</div>";
-            if(personalBox.innerHTML === "") personalBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد أهداف شخصية</div>";
-
-            const total = myGoals.length;
-            const pending = total - completedCount;
-            const percent = total ? Math.round((completedCount / total) * 100) : 0;
-
-            // تحديث بطاقات الإحصاء
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-completed').innerText = completedCount;
-            document.getElementById('stat-pending').innerText = pending;
-            document.getElementById('stat-rate').innerText = percent + "%";
-
-            // تحديث شريط التقدم الخطي
-            document.getElementById('progress-percent').innerText = percent + "%";
-            document.getElementById('progress-bar').style.width = percent + "%";
-
-            // تحديث الدائرة المقسمة الديناميكية الحقيقية (أخضر للمكتمل، برتقالي لقيد التنفيذ)
-            const pieChart = document.getElementById('dynamic-pie-chart');
-            const pieText = document.getElementById('pie-chart-text');
-            if (pieChart && pieText) {
-                pieText.innerText = percent + "%";
-                if (total === 0) {
-                    pieChart.style.background = `conic-gradient(#e0e6ed 0% 100%)`;
-                } else {
-                    pieChart.style.background = `conic-gradient(var(--success) 0% ${percent}%, var(--dark-orange) ${percent}% 100%)`;
-                }
-            }
+            if(ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
+            if(perBox.innerHTML === "") perBox.innerHTML = "<div style='font-size:0.68rem; color:#aaa; text-align:center;'>لا توجد عناصر</div>";
         }
 
-        function toggleGoal(id, status) {
-            db.collection('users').doc(currentUser.uid).collection('goals').doc(id).update({
-                completed: status
-            });
-        }
-
-        // --- Shared Goals Members List (الرئيسية) ---
+        // --- Shared Members List & Leaderboard ---
         function loadSharedMembers() {
             db.collection('users').limit(30).onSnapshot(snap => {
                 const list = document.getElementById('shared-goals-list');
@@ -1435,7 +1755,6 @@
             });
         }
 
-        // --- Leaderboard Data ---
         function loadLeaderboard() {
             db.collection('users').orderBy('points', 'desc').limit(15).onSnapshot(snap => {
                 const list = document.getElementById('leaderboard-list');
@@ -1481,7 +1800,6 @@
             });
         }
 
-        // --- Submit Problem ---
         function submitProblem() {
             const text = document.getElementById('problem-input').value.trim();
             if (!text) return showToast("يرجى كتابة تفاصيل المشكلة", true);
@@ -1498,7 +1816,6 @@
             }).catch(() => showToast("فشل في إرسال المشكلة", true));
         }
 
-        // --- Upload Profile Image in Profile page ---
         function uploadProfileImage(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1519,13 +1836,10 @@
                 .catch(() => showToast("فشل رفع الصورة", true));
         }
 
-        // --- Logout ---
-        function handleLogout() {
-            auth.signOut();
-        }
+        function handleLogout() { auth.signOut(); }
 
         function switchLeaderboardTab(el) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#page-leaderboard .tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
         }
     </script>
