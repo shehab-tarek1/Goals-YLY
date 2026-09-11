@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <!-- html2canvas لتوليد بطاقة المشاركة كصورة -->
+    <!-- html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -414,7 +414,7 @@
             color: var(--white);
         }
 
-        /* Stats Grid - 5 أعمدة لتضمين زر المشاركة */
+        /* Stats Grid - ارتفاع مضغوط ومصغر بدقة */
         .stats-grid-5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -423,37 +423,39 @@
         }
         .stat-card-mini {
             background: var(--white);
-            padding: 5px 1px;
-            border-radius: 8px;
+            padding: 3px 1px; /* تم تقليل الارتفاع */
+            border-radius: 6px;
             text-align: center;
             border: var(--silver-border);
             box-shadow: var(--card-shadow);
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .stat-card-mini .num {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 800;
             color: var(--egyptian-blue);
-            display: block;
+            line-height: 1.1;
         }
         .stat-card-mini .label {
-            font-size: 0.55rem;
+            font-size: 0.52rem;
             color: #666;
             font-weight: 600;
+            line-height: 1;
         }
         .stat-card-share {
             background: linear-gradient(135deg, #FE8F01, #e07b00);
             color: var(--white);
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             border: none;
             transition: transform 0.15s;
+            height: 38px;
         }
         .stat-card-share:active { transform: scale(0.95); }
-        .stat-card-share i { font-size: 0.85rem; margin-bottom: 1px; }
-        .stat-card-share span { font-size: 0.58rem; font-weight: 800; }
+        .stat-card-share i { font-size: 0.75rem; margin-bottom: 1px; }
+        .stat-card-share span { font-size: 0.52rem; font-weight: 800; }
 
         /* Custom Dropdown Styling */
         .custom-dropdown-box {
@@ -891,8 +893,6 @@
         <!-- Share Story Modal (نافذة بطاقة المشاركة 1:1) -->
         <div id="share-modal" class="modal-overlay">
             <div class="modal-box" style="background: transparent; box-shadow: none; padding: 0;">
-                
-                <!-- تصميم بطاقة الـ Story المربعة 1:1 -->
                 <div id="share-card-canvas">
                     <div class="share-header">
                         <div style="font-size: 0.7rem; font-weight: 800; color: #cbd5e1;">منصة YLY لتتبع الأهداف</div>
@@ -918,7 +918,7 @@
                         </div>
                         <div class="share-stat-col">
                             <div class="val" id="share-rate-val">0%</div>
-                            <div class="lbl">إنجاز اليوم</div>
+                            <div class="lbl">نسبة الإنجاز</div>
                         </div>
                     </div>
 
@@ -1036,17 +1036,18 @@
             <!-- PAGE 2: Control & Goals -->
             <div id="page-control" class="page">
                 
+                <!-- شريحة الترحيب الذكية المطورة (عادات + أهداف) -->
                 <div class="dashboard-visual-box">
                     <div class="dashboard-visual-info">
                         <h3 id="greeting-title">مرحباً بك</h3>
-                        <p id="greeting-msg">جاري تجهيز تقرير أهدافك...</p>
+                        <p id="greeting-msg">جاري تجهيز تقرير إنجازاتك...</p>
                     </div>
                     <div class="pie-chart-container" id="dynamic-pie-chart">
                         <div class="pie-chart-inner" id="pie-chart-text">0%</div>
                     </div>
                 </div>
 
-                <!-- Stats Grid 5 أعمدة متناسقة تشمل زر المشاركة -->
+                <!-- Stats Grid 5 أعمدة مصغرة ومضغوطة الارتفاع -->
                 <div class="stats-grid-5">
                     <div class="stat-card-mini">
                         <span class="num" id="stat-total">0</span>
@@ -1128,7 +1129,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 3: Support / Problems (مع سجل طلبات الدعم) -->
+            <!-- PAGE 3: Support / Problems (مع سجل طلبات الدعم السريع بدون تعليق) -->
             <div id="page-support" class="page">
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-headset"></i> الإبلاغ عن مشكلة</div></div>
@@ -1224,7 +1225,7 @@
                 <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
             </div>
 
-            <!-- PAGE 6: Public Profile -->
+            <!-- PAGE 6: Public Profile (مع عرض الرتبة بدقة) -->
             <div id="page-public-profile" class="page">
                 <div class="card profile-head">
                     <div class="profile-img-box">
@@ -1232,6 +1233,7 @@
                     </div>
                     <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
                     <p id="public-user-email" style="font-size: 0.68rem; color: #777;">...</p>
+                    <div id="public-user-rank-box" style="margin-top: 3px;"></div>
                     <p id="public-user-phone" style="font-size: 0.68rem; color: var(--dark-orange); font-weight:700; margin-top:2px;">...</p>
                 </div>
 
@@ -1256,7 +1258,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 7: Records / Log Page (مع زر تصدير Excel) -->
+            <!-- PAGE 7: Records / Log Page -->
             <div id="page-records" class="page">
                 <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
                     <div class="search-outer-box" style="flex: 1; margin-bottom: 0;">
@@ -1403,7 +1405,7 @@
         }
         updateLiveHeaderDate();
 
-        // --- حساب الرتب بناءً على النقاط (ميزة 6) ---
+        // --- حساب الرتب بناءً على النقاط ---
         function getUserRankBadge(points) {
             const p = points || 0;
             if (p >= 600) return { title: 'أسطورة YLY 👑', css: 'badge-legend' };
@@ -1515,7 +1517,6 @@
                     document.getElementById('view-points').innerText = `${currentUserData.points || 0} نقطة`;
                     if (currentUserData.photoURL) document.getElementById('user-avatar').src = currentUserData.photoURL;
                     
-                    // شارة الرتبة في البروفايل
                     const rank = getUserRankBadge(currentUserData.points);
                     document.getElementById('profile-user-rank-badge').innerHTML = `<span class="rank-badge-tag ${rank.css}">${rank.title}</span>`;
 
@@ -1610,27 +1611,34 @@
             navigateTab(currentActiveTab);
         }
 
-        // --- محرك الترحيب الذكي مع منع التكرار وإصلاح التضارب ---
+        // --- محرك الترحيب والنسبة المطور (عادات + أهداف) ---
         function updateSmartGreeting() {
             const hour = new Date().getHours();
             const isMorning = hour >= 4 && hour < 12;
             const timeWord = isMorning ? "صباح الخير" : "مساء الخير";
             const firstName = currentUserData.fullName ? currentUserData.fullName.split(" ")[0] : "يا بطل";
 
-            const dailyItems = myGoals.filter(g => g.period === 'daily');
-            const totalDaily = dailyItems.length;
-            const completedDaily = dailyItems.filter(g => isGoalCompletedCurrentCycle(g)).length;
-            const percent = totalDaily > 0 ? Math.round((completedDaily / totalDaily) * 100) : 0;
+            // حساب نسبة العادات اليوم
+            const habits = myGoals.filter(g => g.period === 'habit');
+            const totalHabits = habits.length;
+            const completedHabits = habits.filter(g => isGoalCompletedCurrentCycle(g)).length;
+            const habitRate = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
+
+            // حساب نسبة الأهداف كلها
+            const goalsOnly = myGoals.filter(g => g.period !== 'habit');
+            const totalGoals = goalsOnly.length;
+            const completedGoals = goalsOnly.filter(g => isGoalCompletedCurrentCycle(g)).length;
+            const goalRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
             let desc = "";
-            if (totalDaily === 0) {
-                desc = "لم تقم بإضافة أهداف يومية بعد، ابدأ بإضافة أهداف اليوم.";
-            } else if (percent === 0) {
-                desc = "للأسف لم تقم بتنفيذ أهدافك اليومية بعد، لا تيأس واستمر في التطوير!";
-            } else if (percent === 100) {
-                desc = "عمل بطولي ورائع! حققت 100% من أهدافك اليومية بنجاح، استمر في الصدارة!";
+            if (myGoals.length === 0) {
+                desc = "لم تقم بإضافة عادات أو أهداف بعد، ابدأ بتسجيل مهامك اليوم.";
+            } else if (habitRate === 100 && goalRate === 100) {
+                desc = "إنجاز أسطوري واستثنائي! أتممت جميع عاداتك وأهدافك بالكامل، أنت في القمة!";
+            } else if (habitRate === 0 && goalRate === 0) {
+                desc = "لم تبدأ بعد في إنجاز عاداتك أو أهدافك، خطوة صغيرة تصنع فارقاً كبيراً، ابدأ الآن!";
             } else {
-                desc = `عملاً رائعاً! لقد حققت ${percent}٪ من أهدافك اليومية، استمر في التطوير!`;
+                desc = `لقد حققت ${habitRate}٪ من عاداتك و ${goalRate}٪ من أهدافك، استمر في التطوير!`;
             }
 
             document.getElementById('greeting-title').innerText = `${timeWord} يا ${firstName}`;
@@ -1678,7 +1686,6 @@
             renderGoals();
         }
 
-        // دالة موحدة ودقيقة لفحص إتمام الهدف/العادة
         function isGoalCompletedCurrentCycle(g) {
             const today = getTodayDateStr();
             const thisWeek = getCurrentWeekStr();
@@ -1695,7 +1702,6 @@
             }
         }
 
-        // --- عرض الأهداف وتقسيمها وإتاحة التعديل والحذف (ميزة 5) ---
         function renderGoals() {
             const ylyBox = document.getElementById('yly-goals-container');
             const personalBox = document.getElementById('personal-goals-container');
@@ -1722,7 +1728,6 @@
                 renderSubPartitionedGoals(myGoals, personalBox, 'personal');
             }
 
-            // الإحصائيات الشاملة الصحيحة
             myGoals.forEach(g => {
                 if (isGoalCompletedCurrentCycle(g)) totalCompletedCount++;
             });
@@ -1780,7 +1785,6 @@
             }
         }
 
-        // إنشاء عنصر الهدف مع أزرار التعديل والحذف
         function createGoalDomItem(g, isDone) {
             const item = document.createElement('div');
             item.className = 'goal-item';
@@ -1795,7 +1799,6 @@
             return item;
         }
 
-        // تعديل وحذف الهدف
         function editGoalPrompt(id, oldTitle) {
             const newTitle = prompt("تعديل نص الهدف أو العادة:", oldTitle);
             if (newTitle && newTitle.trim() && newTitle.trim() !== oldTitle) {
@@ -1812,7 +1815,6 @@
             }
         }
 
-        // --- تنفيذ الهدف ومنح/خصم النقاط بدقة ---
         function toggleGoalExecution(goalId, toCompleted, period) {
             const todayStr = getTodayDateStr();
             const goalRef = db.collection('users').doc(currentUser.uid).collection('goals').doc(goalId);
@@ -1918,7 +1920,6 @@
             renderRecordsTable();
         }
 
-        // --- تصدير السجل إلى ملف Excel / CSV (ميزة 9) ---
         function exportRecordsToCSV() {
             if (myGoals.length === 0) return showToast("لا توجد بيانات لتصديرها", true);
 
@@ -1947,15 +1948,13 @@
             showToast("تم تحميل التقرير بنجاح");
         }
 
-        // --- نظام توليد وتحميل بطاقة المشاركة 1:1 (ميزة 3) ---
+        // --- نظام توليد بطاقة المشاركة بدقة فائقة HD 3x ---
         function openShareModal() {
             if (!currentUserData.fullName) return showToast("جاري تحميل بياناتك...");
 
             const total = myGoals.length;
             const completed = myGoals.filter(g => isGoalCompletedCurrentCycle(g)).length;
-            const dailyItems = myGoals.filter(g => g.period === 'daily');
-            const dailyComp = dailyItems.filter(g => isGoalCompletedCurrentCycle(g)).length;
-            const rate = dailyItems.length ? Math.round((dailyComp / dailyItems.length) * 100) : 0;
+            const rate = total ? Math.round((completed / total) * 100) : 0;
 
             document.getElementById('share-user-name').innerText = currentUserData.fullName || "عضو YLY";
             document.getElementById('share-points-val').innerText = currentUserData.points || 0;
@@ -1976,23 +1975,25 @@
         }
 
         function downloadShareCard() {
-            showToast("جاري تحضير بطاقتك...");
+            showToast("جاري تحضير بطاقتك بدقة عالية...");
             const cardElement = document.getElementById('share-card-canvas');
 
+            // scale: 3 لتصدير صورة بدقة وضوح خرافية Retina HD
             html2canvas(cardElement, {
-                scale: 2,
+                scale: 3,
                 useCORS: true,
+                logging: false,
                 backgroundColor: null
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `YLY_Achievement_${currentUserData.fullName || 'User'}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
-                showToast("تم تنزيل بطاقة الإنجاز بنجاح 🚀");
+                showToast("تم تنزيل بطاقة الإنجاز بدقة فائقة 🚀");
             }).catch(() => showToast("تعذر تحميل البطاقة", true));
         }
 
-        // --- بروفايل الزملاء ---
+        // --- بروفايل الزملاء وعرض الرتبة الملونة ---
         function openPublicProfile(userId, userData) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-public-profile').classList.add('active');
@@ -2007,6 +2008,10 @@
             document.getElementById('public-user-email').innerText = userData.email || "";
             document.getElementById('public-user-phone').innerText = userData.phone ? "هاتف: " + userData.phone : "";
             document.getElementById('public-user-avatar').src = userData.photoURL || 'https://via.placeholder.com/70';
+
+            // عرض الرتبة في بروفايل الزميل
+            const pRank = getUserRankBadge(userData.points);
+            document.getElementById('public-user-rank-box').innerHTML = `<span class="rank-badge-tag ${pRank.css}">${pRank.title}</span>`;
 
             const ylyBox = document.getElementById('public-yly-container');
             const perBox = document.getElementById('public-personal-container');
@@ -2103,9 +2108,10 @@
             return item;
         }
 
-        // --- سجل طلبات الدعم الخاص بالمستخدم ---
+        // --- سجل طلبات الدعم المحدث (حل مشكلة التعليق على جاري التحميل) ---
         function loadUserSupportHistory() {
-            db.collection('problems').where('userId', '==', currentUser.uid).orderBy('timestamp', 'desc').onSnapshot(snap => {
+            // الاستعلام بدون orderBy لتجنب الحاجة لفهرس مركب، ثم الترتيب محلياً
+            db.collection('problems').where('userId', '==', currentUser.uid).onSnapshot(snap => {
                 const box = document.getElementById('user-support-history');
                 box.innerHTML = "";
 
@@ -2114,8 +2120,19 @@
                     return;
                 }
 
+                let problemsList = [];
                 snap.forEach(doc => {
-                    const p = doc.data();
+                    problemsList.push({ id: doc.id, ...doc.data() });
+                });
+
+                // ترتيب البلاغات من الأحدث للأقدم عبر التاريخ
+                problemsList.sort((a, b) => {
+                    const timeA = a.timestamp ? (a.timestamp.seconds || 0) : 0;
+                    const timeB = b.timestamp ? (b.timestamp.seconds || 0) : 0;
+                    return timeB - timeA;
+                });
+
+                problemsList.forEach(p => {
                     let dateStr = "حديث";
                     if (p.timestamp && p.timestamp.toDate) {
                         const d = p.timestamp.toDate();
@@ -2136,6 +2153,8 @@
                     `;
                     box.appendChild(item);
                 });
+            }, err => {
+                document.getElementById('user-support-history').innerHTML = "<div style='text-align:center; padding:10px; font-size:0.75rem; color:#888;'>لا توجد بلاغات مسجلة.</div>";
             });
         }
 
