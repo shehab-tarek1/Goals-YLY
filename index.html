@@ -12,6 +12,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- html2canvas لتوليد بطاقة المشاركة كصورة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
@@ -293,7 +295,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* الغلاف بارتفاع 195px */
         .main-cover-banner {
             width: 100%;
             height: 195px;
@@ -369,19 +370,6 @@
             font-weight: 700;
         }
 
-        /* Rank Badge Style */
-        .user-level-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            border-radius: 12px;
-            font-size: 0.58rem;
-            font-weight: 800;
-            background: #f1f5f9;
-            border: 0.5px solid #cbd5e1;
-            color: var(--dark-blue);
-            margin-right: 4px;
-        }
-
         /* Dashboard Visual Greeting Box */
         .dashboard-visual-box {
             background: linear-gradient(135deg, #1034A8, #0A2270);
@@ -426,141 +414,264 @@
             color: var(--white);
         }
 
-        /* Stats Grid */
-        .stats-grid {
+        /* Stats Grid - 5 أعمدة لتضمين زر المشاركة */
+        .stats-grid-5 {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
             margin-bottom: 8px;
         }
-        .stat-card {
+        .stat-card-mini {
             background: var(--white);
-            padding: 6px 2px;
+            padding: 5px 1px;
             border-radius: 8px;
             text-align: center;
             border: var(--silver-border);
             box-shadow: var(--card-shadow);
         }
-        .stat-card .num {
-            font-size: 0.9rem;
+        .stat-card-mini .num {
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--egyptian-blue);
             display: block;
         }
-        .stat-card .label {
-            font-size: 0.6rem;
+        .stat-card-mini .label {
+            font-size: 0.55rem;
             color: #666;
             font-weight: 600;
         }
+        .stat-card-share {
+            background: linear-gradient(135deg, #FE8F01, #e07b00);
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: transform 0.15s;
+        }
+        .stat-card-share:active { transform: scale(0.95); }
+        .stat-card-share i { font-size: 0.85rem; margin-bottom: 1px; }
+        .stat-card-share span { font-size: 0.58rem; font-weight: 800; }
 
-        /* Pomodoro Timer Style (الميزة 10) */
-        .pomodoro-box {
-            background: #f8fafc;
-            border: var(--silver-border);
-            border-radius: 10px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
+        /* Custom Dropdown Styling */
+        .custom-dropdown-box {
+            position: relative;
+            flex: 1;
+        }
+        .custom-dropdown-btn {
+            width: 100%;
+            height: 30px;
+            background: var(--white);
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 0.64rem;
+            font-weight: 700;
+            color: #333;
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-        .pomodoro-info h4 { font-size: 0.75rem; font-weight: 800; color: var(--dark-blue); }
-        .pomodoro-info span { font-size: 0.62rem; color: #64748b; }
-        .pomodoro-clock { font-size: 1.15rem; font-weight: 800; color: var(--dark-orange); font-family: monospace; }
-        .pomodoro-controls { display: flex; gap: 4px; }
-        .pomo-btn {
-            background: var(--egyptian-blue); color: white; border: none; border-radius: 6px;
-            padding: 3px 8px; font-size: 0.65rem; cursor: pointer; font-weight: 700;
-        }
-
-        /* Custom Dropdown Styling */
-        .custom-dropdown-box { position: relative; flex: 1; }
-        .custom-dropdown-btn {
-            width: 100%; height: 30px; background: var(--white); border: 1px solid #dcdfe6;
-            border-radius: 6px; font-size: 0.64rem; font-weight: 700; color: #333;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5px; cursor: pointer; white-space: nowrap;
+            padding: 0 5px;
+            cursor: pointer;
+            white-space: nowrap;
         }
         .custom-dropdown-menu {
-            position: absolute; top: 34px; right: 0; left: 0; background: var(--white);
-            border: var(--silver-border); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-            z-index: 100; display: none; overflow: hidden;
+            position: absolute;
+            top: 34px;
+            right: 0;
+            left: 0;
+            background: var(--white);
+            border: var(--silver-border);
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
         }
         .custom-dropdown-item {
-            padding: 6px 8px; font-size: 0.68rem; font-weight: 600; color: #444;
-            cursor: pointer; transition: 0.15s; white-space: nowrap;
+            padding: 6px 8px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #444;
+            cursor: pointer;
+            transition: 0.15s;
+            white-space: nowrap;
         }
-        .custom-dropdown-item:hover { background: #eef4ff; color: var(--egyptian-blue); }
+        .custom-dropdown-item:hover {
+            background: #eef4ff;
+            color: var(--egyptian-blue);
+        }
 
         /* Period Tabs: زران فقط */
         .period-tabs-duo {
-            display: flex; gap: 6px; margin-bottom: 8px; background: #e2e8f0;
-            padding: 3px; border-radius: 8px;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            background: #e2e8f0;
+            padding: 3px;
+            border-radius: 8px;
         }
         .period-tab-duo {
-            flex: 1; text-align: center; padding: 5px 4px; font-size: 0.72rem;
-            font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; transition: 0.2s;
+            flex: 1;
+            text-align: center;
+            padding: 5px 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .period-tab-duo.active { background: var(--egyptian-blue); color: var(--white); }
+        .period-tab-duo.active {
+            background: var(--egyptian-blue);
+            color: var(--white);
+        }
 
         .sub-section-title {
-            font-size: 0.65rem; font-weight: 800; color: var(--egyptian-blue);
-            margin: 6px 0 3px 0; padding-bottom: 2px; border-bottom: 1.5px dashed #cbd5e1;
-            display: flex; align-items: center; gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--egyptian-blue);
+            margin: 6px 0 3px 0;
+            padding-bottom: 2px;
+            border-bottom: 1.5px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* Goals Dual Column */
-        .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
-        .goal-column { background: #f9fafe; border-radius: 8px; padding: 6px; border: 1px solid #eaedf5; }
+        /* Goals Dual Column & Item Actions */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .goal-column {
+            background: #f9fafe;
+            border-radius: 8px;
+            padding: 6px;
+            border: 1px solid #eaedf5;
+        }
         .goal-column h4 {
-            font-size: 0.72rem; color: var(--dark-blue); margin-bottom: 4px;
-            text-align: center; border-bottom: 1.5px solid var(--dark-orange); padding-bottom: 2px;
+            font-size: 0.72rem;
+            color: var(--dark-blue);
+            margin-bottom: 4px;
+            text-align: center;
+            border-bottom: 1.5px solid var(--dark-orange);
+            padding-bottom: 2px;
         }
         .goal-item {
-            font-size: 0.68rem; background: var(--white); padding: 5px 6px;
-            border-radius: 5px; margin-bottom: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            display: flex; align-items: center; gap: 5px;
+            font-size: 0.68rem;
+            background: var(--white);
+            padding: 5px 6px;
+            border-radius: 5px;
+            margin-bottom: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+        .goal-actions {
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .goal-action-icon {
+            font-size: 0.65rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.15s;
+        }
+        .goal-action-icon:hover { color: var(--egyptian-blue); }
+        .goal-action-icon.del:hover { color: #dc2626; }
+
+        /* Badge الرتبة */
+        .rank-badge-tag {
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .badge-bronze { background: #fed7aa; color: #9a3412; }
+        .badge-silver { background: #e2e8f0; color: #334155; }
+        .badge-gold { background: #fef08a; color: #854d0e; }
+        .badge-legend { background: linear-gradient(135deg, #FE8F01, #b45309); color: #fff; }
 
         /* Member Card */
         .member-card {
-            display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-            border-radius: 10px; margin-bottom: 6px; background: var(--white);
-            border: var(--silver-border); box-shadow: var(--card-shadow); cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: var(--white);
+            border: var(--silver-border);
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
             transition: transform 0.15s ease;
         }
         .member-card:hover { transform: translateY(-1px); }
         .member-avatar {
-            width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--egyptian-blue); cursor: pointer; flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--egyptian-blue);
+            cursor: pointer;
+            flex-shrink: 0;
         }
         .member-details-col { flex: 1; }
         .member-row-top { display: flex; justify-content: space-between; align-items: center; }
-        .member-name { font-size: 0.78rem; font-weight: 700; color: var(--dark-blue); display: flex; align-items: center; gap: 4px; }
+        .member-name { font-size: 0.78rem; font-weight: 700; color: var(--dark-blue); }
         .member-date { font-size: 0.62rem; color: #888; font-weight: 600; }
         .member-row-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
         .member-action-hint { font-size: 0.65rem; color: #666; }
         .member-stats-info { font-size: 0.62rem; color: var(--egyptian-blue); font-weight: 700; }
 
         /* Leaderboard */
-        .leaderboard-tabs { display: flex; gap: 5px; margin-bottom: 14px; }
+        .leaderboard-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 14px;
+        }
         .leaderboard-card {
-            display: flex; align-items: center; gap: 8px; padding: 7px 10px;
-            border-radius: 10px; margin-bottom: 6px; background: var(--white);
-            border: var(--silver-border); box-shadow: var(--card-shadow); cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: var(--white);
+            border: var(--silver-border);
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
         }
         .rank-circle-badge {
-            width: 24px; height: 24px; border-radius: 50%;
-            background: linear-gradient(135deg, #FFDF00, #D4AF37); color: var(--white);
-            display: flex; align-items: center; justify-content: center; font-size: 0.72rem;
-            font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFDF00, #D4AF37);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            flex-shrink: 0;
         }
         .rank-secondary { background: linear-gradient(135deg, #c0c0c0, #999999); }
         .rank-bronze { background: linear-gradient(135deg, #cd7f32, #a05a2c); }
         .rank-regular { background: linear-gradient(135deg, var(--dark-orange), #e07b00); }
 
         .lb-center { flex: 1; }
-        .lb-name { font-size: 0.78rem; font-weight: 700; color: #222; display: flex; align-items: center; gap: 4px; }
+        .lb-name { font-size: 0.78rem; font-weight: 700; color: #222; }
         .lb-points { font-size: 0.65rem; color: #666; }
         .lb-left { text-align: left; }
         .lb-left-label { font-size: 0.6rem; color: #888; font-weight: 600; }
@@ -578,8 +689,13 @@
         }
 
         .data-display-row {
-            display: flex; justify-content: flex-start; gap: 12px; align-items: center;
-            padding: 6px 0; border-bottom: 1px dashed #e4e7ed; font-size: 0.75rem;
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed #e4e7ed;
+            font-size: 0.75rem;
         }
         .data-display-row:last-child { border-bottom: none; }
         .data-label { color: #64748b; font-weight: 700; min-width: 105px; }
@@ -587,40 +703,142 @@
 
         #profile-edit-section { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #eef2f7; }
 
-        /* شريط البحث المطور */
+        /* شريط البحث */
         .search-outer-box {
-            background: #e2e8f0; padding: 4px; border-radius: 25px;
-            margin-bottom: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 25px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
         }
         .search-inner-box {
-            background: var(--white); border-radius: 20px; display: flex;
-            align-items: center; padding: 0 12px; height: 32px; border: var(--silver-border);
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 32px;
+            border: var(--silver-border);
         }
-        .search-inner-box input { flex: 1; border: none; outline: none; font-size: 0.72rem; background: transparent; }
+        .search-inner-box input {
+            flex: 1; border: none; outline: none; font-size: 0.72rem; background: transparent;
+        }
         .search-inner-box i { color: #888; font-size: 0.8rem; margin-left: 6px; }
 
+        /* أزرار الفلترة بالسجل */
         .records-filter-tabs {
-            display: flex; gap: 4px; margin-bottom: 8px; background: #e2e8f0;
-            padding: 3px; border-radius: 8px;
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            background: #e2e8f0;
+            padding: 3px;
+            border-radius: 8px;
         }
         .records-filter-tab {
-            flex: 1; text-align: center; padding: 4px 2px; font-size: 0.65rem;
-            font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; transition: 0.2s;
+            flex: 1;
+            text-align: center;
+            padding: 4px 2px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #475569;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .records-filter-tab.active { background: var(--egyptian-blue); color: var(--white); }
+        .records-filter-tab.active {
+            background: var(--egyptian-blue);
+            color: var(--white);
+        }
 
-        .records-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; text-align: right; margin-top: 2px; }
-        .records-table th { background: #f1f5f9; padding: 6px; color: var(--dark-blue); border-bottom: 2px solid #e2e8f0; font-weight: 700; }
-        .records-table td { padding: 6px; border-bottom: 1px solid #e2e8f0; color: #333; }
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.68rem;
+            text-align: right;
+            margin-top: 2px;
+        }
+        .records-table th {
+            background: #f1f5f9;
+            padding: 6px;
+            color: var(--dark-blue);
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 700;
+        }
+        .records-table td {
+            padding: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #333;
+        }
 
-        /* سجل طلبات الدعم داخل صفحة الدعم */
+        /* سجل الدعم */
         .support-history-item {
-            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
-            padding: 8px; margin-bottom: 6px; font-size: 0.7rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.72rem;
         }
-        .support-history-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .support-badge-pending { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 6px; font-weight: 700; font-size: 0.6rem; }
-        .support-badge-solved { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 6px; font-weight: 700; font-size: 0.6rem; }
+        .support-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .support-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .badge-pending { background: #fef08a; color: #854d0e; }
+        .badge-resolved { background: #bbf7d0; color: #166534; }
+
+        /* بطاقة المشاركة 1:1 */
+        #share-card-canvas {
+            width: 310px;
+            height: 310px;
+            background: linear-gradient(145deg, #0A2270, #1034A8);
+            border-radius: 16px;
+            padding: 16px;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1.5px solid rgba(255,255,255,0.2);
+            margin: 0 auto;
+        }
+        .share-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .share-header img { width: 34px; height: 34px; object-fit: contain; }
+        .share-user-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .share-user-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dark-orange);
+        }
+        .share-stats-row {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+        .share-stat-col { text-align: center; }
+        .share-stat-col .val { font-size: 0.95rem; font-weight: 800; color: var(--dark-orange); }
+        .share-stat-col .lbl { font-size: 0.58rem; opacity: 0.85; }
 
         /* Floating Bottom Nav */
         .bottom-nav {
@@ -636,6 +854,7 @@
         .nav-link i { font-size: 1.05rem; }
         .nav-link.active { color: var(--egyptian-blue); font-weight: 700; }
 
+        /* Floating WhatsApp Button */
         .whatsapp-float {
             position: absolute; bottom: 68px; left: 12px; width: 38px; height: 38px;
             background: #25D366; color: var(--white); border-radius: 50%; display: flex;
@@ -643,6 +862,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1001; text-decoration: none;
         }
 
+        /* Image Viewer Modal */
         #image-viewer-modal {
             position: absolute; inset: 0; background: rgba(0,0,0,0.92);
             z-index: 3000; display: none; align-items: center; justify-content: center;
@@ -668,14 +888,48 @@
             <img id="image-viewer-img" src="" alt="عرض الصورة" onclick="event.stopPropagation()">
         </div>
 
-        <!-- Shareable Story Card Modal (الميزة 3) -->
-        <div id="story-modal" class="modal-overlay">
-            <div class="modal-box" style="padding: 12px;">
-                <h3 style="font-size: 0.88rem; color: var(--egyptian-blue); margin-bottom: 8px;">بطاقة قصة الإنجاز 📸</h3>
-                <canvas id="story-canvas" width="360" height="500" style="width: 100%; border-radius: 12px; box-shadow: var(--card-shadow);"></canvas>
-                <div style="display: flex; gap: 6px; margin-top: 8px;">
-                    <button class="btn-main" style="margin-top:0;" onclick="downloadStoryImage()"><i class="fa-solid fa-download"></i> حفظ كصورة</button>
-                    <button class="btn-secondary" style="margin-top:0;" onclick="closeStoryModal()">إغلاق</button>
+        <!-- Share Story Modal (نافذة بطاقة المشاركة 1:1) -->
+        <div id="share-modal" class="modal-overlay">
+            <div class="modal-box" style="background: transparent; box-shadow: none; padding: 0;">
+                
+                <!-- تصميم بطاقة الـ Story المربعة 1:1 -->
+                <div id="share-card-canvas">
+                    <div class="share-header">
+                        <div style="font-size: 0.7rem; font-weight: 800; color: #cbd5e1;">منصة YLY لتتبع الأهداف</div>
+                        <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" alt="YLY">
+                    </div>
+
+                    <div class="share-user-block">
+                        <img id="share-avatar-img" src="https://via.placeholder.com/70" class="share-user-avatar" alt="Avatar">
+                        <div>
+                            <div id="share-user-name" style="font-size: 0.88rem; font-weight: 800;">اسم العضو</div>
+                            <div id="share-rank-badge" class="rank-badge-tag badge-gold" style="margin-top: 3px;">بطل YLY</div>
+                        </div>
+                    </div>
+
+                    <div class="share-stats-row">
+                        <div class="share-stat-col">
+                            <div class="val" id="share-points-val">0</div>
+                            <div class="lbl">إجمالي النقاط</div>
+                        </div>
+                        <div class="share-stat-col">
+                            <div class="val" id="share-completed-val">0</div>
+                            <div class="lbl">المهام المنجزة</div>
+                        </div>
+                        <div class="share-stat-col">
+                            <div class="val" id="share-rate-val">0%</div>
+                            <div class="lbl">إنجاز اليوم</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; font-size: 0.58rem; color: #94a3b8;">
+                        #YLY_Goals #Youth_Leaders #تطوير_مستمر
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 12px; width: 310px; margin-left: auto; margin-right: auto;">
+                    <button class="btn-main" onclick="downloadShareCard()" style="flex: 2; margin: 0; background: var(--dark-orange);"><i class="fa-solid fa-download"></i> تحميل كصورة</button>
+                    <button class="btn-secondary" onclick="closeShareModal()" style="flex: 1; margin: 0;">إغلاق</button>
                 </div>
             </div>
         </div>
@@ -747,7 +1001,6 @@
                 <h1 id="header-title">أهداف الأعضاء</h1>
                 <p id="header-subtitle">استكشف الأهداف المشتركة مع زملائك</p>
             </div>
-            <!-- التاريخ الميلادي المصغر -->
             <div class="header-date-badge" id="live-date-badge">
                 <i class="fa-regular fa-calendar-days"></i>
                 <span id="current-live-date">...</span>
@@ -762,7 +1015,7 @@
         <!-- Main Content Area -->
         <div class="main-content">
             
-            <!-- PAGE 1: Home / Shared Goals (الرئيسية) -->
+            <!-- PAGE 1: Home / Shared Goals -->
             <div id="page-home" class="page active">
                 <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789067710/zolgppjb1s4f4nlxfzhw.jpg" class="main-cover-banner" alt="YLY Goals Banner">
 
@@ -780,16 +1033,12 @@
                 </div>
             </div>
 
-            <!-- PAGE 2: Control & Goals (لوحة التحكم مع الـ Streak، Pomodoro ومشاركة الستوري) -->
+            <!-- PAGE 2: Control & Goals -->
             <div id="page-control" class="page">
                 
-                <!-- شريحة الترحيب والتحفيز الذكية مع الـ Streak الحقيقي -->
                 <div class="dashboard-visual-box">
                     <div class="dashboard-visual-info">
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <h3 id="greeting-title">مرحباً بك</h3>
-                            <span id="streak-badge-dynamic" style="background:#fff3e0; color:var(--dark-orange); padding:1px 6px; border-radius:10px; font-size:0.6rem; font-weight:800;">🔥 0 أيام</span>
-                        </div>
+                        <h3 id="greeting-title">مرحباً بك</h3>
                         <p id="greeting-msg">جاري تجهيز تقرير أهدافك...</p>
                     </div>
                     <div class="pie-chart-container" id="dynamic-pie-chart">
@@ -797,36 +1046,27 @@
                     </div>
                 </div>
 
-                <!-- Stats Grid الإحصائيات مع زر مشاركة الستوري -->
-                <div class="stats-grid">
-                    <div class="stat-card">
+                <!-- Stats Grid 5 أعمدة متناسقة تشمل زر المشاركة -->
+                <div class="stats-grid-5">
+                    <div class="stat-card-mini">
                         <span class="num" id="stat-total">0</span>
-                        <span class="label">إجمالي المهام</span>
+                        <span class="label">الإجمالي</span>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card-mini">
                         <span class="num" id="stat-completed" style="color: var(--success);">0</span>
                         <span class="label">المكتملة</span>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card-mini">
                         <span class="num" id="stat-pending" style="color: var(--dark-orange);">0</span>
-                        <span class="label">قيد التنفيذ</span>
+                        <span class="label">المتبقية</span>
                     </div>
-                    <div class="stat-card" style="cursor: pointer;" onclick="openStoryCardModal()">
-                        <span class="num" style="color:var(--dark-orange);"><i class="fa-solid fa-share-nodes"></i></span>
-                        <span class="label">مشاركة الإنجاز</span>
+                    <div class="stat-card-mini">
+                        <span class="num" id="stat-rate">0%</span>
+                        <span class="label">النسبة</span>
                     </div>
-                </div>
-
-                <!-- مؤقت بومودورو للتركيز والإنتاجية (الميزة 10) -->
-                <div class="pomodoro-box">
-                    <div class="pomodoro-info">
-                        <h4>مؤقت بومودورو للتركيز ⏱️</h4>
-                        <span id="pomo-mode-text">25 دقيقة تركيز على أهدافك</span>
-                    </div>
-                    <div class="pomodoro-clock" id="pomo-display">25:00</div>
-                    <div class="pomodoro-controls">
-                        <button class="pomo-btn" id="pomo-toggle-btn" onclick="togglePomodoro()"><i class="fa-solid fa-play"></i></button>
-                        <button class="pomo-btn" style="background:#64748b;" onclick="resetPomodoro()"><i class="fa-solid fa-rotate-right"></i></button>
+                    <div class="stat-card-mini stat-card-share" onclick="openShareModal()" title="مشاركة إنجازاتي">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>مشاركة</span>
                     </div>
                 </div>
 
@@ -899,9 +1139,9 @@
 
                 <!-- سجل بلاغات الدعم السابقة -->
                 <div class="card">
-                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-clock-rotate-left"></i> سجل طلباتي السابقة</div></div>
-                    <div id="user-support-history-container">
-                        <div style="text-align:center; padding:10px; font-size:0.75rem; color:#888;">جاري التحميل...</div>
+                    <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-clock-rotate-left"></i> سجل بلاغاتي السابقة</div></div>
+                    <div id="user-support-history">
+                        <div style="text-align:center; padding:10px; font-size:0.75rem; color:#888;">جاري تحميل البلاغات...</div>
                     </div>
                 </div>
             </div>
@@ -921,7 +1161,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 5: Profile (حسابي مع الرتبة والنقاط) -->
+            <!-- PAGE 5: Profile -->
             <div id="page-profile" class="page">
                 <div class="card" id="profile-unified-card">
                     <div class="profile-head">
@@ -930,11 +1170,9 @@
                             <label for="img-upload-input" class="upload-icon" title="تغيير الصورة"><i class="fa-solid fa-camera"></i></label>
                             <input type="file" id="img-upload-input" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
                         </div>
-                        <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue); display:flex; align-items:center; justify-content:center; gap:4px;">
-                            <span>...</span>
-                            <span id="user-profile-rank-badge" class="user-level-badge">مبتدئ 🥉</span>
-                        </h3>
+                        <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
                         <p id="profile-display-email" style="font-size: 0.68rem; color: #777;">...</p>
+                        <div id="profile-user-rank-badge" style="margin-top: 4px;"></div>
                     </div>
 
                     <div class="card-title" style="margin-top: 6px;">
@@ -954,10 +1192,6 @@
                         <div class="data-display-row">
                             <span class="data-label">البريد الإلكتروني:</span>
                             <span class="data-val" id="view-email">...</span>
-                        </div>
-                        <div class="data-display-row">
-                            <span class="data-label">المستوى والرتبة:</span>
-                            <span class="data-val" id="view-rank-text" style="color:var(--dark-orange);">مبتدئ 🥉</span>
                         </div>
                         <div class="data-display-row">
                             <span class="data-label">إجمالي النقاط:</span>
@@ -996,10 +1230,7 @@
                     <div class="profile-img-box">
                         <img id="public-user-avatar" src="https://via.placeholder.com/70" alt="avatar" onclick="openImageViewer(this.src)">
                     </div>
-                    <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue); display:flex; align-items:center; justify-content:center; gap:4px;">
-                        <span>...</span>
-                        <span id="public-user-rank-badge" class="user-level-badge">مبتدئ 🥉</span>
-                    </h3>
+                    <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
                     <p id="public-user-email" style="font-size: 0.68rem; color: #777;">...</p>
                     <p id="public-user-phone" style="font-size: 0.68rem; color: var(--dark-orange); font-weight:700; margin-top:2px;">...</p>
                 </div>
@@ -1025,19 +1256,16 @@
                 </div>
             </div>
 
-            <!-- PAGE 7: Records / Log Page (مع زر تصدير Excel - الميزة 9) -->
+            <!-- PAGE 7: Records / Log Page (مع زر تصدير Excel) -->
             <div id="page-records" class="page">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <div class="search-outer-box" style="flex:1; margin-bottom:0; margin-left:6px;">
+                <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
+                    <div class="search-outer-box" style="flex: 1; margin-bottom: 0;">
                         <div class="search-inner-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="records-search-input" placeholder="بحث في السجل..." oninput="filterRecordsTable()">
                         </div>
                     </div>
-                    <!-- زر تصدير Excel -->
-                    <button class="records-btn-calm" style="background:#dcfce7; color:#166534; border-color:#86efac;" onclick="exportRecordsToCSV()">
-                        <i class="fa-solid fa-file-excel"></i> تصدير Excel
-                    </button>
+                    <button class="records-btn-calm" onclick="exportRecordsToCSV()" title="تحميل كملف إكسيل"><i class="fa-solid fa-file-excel" style="color: var(--success);"></i> تصدير</button>
                 </div>
 
                 <div class="records-filter-tabs">
@@ -1107,11 +1335,6 @@
         let selectedGoalPeriod = 'habit';
         let selectedGoalType = 'yly';
 
-        // --- Pomodoro Variables (الميزة 10) ---
-        let pomoInterval = null;
-        let pomoSecondsLeft = 25 * 60;
-        let isPomoRunning = false;
-
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -1128,15 +1351,7 @@
             document.getElementById('image-viewer-modal').style.display = 'none';
         }
 
-        // --- نظام حساب الرتب والمستويات (الميزة 6) ---
-        function getUserRankInfo(points = 0) {
-            if (points >= 500) return { title: "أسطورة 👑", color: "#854d0e", bg: "#fef9c3" };
-            if (points >= 200) return { title: "بطل YLY 🥇", color: "#166534", bg: "#dcfce7" };
-            if (points >= 50) return { title: "مثابر 🥈", color: "#1e40af", bg: "#dbeafe" };
-            return { title: "مبتدئ 🥉", color: "#475569", bg: "#f1f5f9" };
-        }
-
-        // --- Custom Dropdown Handlers ---
+        // --- Custom Dropdown ---
         function toggleCustomDropdown(menuId) {
             const menu = document.getElementById(menuId);
             const isShown = menu.style.display === 'block';
@@ -1187,6 +1402,15 @@
             document.getElementById('current-live-date').innerText = formatted;
         }
         updateLiveHeaderDate();
+
+        // --- حساب الرتب بناءً على النقاط (ميزة 6) ---
+        function getUserRankBadge(points) {
+            const p = points || 0;
+            if (p >= 600) return { title: 'أسطورة YLY 👑', css: 'badge-legend' };
+            if (p >= 300) return { title: 'بطل YLY 🥇', css: 'badge-gold' };
+            if (p >= 100) return { title: 'مثابر 🥈', css: 'badge-silver' };
+            return { title: 'مبتدئ 🥉', css: 'badge-bronze' };
+        }
 
         // --- Auth System ---
         function switchAuthTab(type) {
@@ -1283,24 +1507,18 @@
             db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
                 if (doc.exists) {
                     currentUserData = doc.data();
-                    const rank = getUserRankInfo(currentUserData.points || 0);
-
-                    document.getElementById('profile-display-name').querySelector('span:first-child').innerText = currentUserData.fullName || "مستخدم";
+                    document.getElementById('profile-display-name').innerText = currentUserData.fullName || "مستخدم";
                     document.getElementById('profile-display-email').innerText = currentUserData.email || "";
                     document.getElementById('view-name').innerText = currentUserData.fullName || "غير محدد";
                     document.getElementById('view-phone').innerText = currentUserData.phone || "غير مسجل";
                     document.getElementById('view-email').innerText = currentUserData.email || "";
                     document.getElementById('view-points').innerText = `${currentUserData.points || 0} نقطة`;
-
-                    // تحديث بادج الرتبة
-                    const rBadge = document.getElementById('user-profile-rank-badge');
-                    rBadge.innerText = rank.title;
-                    rBadge.style.color = rank.color;
-                    rBadge.style.background = rank.bg;
-                    document.getElementById('view-rank-text').innerText = rank.title;
-
                     if (currentUserData.photoURL) document.getElementById('user-avatar').src = currentUserData.photoURL;
                     
+                    // شارة الرتبة في البروفايل
+                    const rank = getUserRankBadge(currentUserData.points);
+                    document.getElementById('profile-user-rank-badge').innerHTML = `<span class="rank-badge-tag ${rank.css}">${rank.title}</span>`;
+
                     updateSmartGreeting();
                 }
             });
@@ -1309,7 +1527,6 @@
                 myGoals = [];
                 snap.forEach(doc => myGoals.push({ id: doc.id, ...doc.data() }));
                 renderGoals();
-                updateStreakCounter(); // الميزة 2
                 if (document.getElementById('page-records').classList.contains('active')) {
                     renderRecordsTable();
                 }
@@ -1393,45 +1610,27 @@
             navigateTab(currentActiveTab);
         }
 
-        // --- فحص إنجاز الهدف في الدورة الحالية (Single Source of Truth) ---
-        function isGoalCurrentlyDone(g) {
-            const today = getTodayDateStr();
-            const thisWeek = getCurrentWeekStr();
-            const thisMonth = getCurrentMonthStr();
-
-            if (g.period === 'habit') {
-                return (g.completedHabitDates || []).includes(today);
-            } else if (g.period === 'weekly') {
-                return !!g.completed && g.weekCycle === thisWeek;
-            } else if (g.period === 'monthly') {
-                return !!g.completed && g.monthCycle === thisMonth;
-            } else {
-                return !!g.completed;
-            }
-        }
-
-        // --- محرك الترحيب الذكي الخالي من التناقض ---
+        // --- محرك الترحيب الذكي مع منع التكرار وإصلاح التضارب ---
         function updateSmartGreeting() {
             const hour = new Date().getHours();
             const isMorning = hour >= 4 && hour < 12;
             const timeWord = isMorning ? "صباح الخير" : "مساء الخير";
             const firstName = currentUserData.fullName ? currentUserData.fullName.split(" ")[0] : "يا بطل";
 
-            // فحص المهام المقررة لليوم (الأهداف اليومية + العادات)
-            const todayItems = myGoals.filter(g => g.period === 'daily' || g.period === 'habit');
-            const totalToday = todayItems.length;
-            const completedToday = todayItems.filter(g => isGoalCurrentlyDone(g)).length;
-            const percent = totalToday > 0 ? Math.round((completedToday / totalToday) * 100) : 0;
+            const dailyItems = myGoals.filter(g => g.period === 'daily');
+            const totalDaily = dailyItems.length;
+            const completedDaily = dailyItems.filter(g => isGoalCompletedCurrentCycle(g)).length;
+            const percent = totalDaily > 0 ? Math.round((completedDaily / totalDaily) * 100) : 0;
 
             let desc = "";
-            if (totalToday === 0) {
-                desc = "لم تقم بإضافة مهام أو عادات بعد، ابدأ بإضافة خطتك اليومية الآن.";
+            if (totalDaily === 0) {
+                desc = "لم تقم بإضافة أهداف يومية بعد، ابدأ بإضافة أهداف اليوم.";
             } else if (percent === 0) {
-                desc = "للأسف لم تقم بتنفيذ مهامك وعاداتك بعد، لا تيأس واستمر في التطوير!";
+                desc = "للأسف لم تقم بتنفيذ أهدافك اليومية بعد، لا تيأس واستمر في التطوير!";
             } else if (percent === 100) {
-                desc = "عمل بطولي ورائع! حققت 100% من مهامك وعاداتك اليوم بنجاح، استمر في الصدارة!";
+                desc = "عمل بطولي ورائع! حققت 100% من أهدافك اليومية بنجاح، استمر في الصدارة!";
             } else {
-                desc = `عملاً رائعاً! لقد حققت ${percent}٪ من مهامك وعاداتك، استمر في التطوير!`;
+                desc = `عملاً رائعاً! لقد حققت ${percent}٪ من أهدافك اليومية، استمر في التطوير!`;
             }
 
             document.getElementById('greeting-title').innerText = `${timeWord} يا ${firstName}`;
@@ -1479,7 +1678,24 @@
             renderGoals();
         }
 
-        // --- عرض الأهداف وتحديث الإحصائيات الفوري بدون أي لخبطة ---
+        // دالة موحدة ودقيقة لفحص إتمام الهدف/العادة
+        function isGoalCompletedCurrentCycle(g) {
+            const today = getTodayDateStr();
+            const thisWeek = getCurrentWeekStr();
+            const thisMonth = getCurrentMonthStr();
+
+            if (g.period === 'habit') {
+                return (g.completedHabitDates || []).includes(today);
+            } else if (g.period === 'weekly') {
+                return !!g.completed && g.weekCycle === thisWeek;
+            } else if (g.period === 'monthly') {
+                return !!g.completed && g.monthCycle === thisMonth;
+            } else {
+                return !!g.completed;
+            }
+        }
+
+        // --- عرض الأهداف وتقسيمها وإتاحة التعديل والحذف (ميزة 5) ---
         function renderGoals() {
             const ylyBox = document.getElementById('yly-goals-container');
             const personalBox = document.getElementById('personal-goals-container');
@@ -1490,8 +1706,9 @@
 
             if (currentControlView === 'habits') {
                 const habitGoals = myGoals.filter(g => g.period === 'habit');
+                
                 habitGoals.forEach(g => {
-                    const isDone = isGoalCurrentlyDone(g);
+                    const isDone = isGoalCompletedCurrentCycle(g);
                     const item = createGoalDomItem(g, isDone);
                     if (g.type === 'yly') ylyBox.appendChild(item);
                     else personalBox.appendChild(item);
@@ -1499,14 +1716,15 @@
 
                 if (ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.65rem; color:#aaa; text-align:center;'>لا توجد عادات YLY</div>";
                 if (personalBox.innerHTML === "") personalBox.innerHTML = "<div style='font-size:0.65rem; color:#aaa; text-align:center;'>لا توجد عادات شخصية</div>";
+
             } else {
                 renderSubPartitionedGoals(myGoals, ylyBox, 'yly');
                 renderSubPartitionedGoals(myGoals, personalBox, 'personal');
             }
 
-            // الحساب التراكمي الشامل لكافة المهام
+            // الإحصائيات الشاملة الصحيحة
             myGoals.forEach(g => {
-                if (isGoalCurrentlyDone(g)) totalCompletedCount++;
+                if (isGoalCompletedCurrentCycle(g)) totalCompletedCount++;
             });
 
             const totalCount = myGoals.length;
@@ -1518,7 +1736,6 @@
             document.getElementById('stat-pending').innerText = pendingCount;
             document.getElementById('stat-rate').innerText = overallRate + "%";
 
-            // تحديث الدائرة المقسمة اللحظية
             const pieChart = document.getElementById('dynamic-pie-chart');
             const pieText = document.getElementById('pie-chart-text');
             if (pieChart && pieText) {
@@ -1552,7 +1769,7 @@
                     container.appendChild(titleDiv);
 
                     subGoals.forEach(g => {
-                        const isDone = isGoalCurrentlyDone(g);
+                        const isDone = isGoalCompletedCurrentCycle(g);
                         container.appendChild(createGoalDomItem(g, isDone));
                     });
                 }
@@ -1563,41 +1780,41 @@
             }
         }
 
+        // إنشاء عنصر الهدف مع أزرار التعديل والحذف
         function createGoalDomItem(g, isDone) {
             const item = document.createElement('div');
             item.className = 'goal-item';
             item.innerHTML = `
                 <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleGoalExecution('${g.id}', ${!isDone}, '${g.period || 'daily'}')">
                 <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                <div class="goal-actions">
+                    <i class="fa-solid fa-pen-to-square goal-action-icon" title="تعديل" onclick="editGoalPrompt('${g.id}', '${g.title.replace(/'/g, "\\'")}')"></i>
+                    <i class="fa-solid fa-trash-can goal-action-icon del" title="حذف" onclick="deleteGoalPrompt('${g.id}')"></i>
+                </div>
             `;
             return item;
         }
 
-        // تنفيذ الهدف وتحديث البيانات محلياً وفورياً لمنع أي تأخير أو تضارب
+        // تعديل وحذف الهدف
+        function editGoalPrompt(id, oldTitle) {
+            const newTitle = prompt("تعديل نص الهدف أو العادة:", oldTitle);
+            if (newTitle && newTitle.trim() && newTitle.trim() !== oldTitle) {
+                db.collection('users').doc(currentUser.uid).collection('goals').doc(id).update({
+                    title: newTitle.trim()
+                }).then(() => showToast("تم التعديل بنجاح"));
+            }
+        }
+
+        function deleteGoalPrompt(id) {
+            if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
+                db.collection('users').doc(currentUser.uid).collection('goals').doc(id).delete()
+                    .then(() => showToast("تم حذف الهدف"));
+            }
+        }
+
+        // --- تنفيذ الهدف ومنح/خصم النقاط بدقة ---
         function toggleGoalExecution(goalId, toCompleted, period) {
             const todayStr = getTodayDateStr();
-            const goalIndex = myGoals.findIndex(x => x.id === goalId);
-
-            // تحديث محلي فوري
-            if (goalIndex !== -1) {
-                if (period === 'habit') {
-                    myGoals[goalIndex].completedHabitDates = myGoals[goalIndex].completedHabitDates || [];
-                    if (toCompleted) {
-                        if (!myGoals[goalIndex].completedHabitDates.includes(todayStr)) {
-                            myGoals[goalIndex].completedHabitDates.push(todayStr);
-                        }
-                    } else {
-                        myGoals[goalIndex].completedHabitDates = myGoals[goalIndex].completedHabitDates.filter(d => d !== todayStr);
-                    }
-                } else {
-                    myGoals[goalIndex].completed = toCompleted;
-                    myGoals[goalIndex].completedDate = toCompleted ? todayStr : null;
-                }
-            }
-
-            renderGoals(); // إعادة العرض الفوري
-
-            // تحديث Firestore في الخلفية
             const goalRef = db.collection('users').doc(currentUser.uid).collection('goals').doc(goalId);
 
             if (period === 'habit') {
@@ -1631,203 +1848,7 @@
             }
         }
 
-        // --- الميزة 2: حساب الـ Streak الحقيقي للمواظبة ---
-        function updateStreakCounter() {
-            let allDatesSet = new Set();
-            myGoals.forEach(g => {
-                if (g.period === 'habit' && Array.isArray(g.completedHabitDates)) {
-                    g.completedHabitDates.forEach(d => allDatesSet.add(d));
-                }
-            });
-
-            let streak = 0;
-            let checkDate = new Date();
-
-            // فحص الأيام المتتالية للخلف
-            while (true) {
-                const str = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
-                if (allDatesSet.has(str)) {
-                    streak++;
-                    checkDate.setDate(checkDate.getDate() - 1);
-                } else {
-                    // إذا لم يسجل اليوم بعد، نفحص إن كان قد سجل أمس
-                    if (streak === 0) {
-                        checkDate.setDate(checkDate.getDate() - 1);
-                        const yesterdayStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
-                        if (allDatesSet.has(yesterdayStr)) {
-                            streak++;
-                            checkDate.setDate(checkDate.getDate() - 1);
-                            continue;
-                        }
-                    }
-                    break;
-                }
-            }
-
-            document.getElementById('streak-badge-dynamic').innerText = `🔥 ${streak} أيام متواصلة`;
-        }
-
-        // --- الميزة 10: مؤقت بومودورو للتركيز ---
-        function togglePomodoro() {
-            const btn = document.getElementById('pomo-toggle-btn');
-            if (isPomoRunning) {
-                clearInterval(pomoInterval);
-                isPomoRunning = false;
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            } else {
-                isPomoRunning = true;
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-                pomoInterval = setInterval(() => {
-                    if (pomoSecondsLeft > 0) {
-                        pomoSecondsLeft--;
-                        updatePomoDisplay();
-                    } else {
-                        clearInterval(pomoInterval);
-                        isPomoRunning = false;
-                        btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-                        showToast("انتهت جلسة التركيز! خذ استراحة 5 دقائق ☕");
-                        pomoSecondsLeft = 5 * 60;
-                        document.getElementById('pomo-mode-text').innerText = "استراحة 5 دقائق";
-                        updatePomoDisplay();
-                    }
-                }, 1000);
-            }
-        }
-
-        function resetPomodoro() {
-            clearInterval(pomoInterval);
-            isPomoRunning = false;
-            pomoSecondsLeft = 25 * 60;
-            document.getElementById('pomo-toggle-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
-            document.getElementById('pomo-mode-text').innerText = "25 دقيقة تركيز على أهدافك";
-            updatePomoDisplay();
-        }
-
-        function updatePomoDisplay() {
-            const mins = Math.floor(pomoSecondsLeft / 60);
-            const secs = pomoSecondsLeft % 60;
-            document.getElementById('pomo-display').innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
-        // --- الميزة 3: توليد ومشاركة بطاقة الإنجاز كصورة Canvas ---
-        function openStoryCardModal() {
-            const modal = document.getElementById('story-modal');
-            modal.style.display = 'flex';
-
-            const canvas = document.getElementById('story-canvas');
-            const ctx = canvas.getContext('2d');
-
-            // خلفية متدرجة فخمة
-            const grad = ctx.createLinearGradient(0, 0, 360, 500);
-            grad.addColorStop(0, '#0A2270');
-            grad.addColorStop(1, '#1034A8');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 360, 500);
-
-            // أشكال جمالية
-            ctx.fillStyle = "rgba(254, 143, 1, 0.15)";
-            ctx.beginPath();
-            ctx.arc(320, 40, 90, 0, Math.PI * 2);
-            ctx.fill();
-
-            // عنوان المنصة
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 20px Cairo";
-            ctx.textAlign = "center";
-            ctx.fillText("منصة YLY لتتبع الأهداف", 180, 55);
-
-            // اسم المستخدم والرتبة
-            const name = currentUserData.fullName || "بطل YLY";
-            const rank = getUserRankInfo(currentUserData.points || 0);
-
-            ctx.font = "bold 18px Cairo";
-            ctx.fillText(name, 180, 115);
-
-            ctx.fillStyle = "#FE8F01";
-            ctx.font = "14px Cairo";
-            ctx.fillText(rank.title, 180, 140);
-
-            // بطاقة الإنجاز الداخلية
-            ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-            ctx.roundRect(40, 175, 280, 240, 16);
-            ctx.fill();
-
-            // نسبة الإنجاز
-            const rate = document.getElementById('stat-rate').innerText;
-            ctx.fillStyle = "#28a745";
-            ctx.font = "bold 44px Cairo";
-            ctx.fillText(rate, 180, 255);
-
-            ctx.fillStyle = "#e2e8f0";
-            ctx.font = "14px Cairo";
-            ctx.fillText("نسبة المهام المنجزة اليوم", 180, 290);
-
-            // النقاط والمهام
-            const points = currentUserData.points || 0;
-            const completed = document.getElementById('stat-completed').innerText;
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 15px Cairo";
-            ctx.fillText(`🔥 النقاط: ${points} | المكتملة: ${completed}`, 180, 350);
-
-            // تاريخ اليوم
-            ctx.fillStyle = "#94a3b8";
-            ctx.font = "12px Cairo";
-            ctx.fillText(getTodayDateStr(), 180, 390);
-
-            // توقيع بالأسفل
-            ctx.fillStyle = "rgba(255,255,255,0.7)";
-            ctx.font = "11px Cairo";
-            ctx.fillText("استمر في التحدي والتطوير اليومي 🎯", 180, 465);
-        }
-
-        function closeStoryModal() {
-            document.getElementById('story-modal').style.display = 'none';
-        }
-
-        function downloadStoryImage() {
-            const canvas = document.getElementById('story-canvas');
-            const link = document.createElement('a');
-            link.download = `YLY-Achievement-${getTodayDateStr()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            showToast("تم تحميل بطاقة القصة بنجاح 📸");
-        }
-
-        // --- الميزة 9: تصدير السجل كملف Excel / CSV ---
-        function exportRecordsToCSV() {
-            if (!myGoals || myGoals.length === 0) {
-                return showToast("لا توجد بيانات لتصديرها", true);
-            }
-
-            let csvContent = "\uFEFFالهدف أو العادة,النوع,الفترة,تاريخ الإضافة,تاريخ التنفيذ,الحالة\n";
-
-            myGoals.forEach(g => {
-                const title = `"${(g.title || '').replace(/"/g, '""')}"`;
-                const type = g.type === 'yly' ? 'YLY' : 'شخصي';
-                const periodMap = { habit: 'عادة يومية', daily: 'هدف يومي', weekly: 'هدف أسبوعي', monthly: 'هدف شهري' };
-                const period = periodMap[g.period] || 'هدف';
-                const addDate = g.createdDate || '';
-                let doneDate = g.completedDate || '';
-                if (g.period === 'habit') {
-                    doneDate = `نُفذت ${(g.completedHabitDates || []).length} مرة`;
-                }
-                const status = isGoalCurrentlyDone(g) ? 'مكتمل' : 'قيد التنفيذ';
-
-                csvContent += `${title},${type},${period},${addDate},${doneDate},${status}\n`;
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `YLY-Goals-Log-${getTodayDateStr()}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast("تم تصدير ملف Excel بنجاح 📥");
-        }
-
-        // --- السجل والأرشيف ---
+        // --- سجل الإنجاز والتوثيق ---
         function openRecordsModal() {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-records').classList.add('active');
@@ -1847,7 +1868,11 @@
             btn.classList.add('active');
 
             const dynamicTitle = document.getElementById('records-col-dynamic-title');
-            dynamicTitle.innerText = (filter === 'habit') ? 'العادة' : 'الهدف';
+            if (filter === 'habit') {
+                dynamicTitle.innerText = 'العادة';
+            } else {
+                dynamicTitle.innerText = 'الهدف';
+            }
 
             renderRecordsTable();
         }
@@ -1893,58 +1918,78 @@
             renderRecordsTable();
         }
 
-        // --- سجل طلبات الدعم داخل صفحة الدعم ---
-        function loadUserSupportHistory() {
-            if (!currentUser) return;
-            db.collection('problems').where('userId', '==', currentUser.uid).onSnapshot(snap => {
-                const container = document.getElementById('user-support-history-container');
-                container.innerHTML = "";
+        // --- تصدير السجل إلى ملف Excel / CSV (ميزة 9) ---
+        function exportRecordsToCSV() {
+            if (myGoals.length === 0) return showToast("لا توجد بيانات لتصديرها", true);
 
-                if (snap.empty) {
-                    container.innerHTML = "<div style='text-align:center; padding:8px; font-size:0.75rem; color:#888;'>لم تقم بإرسال أي بلاغات سابقة.</div>";
-                    return;
+            let csvContent = "\uFEFFالهدف أو العادة,النوع,الفترة,تاريخ الإضافة,تاريخ التنفيذ\n";
+
+            myGoals.forEach(g => {
+                const pName = g.period === 'habit' ? 'عادة' : (g.period === 'weekly' ? 'أسبوعي' : (g.period === 'monthly' ? 'شهري' : 'يومي'));
+                const tName = g.type === 'yly' ? 'YLY' : 'شخصي';
+                const addDate = g.createdDate || "غير مسجل";
+                let doneDate = g.completedDate || (g.completed ? "مكتمل" : "قيد التنفيذ");
+                if (g.period === 'habit') {
+                    doneDate = `نُفذت ${(g.completedHabitDates || []).length} مرة`;
                 }
 
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    let dateStr = "حديث";
-                    if (p.timestamp && p.timestamp.toDate) {
-                        const d = p.timestamp.toDate();
-                        dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-                    }
-                    const isSolved = p.status === 'Resolved' || p.status === 'تم الحل';
-                    const badge = isSolved 
-                        ? `<span class="support-badge-solved">تم الحل 🟢</span>`
-                        : `<span class="support-badge-pending">قيد المراجعة 🟡</span>`;
-
-                    const item = document.createElement('div');
-                    item.className = 'support-history-item';
-                    item.innerHTML = `
-                        <div class="support-history-head">
-                            <span style="font-size:0.62rem; color:#64748b;">تاريخ الإرسال: ${dateStr}</span>
-                            ${badge}
-                        </div>
-                        <div style="color:#334155; line-height:1.35;">${p.description}</div>
-                    `;
-                    container.appendChild(item);
-                });
+                csvContent += `"${g.title.replace(/"/g, '""')}","${tName}","${pName}","${addDate}","${doneDate}"\n`;
             });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `YLY_Goals_Report_${getTodayDateStr()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("تم تحميل التقرير بنجاح");
         }
 
-        function submitProblem() {
-            const text = document.getElementById('problem-input').value.trim();
-            if (!text) return showToast("يرجى كتابة تفاصيل المشكلة", true);
+        // --- نظام توليد وتحميل بطاقة المشاركة 1:1 (ميزة 3) ---
+        function openShareModal() {
+            if (!currentUserData.fullName) return showToast("جاري تحميل بياناتك...");
 
-            db.collection('problems').add({
-                userId: currentUser.uid,
-                userName: currentUserData.fullName || "مستخدم",
-                description: text,
-                status: "Pending",
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                document.getElementById('problem-input').value = "";
-                showToast("تم إرسال المشكلة للآدمن بنجاح");
-            }).catch(() => showToast("فشل في إرسال المشكلة", true));
+            const total = myGoals.length;
+            const completed = myGoals.filter(g => isGoalCompletedCurrentCycle(g)).length;
+            const dailyItems = myGoals.filter(g => g.period === 'daily');
+            const dailyComp = dailyItems.filter(g => isGoalCompletedCurrentCycle(g)).length;
+            const rate = dailyItems.length ? Math.round((dailyComp / dailyItems.length) * 100) : 0;
+
+            document.getElementById('share-user-name').innerText = currentUserData.fullName || "عضو YLY";
+            document.getElementById('share-points-val').innerText = currentUserData.points || 0;
+            document.getElementById('share-completed-val').innerText = completed;
+            document.getElementById('share-rate-val').innerText = rate + "%";
+            document.getElementById('share-avatar-img').src = currentUserData.photoURL || "https://via.placeholder.com/70";
+
+            const rank = getUserRankBadge(currentUserData.points);
+            const badgeEl = document.getElementById('share-rank-badge');
+            badgeEl.className = `rank-badge-tag ${rank.css}`;
+            badgeEl.innerText = rank.title;
+
+            document.getElementById('share-modal').style.display = 'flex';
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').style.display = 'none';
+        }
+
+        function downloadShareCard() {
+            showToast("جاري تحضير بطاقتك...");
+            const cardElement = document.getElementById('share-card-canvas');
+
+            html2canvas(cardElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `YLY_Achievement_${currentUserData.fullName || 'User'}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                showToast("تم تنزيل بطاقة الإنجاز بنجاح 🚀");
+            }).catch(() => showToast("تعذر تحميل البطاقة", true));
         }
 
         // --- بروفايل الزملاء ---
@@ -1958,14 +2003,7 @@
             document.getElementById('btn-back').style.display = 'flex';
             document.getElementById('bottom-nav-bar').style.display = 'none';
 
-            const rank = getUserRankInfo(userData.points || 0);
-
-            document.getElementById('public-user-name').querySelector('span:first-child').innerText = userData.fullName || "عضو";
-            const pBadge = document.getElementById('public-user-rank-badge');
-            pBadge.innerText = rank.title;
-            pBadge.style.color = rank.color;
-            pBadge.style.background = rank.bg;
-
+            document.getElementById('public-user-name').innerText = userData.fullName || "عضو";
             document.getElementById('public-user-email').innerText = userData.email || "";
             document.getElementById('public-user-phone').innerText = userData.phone ? "هاتف: " + userData.phone : "";
             document.getElementById('public-user-avatar').src = userData.photoURL || 'https://via.placeholder.com/70';
@@ -2007,14 +2045,14 @@
             if (publicControlView === 'habits') {
                 const habitGoals = publicUserGoals.filter(g => g.period === 'habit');
                 habitGoals.forEach(g => {
-                    const isDone = isGoalCurrentlyDone(g);
+                    const isDone = isGoalCompletedCurrentCycle(g);
                     const item = createPublicGoalDomItem(g, isDone);
                     if (g.type === 'yly') ylyBox.appendChild(item);
                     else perBox.appendChild(item);
                 });
 
                 if (ylyBox.innerHTML === "") ylyBox.innerHTML = "<div style='font-size:0.65rem; color:#aaa; text-align:center;'>لا توجد عادات YLY</div>";
-                if (personalBox.innerHTML === "") personalBox.innerHTML = "<div style='font-size:0.65rem; color:#aaa; text-align:center;'>لا توجد عادات شخصية</div>";
+                if (perBox.innerHTML === "") perBox.innerHTML = "<div style='font-size:0.65rem; color:#aaa; text-align:center;'>لا توجد عادات شخصية</div>";
             } else {
                 renderPublicSubPartitionedGoals(publicUserGoals, ylyBox, 'yly');
                 renderPublicSubPartitionedGoals(publicUserGoals, perBox, 'personal');
@@ -2040,7 +2078,7 @@
                     container.appendChild(titleDiv);
 
                     subGoals.forEach(g => {
-                        const isDone = isGoalCurrentlyDone(g);
+                        const isDone = isGoalCompletedCurrentCycle(g);
                         container.appendChild(createPublicGoalDomItem(g, isDone));
                     });
                 }
@@ -2065,6 +2103,58 @@
             return item;
         }
 
+        // --- سجل طلبات الدعم الخاص بالمستخدم ---
+        function loadUserSupportHistory() {
+            db.collection('problems').where('userId', '==', currentUser.uid).orderBy('timestamp', 'desc').onSnapshot(snap => {
+                const box = document.getElementById('user-support-history');
+                box.innerHTML = "";
+
+                if (snap.empty) {
+                    box.innerHTML = "<div style='text-align:center; padding:10px; font-size:0.75rem; color:#888;'>لم تقم بإرسال أي بلاغات سابقة.</div>";
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    let dateStr = "حديث";
+                    if (p.timestamp && p.timestamp.toDate) {
+                        const d = p.timestamp.toDate();
+                        dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+                    }
+                    const isResolved = p.status === 'Resolved';
+                    const badgeClass = isResolved ? 'badge-resolved' : 'badge-pending';
+                    const badgeText = isResolved ? 'تم الحل 🟢' : 'قيد المراجعة 🟡';
+
+                    const item = document.createElement('div');
+                    item.className = 'support-history-item';
+                    item.innerHTML = `
+                        <div class="support-history-header">
+                            <span class="support-badge ${badgeClass}">${badgeText}</span>
+                            <span style="color:#888; font-size:0.65rem;">${dateStr}</span>
+                        </div>
+                        <div style="color:#334155; line-height:1.35;">${p.description}</div>
+                    `;
+                    box.appendChild(item);
+                });
+            });
+        }
+
+        function submitProblem() {
+            const text = document.getElementById('problem-input').value.trim();
+            if (!text) return showToast("يرجى كتابة تفاصيل المشكلة", true);
+
+            db.collection('problems').add({
+                userId: currentUser.uid,
+                userName: currentUserData.fullName || "مستخدم",
+                description: text,
+                status: "Pending",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('problem-input').value = "";
+                showToast("تم إرسال المشكلة للآدمن بنجاح");
+            }).catch(() => showToast("فشل في إرسال المشكلة", true));
+        }
+
         // --- Shared Members List & Leaderboard ---
         function loadSharedMembers() {
             db.collection('users').limit(30).onSnapshot(snap => {
@@ -2076,7 +2166,6 @@
                     if (doc.id === currentUser.uid) return;
                     hasOthers = true;
                     const u = doc.data();
-                    const rank = getUserRankInfo(u.points || 0);
 
                     let joinDate = "جديد";
                     if (u.createdAt && u.createdAt.toDate) {
@@ -2092,10 +2181,7 @@
                         <img src="${u.photoURL || 'https://via.placeholder.com/40'}" class="member-avatar" onclick="event.stopPropagation(); openImageViewer(this.src)">
                         <div class="member-details-col">
                             <div class="member-row-top">
-                                <span class="member-name">
-                                    <span>${u.fullName || 'عضو من YLY'}</span>
-                                    <span class="user-level-badge" style="color:${rank.color}; background:${rank.bg};">${rank.title}</span>
-                                </span>
+                                <span class="member-name">${u.fullName || 'عضو من YLY'}</span>
                                 <span class="member-date">${joinDate}</span>
                             </div>
                             <div class="member-row-bottom">
@@ -2109,7 +2195,7 @@
                     db.collection('users').doc(doc.id).collection('goals').get().then(gSnap => {
                         let comp = 0, pend = 0;
                         gSnap.forEach(gDoc => {
-                            if (isGoalCurrentlyDone(gDoc.data())) comp++; else pend++;
+                            if (isGoalCompletedCurrentCycle(gDoc.data())) comp++; else pend++;
                         });
                         const el = document.getElementById(`stats-user-${doc.id}`);
                         if (el) el.innerText = `المنفذة: ${comp} / قيد التنفيذ: ${pend}`;
@@ -2130,8 +2216,6 @@
 
                 snap.forEach(doc => {
                     const u = doc.data();
-                    const rankInfo = getUserRankInfo(u.points || 0);
-
                     const item = document.createElement('div');
                     item.className = 'leaderboard-card';
                     item.onclick = () => openPublicProfile(doc.id, u);
@@ -2145,10 +2229,7 @@
                         <div class="rank-circle-badge ${badgeClass}">#${rank}</div>
                         <img src="${u.photoURL || 'https://via.placeholder.com/40'}" class="member-avatar" onclick="event.stopPropagation(); openImageViewer(this.src)">
                         <div class="lb-center">
-                            <div class="lb-name">
-                                <span>${u.fullName || 'عضو متألق'}</span>
-                                <span class="user-level-badge" style="color:${rankInfo.color}; background:${rankInfo.bg};">${rankInfo.title}</span>
-                            </div>
+                            <div class="lb-name">${u.fullName || 'عضو متألق'}</div>
                             <div class="lb-points">النقاط: ${u.points || 0}</div>
                         </div>
                         <div class="lb-left">
@@ -2161,7 +2242,7 @@
                     db.collection('users').doc(doc.id).collection('goals').get().then(cSnap => {
                         let count = 0;
                         cSnap.forEach(cd => {
-                            if (isGoalCurrentlyDone(cd.data())) count++;
+                            if (isGoalCompletedCurrentCycle(cd.data())) count++;
                         });
                         const targetEl = document.getElementById(`lb-goals-${doc.id}`);
                         if (targetEl) targetEl.innerText = count;
