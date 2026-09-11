@@ -19,13 +19,14 @@
         :root {
             --egyptian-blue: #1034A8;
             --dark-blue: #0A2270;
-            --dark-orange: #FE8F01;
-            --black: #000000;
+            --slate-blue: #365570;
+            --accent-gold: #F2A51A;
+            --success: #20B486; /* لون الإنجاز المهدئ الجديد */
+            --save-green: #1a966f; /* لون زر الحفظ الوقور */
             --white: #FFFFFF;
-            --bg-gray: #F4F6F9;
-            --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            --bg-gray: #EEF3F8; /* خلفية الصفحات السحابية الناعمة */
+            --card-shadow: 0 4px 16px rgba(16, 52, 168, 0.06);
             --silver-border: 0.75px solid #cbd5e1;
-            --success: #28a745;
         }
 
         * {
@@ -36,10 +37,10 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* خلفية الموقع العامة: تدرج شعاعي فاخر أفتح قليلاً وأكثر إشراقاً */
+        /* خلفية الموقع العامة: تدرج شعاعي هادئ وفاخر */
         body {
-            background: radial-gradient(circle at 50% 25%, #1d4ed8 0%, #1034A8 45%, #071952 100%);
-            color: #222;
+            background: radial-gradient(circle at 50% 20%, #2554c7 0%, #1034A8 40%, #061547 100%);
+            color: #1e293b;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -56,7 +57,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
         }
 
         @media (min-width: 450px) {
@@ -66,7 +67,7 @@
             }
         }
 
-        /* شاشة البداية والتحميل (Diamond Gradient Splash Screen) */
+        /* شاشة البداية */
         #splash-screen {
             position: absolute;
             inset: 0;
@@ -96,8 +97,8 @@
             position: absolute;
             inset: 0;
             border: 3px solid rgba(255, 255, 255, 0.15);
-            border-top: 3px solid var(--dark-orange);
-            border-right: 3px solid #60a5fa;
+            border-top: 3px solid var(--accent-gold);
+            border-right: 3px solid var(--success);
             border-radius: 50%;
             animation: spinSplash 0.9s linear infinite;
         }
@@ -122,12 +123,12 @@
             background: #1e293b;
             color: #f8fafc;
             border: 0.75px solid rgba(255, 255, 255, 0.15);
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.72rem;
             font-weight: 700;
             z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
             transition: transform 0.3s ease;
             text-align: center;
             width: auto;
@@ -156,7 +157,7 @@
             max-width: 350px;
             border-radius: 16px;
             padding: 16px 14px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
         }
 
@@ -179,11 +180,11 @@
 
         .auth-header { margin-bottom: 6px; }
         .auth-header h2 { font-size: 1.1rem; color: var(--egyptian-blue); font-weight: 800; }
-        .auth-header p { font-size: 0.68rem; color: #666; }
+        .auth-header p { font-size: 0.68rem; color: #64748b; }
 
         .auth-toggle {
             display: flex;
-            background: #eef2f7;
+            background: #e2e8f0;
             border-radius: 8px;
             padding: 2px;
             margin-bottom: 8px;
@@ -197,7 +198,7 @@
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
-            color: #555;
+            color: #475569;
             transition: 0.2s;
         }
         .auth-toggle button.active {
@@ -206,12 +207,13 @@
         }
 
         .form-group { margin-bottom: 4px; text-align: right; }
-        .form-group label { display: block; font-size: 0.65rem; font-weight: 700; margin-bottom: 1px; color: #333; }
+        .form-group label { display: block; font-size: 0.65rem; font-weight: 700; margin-bottom: 1px; color: #334155; }
         .form-control {
             width: 100%; height: 30px; padding: 0 8px;
-            border: 1px solid #dcdfe6; border-radius: 6px; font-size: 0.75rem; outline: none;
+            border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.75rem; outline: none;
+            background: #f8fafc;
         }
-        .form-control:focus { border-color: var(--egyptian-blue); }
+        .form-control:focus { border-color: var(--egyptian-blue); background: var(--white); }
 
         .btn-main {
             width: 100%; height: 32px; background: var(--egyptian-blue);
@@ -223,8 +225,14 @@
         .btn-main:active { transform: scale(0.98); }
         .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* زر الحفظ الأخضر الوقور والمهدئ */
+        .btn-save-custom {
+            background: linear-gradient(135deg, #20B486, #168a64) !important;
+            box-shadow: 0 3px 8px rgba(32, 180, 134, 0.28) !important;
+        }
+
         .btn-secondary {
-            width: 100%; height: 32px; background: #e0e6ed; color: #444;
+            width: 100%; height: 32px; background: #e2e8f0; color: #334155;
             border: none; border-radius: 8px; font-weight: 700; font-size: 0.78rem;
             cursor: pointer; margin-top: 5px;
         }
@@ -244,12 +252,13 @@
             color: var(--white);
             padding: 6px 10px;
             border-radius: 0 0 14px 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.14);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             gap: 6px;
             min-height: 42px;
+            transition: background 0.3s ease;
         }
         .header-logo {
             width: 30px; height: 30px; border-radius: 50%; object-fit: contain;
@@ -348,8 +357,8 @@
         }
 
         .records-btn-calm {
-            background: #f1f5f9;
-            color: #1e293b;
+            background: #eef3f8;
+            color: var(--slate-blue);
             border: 1px solid #cbd5e1;
             font-size: 0.68rem;
             padding: 3px 8px;
@@ -367,12 +376,12 @@
         }
 
         .profile-edit-btn-calm {
-            color: var(--egyptian-blue);
+            color: var(--slate-blue);
             cursor: pointer;
             font-size: 0.72rem;
             padding: 2px 8px;
             border-radius: 6px;
-            background: #f1f5f9;
+            background: #eef3f8;
             border: 0.75px solid #cbd5e1;
             display: flex;
             align-items: center;
@@ -382,6 +391,7 @@
         }
         .profile-edit-btn-calm:hover {
             background: #e2e8f0;
+            color: var(--egyptian-blue);
         }
 
         /* Dashboard Greeting Box */
@@ -394,7 +404,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 14px rgba(10,34,112,0.18);
             border: var(--silver-border);
             gap: 6px;
         }
@@ -425,7 +435,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: conic-gradient(var(--success) 0% 0%, var(--dark-orange) 0% 100%);
+            background: conic-gradient(var(--success) 0% 0%, var(--accent-gold) 0% 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -449,14 +459,14 @@
         .stats-section-header {
             font-size: 0.65rem;
             font-weight: 800;
-            color: var(--dark-blue);
+            color: var(--slate-blue);
             margin: 3px 0 2px 0;
             display: inline-block;
-            border-bottom: 1.5px solid var(--dark-orange);
+            border-bottom: 1.5px solid var(--accent-gold);
             padding-bottom: 1px;
         }
 
-        /* Stats Grid سطور العدادات المضغوطة */
+        /* Stats Grid سطور العدادات */
         .stats-grid-5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -464,12 +474,12 @@
             margin-bottom: 4px;
         }
         .stat-card-mini {
-            background: var(--white);
+            background: #f8fafc;
             padding: 1px 1px;
             border-radius: 6px;
             text-align: center;
             border: var(--silver-border);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
             height: 32px;
             display: flex;
             flex-direction: column;
@@ -483,13 +493,12 @@
         }
         .stat-card-mini .label {
             font-size: 0.46rem;
-            color: #666;
+            color: #64748b;
             font-weight: 700;
             line-height: 1;
             margin-top: 1px;
         }
         
-        /* زر المشاركة باللون النيلي الراقي المريح للعين */
         .stat-card-share-sleek {
             background: linear-gradient(135deg, #1034A8, #0A2270);
             color: var(--white);
@@ -505,8 +514,8 @@
         /* Custom Dropdown Styling */
         .custom-dropdown-box { position: relative; flex: 1; }
         .custom-dropdown-btn {
-            width: 100%; height: 30px; background: var(--white); border: 1px solid #dcdfe6;
-            border-radius: 6px; font-size: 0.64rem; font-weight: 700; color: #333;
+            width: 100%; height: 30px; background: #f8fafc; border: 1px solid #cbd5e1;
+            border-radius: 6px; font-size: 0.64rem; font-weight: 700; color: #334155;
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 5px; cursor: pointer; white-space: nowrap;
         }
@@ -521,7 +530,7 @@
         }
         .custom-dropdown-item:hover { background: #eef4ff; color: var(--egyptian-blue); }
 
-        /* Period Tabs: زران فقط */
+        /* Period Tabs */
         .period-tabs-duo {
             display: flex; gap: 6px; margin-bottom: 8px; background: #e2e8f0;
             padding: 3px; border-radius: 8px;
@@ -535,15 +544,15 @@
         /* Goals Dual Column & Item Actions */
         .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
         .goal-column {
-            background: #f9fafe; border-radius: 8px; padding: 6px; border: 1px solid #eaedf5;
+            background: #f8fafc; border-radius: 8px; padding: 6px; border: 1px solid #e2e8f0;
         }
         .goal-column h4 {
             font-size: 0.72rem; color: var(--dark-blue); margin-bottom: 4px;
-            text-align: center; border-bottom: 1.5px solid var(--dark-orange); padding-bottom: 2px;
+            text-align: center; border-bottom: 1.5px solid var(--accent-gold); padding-bottom: 2px;
         }
         .goal-item {
             font-size: 0.68rem; background: var(--white); padding: 5px 6px;
-            border-radius: 5px; margin-bottom: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            border-radius: 5px; margin-bottom: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             display: flex; align-items: center; gap: 5px;
         }
         .goal-actions { margin-right: auto; display: flex; align-items: center; gap: 6px; }
@@ -551,7 +560,7 @@
         .goal-action-icon:hover { color: var(--egyptian-blue); }
         .goal-action-icon.del:hover { color: #dc2626; }
 
-        /* Badge الرتبة */
+        /* Badge الرتبة بالذهبي المحدث */
         .rank-badge-tag {
             font-size: 0.62rem; font-weight: 800; padding: 2px 7px;
             border-radius: 12px; display: inline-flex; align-items: center; gap: 3px;
@@ -559,19 +568,19 @@
         .badge-bronze { background: #fed7aa; color: #9a3412; }
         .badge-silver { background: #e2e8f0; color: #334155; }
         .badge-gold { background: #fef08a; color: #854d0e; }
-        .badge-legend { background: linear-gradient(135deg, #FE8F01, #b45309); color: #fff; }
+        .badge-legend { background: linear-gradient(135deg, var(--accent-gold), #b45309); color: #fff; }
 
-        /* Member Card في الرئيسية: تدرج لوني احترافي يعشقه البصر */
+        /* بطاقة العضو السيلفر الفاخرة (الرئيسية والشرف) */
         .member-card {
             display: flex; align-items: center; gap: 8px; padding: 8px 10px;
             border-radius: 10px; margin-bottom: 6px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: var(--silver-border); box-shadow: var(--card-shadow); cursor: pointer;
+            background: linear-gradient(135deg, #ffffff 0%, #f3f6f9 50%, #e7edf3 100%);
+            border: var(--silver-border); box-shadow: 0 3px 10px rgba(0,0,0,0.04); cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         .member-card:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(16, 52, 168, 0.12);
+            box-shadow: 0 6px 16px rgba(16, 52, 168, 0.10);
         }
         .member-avatar {
             width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
@@ -580,33 +589,34 @@
         .member-details-col { flex: 1; }
         .member-row-top { display: flex; justify-content: space-between; align-items: center; }
         .member-name { font-size: 0.78rem; font-weight: 700; color: var(--dark-blue); }
-        .member-date { font-size: 0.62rem; color: #888; font-weight: 600; }
+        .member-date { font-size: 0.62rem; color: #64748b; font-weight: 600; }
         .member-row-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
-        .member-action-hint { font-size: 0.65rem; color: #666; }
+        .member-action-hint { font-size: 0.65rem; color: #64748b; }
         .member-stats-info { font-size: 0.65rem; color: var(--success); font-weight: 800; }
 
         /* Leaderboard */
         .leaderboard-tabs { display: flex; gap: 5px; margin-bottom: 14px; }
         .leaderboard-card {
             display: flex; align-items: center; gap: 8px; padding: 7px 10px;
-            border-radius: 10px; margin-bottom: 6px; background: var(--white);
-            border: var(--silver-border); box-shadow: var(--card-shadow); cursor: pointer;
+            border-radius: 10px; margin-bottom: 6px;
+            background: linear-gradient(135deg, #ffffff 0%, #f3f6f9 50%, #e7edf3 100%);
+            border: var(--silver-border); box-shadow: 0 3px 10px rgba(0,0,0,0.04); cursor: pointer;
         }
         .rank-circle-badge {
             width: 24px; height: 24px; border-radius: 50%;
-            background: linear-gradient(135deg, #FFDF00, #D4AF37); color: var(--white);
+            background: linear-gradient(135deg, #ffd700, var(--accent-gold)); color: var(--white);
             display: flex; align-items: center; justify-content: center; font-size: 0.72rem;
             font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0;
         }
-        .rank-secondary { background: linear-gradient(135deg, #c0c0c0, #999999); }
+        .rank-secondary { background: linear-gradient(135deg, #c0c0c0, #94a3b8); }
         .rank-bronze { background: linear-gradient(135deg, #cd7f32, #a05a2c); }
-        .rank-regular { background: linear-gradient(135deg, var(--dark-orange), #e07b00); }
+        .rank-regular { background: linear-gradient(135deg, var(--slate-blue), #1e293b); }
 
         .lb-center { flex: 1; }
-        .lb-name { font-size: 0.78rem; font-weight: 700; color: #222; }
-        .lb-points { font-size: 0.65rem; color: #666; }
+        .lb-name { font-size: 0.78rem; font-weight: 700; color: #1e293b; }
+        .lb-points { font-size: 0.65rem; color: #64748b; }
         .lb-left { text-align: left; }
-        .lb-left-label { font-size: 0.6rem; color: #888; font-weight: 600; }
+        .lb-left-label { font-size: 0.6rem; color: #64748b; font-weight: 600; }
         .lb-left-val { font-size: 0.72rem; font-weight: 800; color: var(--success); }
 
         /* Profile Layout */
@@ -614,7 +624,7 @@
         .profile-img-box { position: relative; width: 65px; height: 65px; margin: 0 auto 4px; }
         .profile-img-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--egyptian-blue); cursor: pointer; }
         .upload-icon {
-            position: absolute; bottom: 0; right: 0; background: var(--dark-orange);
+            position: absolute; bottom: 0; right: 0; background: var(--accent-gold);
             color: var(--white); width: 20px; height: 20px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 0.6rem;
             cursor: pointer; border: 1.5px solid var(--white);
@@ -622,13 +632,13 @@
 
         .data-display-row {
             display: flex; justify-content: flex-start; gap: 12px; align-items: center;
-            padding: 6px 0; border-bottom: 1px dashed #e4e7ed; font-size: 0.75rem;
+            padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.75rem;
         }
         .data-display-row:last-child { border-bottom: none; }
         .data-label { color: #64748b; font-weight: 700; min-width: 105px; }
         .data-val { color: var(--dark-blue); font-weight: 700; }
 
-        #profile-edit-section { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #eef2f7; }
+        #profile-edit-section { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #e2e8f0; }
 
         /* شريط البحث */
         .search-outer-box {
@@ -660,7 +670,7 @@
             background: #f1f5f9; padding: 6px; color: var(--dark-blue);
             border-bottom: 2px solid #e2e8f0; font-weight: 700;
         }
-        .records-table td { padding: 6px; border-bottom: 1px solid #e2e8f0; color: #333; }
+        .records-table td { padding: 6px; border-bottom: 1px solid #e2e8f0; color: #334155; }
 
         /* سجل الدعم */
         .support-history-item {
@@ -670,7 +680,7 @@
         .support-history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .support-badge { font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; }
         .badge-pending { background: #fef08a; color: #854d0e; }
-        .badge-resolved { background: #bbf7d0; color: #166534; }
+        .badge-resolved { background: #d1fae5; color: #065f46; }
 
         /* بطاقة المشاركة 1:1 */
         #share-card-canvas {
@@ -682,24 +692,24 @@
         .share-header { display: flex; align-items: center; justify-content: space-between; }
         .share-header img { width: 34px; height: 34px; object-fit: contain; }
         .share-user-block { display: flex; align-items: center; gap: 10px; }
-        .share-user-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--dark-orange); }
+        .share-user-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold); }
         .share-stats-row {
             display: flex; justify-content: space-around; background: rgba(255,255,255,0.1);
             padding: 8px; border-radius: 10px; backdrop-filter: blur(4px);
         }
         .share-stat-col { text-align: center; }
-        .share-stat-col .val { font-size: 0.95rem; font-weight: 800; color: var(--dark-orange); }
+        .share-stat-col .val { font-size: 0.95rem; font-weight: 800; color: var(--accent-gold); }
         .share-stat-col .lbl { font-size: 0.58rem; opacity: 0.85; }
 
         /* Floating Bottom Nav */
         .bottom-nav {
             position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
             width: 92%; height: 50px; background: var(--white); border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15); display: flex;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12); display: flex;
             justify-content: space-around; align-items: center; z-index: 1000;
         }
         .nav-link {
-            color: #888; cursor: pointer; transition: 0.2s; display: flex;
+            color: #64748b; cursor: pointer; transition: 0.2s; display: flex;
             flex-direction: column; align-items: center; font-size: 0.62rem; gap: 2px;
         }
         .nav-link i { font-size: 1.05rem; }
@@ -733,14 +743,14 @@
         #image-viewer-img { max-width: 90%; max-height: 85%; border-radius: 8px; }
         .close-viewer-btn { position: absolute; top: 16px; right: 16px; color: var(--white); font-size: 1.5rem; cursor: pointer; }
 
-        .tab { flex: 1; text-align: center; padding: 5px; font-size: 0.72rem; background: #eef2f7; border-radius: 6px; cursor: pointer; }
+        .tab { flex: 1; text-align: center; padding: 5px; font-size: 0.72rem; background: #e2e8f0; border-radius: 6px; cursor: pointer; color: #475569; }
         .tab.active { background: var(--egyptian-blue); color: var(--white); font-weight: 700; }
         textarea.form-control { height: 60px; padding: 6px 8px; resize: none; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة البداية والتحميل (Diamond Gradient Splash Screen) -->
+    <!-- شاشة البداية -->
     <div id="splash-screen">
         <div class="splash-logo-box">
             <div class="splash-spinner"></div>
@@ -765,7 +775,7 @@
                 <div class="mini-dialog-title"><i class="fa-solid fa-pen-to-square"></i> تعديل النص</div>
                 <input type="text" id="mini-edit-input" class="form-control" style="margin-bottom: 8px; text-align: right;">
                 <div style="display: flex; gap: 6px;">
-                    <button class="btn-main" onclick="confirmMiniEdit()" style="margin: 0; flex: 1;">حفظ</button>
+                    <button class="btn-main btn-save-custom" onclick="confirmMiniEdit()" style="margin: 0; flex: 1;">حفظ</button>
                     <button class="btn-secondary" onclick="closeMiniEdit()" style="margin: 0; flex: 1;">إلغاء</button>
                 </div>
             </div>
@@ -775,7 +785,7 @@
         <div id="mini-delete-modal" class="modal-overlay">
             <div class="mini-dialog-box">
                 <div class="mini-dialog-title" style="color: #b91c1c;"><i class="fa-solid fa-trash-can"></i> تأكيد الحذف</div>
-                <p style="font-size: 0.7rem; color: #555; margin-bottom: 10px;">هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع.</p>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 10px;">هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع.</p>
                 <div style="display: flex; gap: 6px;">
                     <button class="btn-main" onclick="confirmMiniDelete()" style="margin: 0; flex: 1; background: #dc2626;">تأكيد</button>
                     <button class="btn-secondary" onclick="closeMiniDelete()" style="margin: 0; flex: 1;">تراجع</button>
@@ -783,7 +793,7 @@
             </div>
         </div>
 
-        <!-- Share Story Modal (نافذة بطاقة المشاركة 1:1) -->
+        <!-- Share Story Modal (1:1) -->
         <div id="share-modal" class="modal-overlay">
             <div class="modal-box" style="background: transparent; box-shadow: none; padding: 0;">
                 <div id="share-card-canvas">
@@ -821,7 +831,7 @@
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 12px; width: 310px; margin-left: auto; margin-right: auto;">
-                    <button class="btn-main" onclick="downloadShareCard()" style="flex: 2; margin: 0; background: var(--dark-orange);"><i class="fa-solid fa-download"></i> تحميل كصورة</button>
+                    <button class="btn-main" onclick="downloadShareCard()" style="flex: 2; margin: 0; background: var(--accent-gold);"><i class="fa-solid fa-download"></i> تحميل كصورة</button>
                     <button class="btn-secondary" onclick="closeShareModal()" style="flex: 1; margin: 0;">إغلاق</button>
                 </div>
             </div>
@@ -886,8 +896,8 @@
             </div>
         </div>
 
-        <!-- Top Header -->
-        <div class="top-header">
+        <!-- Top Header (يتغير لونه في صفحة البروفايل لسيلت بلوز #365570) -->
+        <div class="top-header" id="main-top-header">
             <button id="btn-back" class="btn-back" onclick="goBack()"><i class="fa-solid fa-arrow-right"></i></button>
             <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" class="header-logo" alt="YLY Logo">
             <div class="top-header-info">
@@ -929,21 +939,19 @@
             <!-- PAGE 2: Control & Goals -->
             <div id="page-control" class="page">
                 
-                <!-- شريحة الترحيب مع الدائرتين التوأم المتطابقتين باللونين -->
+                <!-- شريحة الترحيب التوأم -->
                 <div class="dashboard-visual-box">
                     <div class="dashboard-visual-info">
                         <h3 id="greeting-title">مرحباً بك</h3>
                         <p id="greeting-msg">جاري تجهيز تقرير إنجازاتك...</p>
                     </div>
                     <div class="twin-charts-wrapper">
-                        <!-- دائرة العادات اليومية -->
                         <div class="single-chart-block">
                             <div class="pie-chart-container" id="chart-habits">
                                 <div class="pie-chart-inner" id="text-habits-chart">0%</div>
                             </div>
                             <span class="chart-tag">العادات</span>
                         </div>
-                        <!-- دائرة الأهداف العامة -->
                         <div class="single-chart-block">
                             <div class="pie-chart-container" id="chart-goals">
                                 <div class="pie-chart-inner" id="text-goals-chart">0%</div>
@@ -953,7 +961,7 @@
                     </div>
                 </div>
 
-                <!-- Add Goal/Habit Form -->
+                <!-- Add Goal/Habit Form مع زر الحفظ الأخضر الوقور -->
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-plus-circle"></i> إضافة جديدة</div></div>
                     <div style="display: flex; gap: 4px; margin-bottom: 5px;">
@@ -981,10 +989,10 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn-main" onclick="addGoal()">حفظ</button>
+                    <button class="btn-main btn-save-custom" onclick="addGoal()">حفظ</button>
                 </div>
 
-                <!-- جدول العادات والأهداف بالزرين فقط -->
+                <!-- جدول العادات والأهداف -->
                 <div class="card">
                     <div class="card-title">
                         <div class="card-title-text"><i class="fa-solid fa-list-check"></i> قائمة الإنجاز</div>
@@ -1013,7 +1021,7 @@
             <div id="page-support" class="page">
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-headset"></i> الإبلاغ عن مشكلة</div></div>
-                    <p style="font-size: 0.7rem; color: #666; margin-bottom: 6px;">تصل مشكلتك مباشرة إلى لوحة الآدمن للمتابعة:</p>
+                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px;">تصل مشكلتك مباشرة إلى لوحة الآدمن للمتابعة:</p>
                     <textarea id="problem-input" class="form-control" placeholder="اكتب مشكلتك بالتفصيل هنا..."></textarea>
                     <button class="btn-main" onclick="submitProblem()" style="margin-top: 6px;">إرسال للآدمن</button>
                 </div>
@@ -1041,7 +1049,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 5: Profile (حسابي - بدون تكرار الإيميل + الحاوية المصغرة) -->
+            <!-- PAGE 5: Profile (حسابي) -->
             <div id="page-profile" class="page">
                 <div class="card" id="profile-unified-card">
                     <div class="profile-head">
@@ -1051,7 +1059,6 @@
                             <input type="file" id="img-upload-input" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
                         </div>
                         <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
-                        <!-- تم إلغاء تكرار البريد الإلكتروني هنا -->
                         <div id="profile-user-rank-badge" style="margin-top: 3px;"></div>
                     </div>
 
@@ -1094,7 +1101,7 @@
                                 <input type="password" id="inline-edit-pass" class="form-control" placeholder="******">
                             </div>
                             <div style="display: flex; gap: 6px; margin-top: 8px;">
-                                <button type="submit" class="btn-main" style="margin-top:0;">حفظ التعديلات</button>
+                                <button type="submit" class="btn-main btn-save-custom" style="margin-top:0;">حفظ التعديلات</button>
                                 <button type="button" class="btn-secondary" style="margin-top:0;" onclick="toggleProfileEdit()">إلغاء</button>
                             </div>
                         </form>
@@ -1103,13 +1110,12 @@
 
                 <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
 
-                <!-- بطاقة إحصائياتي المنقولة هنا بعد زر الخروج - مصغرة ومضغوطة -->
+                <!-- بطاقة إحصائياتي المنقولة - مصغرة ومريحة بصرياً -->
                 <div class="card" style="margin-top: 4px; padding: 8px 10px;">
                     <div class="card-title" style="margin-bottom: 4px;">
                         <div class="card-title-text"><i class="fa-solid fa-chart-simple"></i> ملخص إنجازاتي الشاملة</div>
                     </div>
 
-                    <!-- سطر إحصائيات العادات -->
                     <div class="stats-section-header">إحصائيات العادات</div>
                     <div class="stats-grid-5">
                         <div class="stat-card-mini">
@@ -1121,7 +1127,7 @@
                             <span class="label">منفذة اليوم</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-habits-pending" style="color: var(--dark-orange);">0</span>
+                            <span class="num" id="stat-habits-pending" style="color: var(--accent-gold);">0</span>
                             <span class="label">المتبقية</span>
                         </div>
                         <div class="stat-card-mini">
@@ -1134,7 +1140,6 @@
                         </div>
                     </div>
 
-                    <!-- سطر إحصائيات الأهداف -->
                     <div class="stats-section-header" style="margin-top: 4px;">إحصائيات الأهداف</div>
                     <div class="stats-grid-5">
                         <div class="stat-card-mini">
@@ -1146,7 +1151,7 @@
                             <span class="label">المنفذة</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-goals-pending" style="color: var(--dark-orange);">0</span>
+                            <span class="num" id="stat-goals-pending" style="color: var(--accent-gold);">0</span>
                             <span class="label">قيد التنفيذ</span>
                         </div>
                         <div class="stat-card-mini">
@@ -1170,8 +1175,8 @@
                     </div>
                     <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
                     <div id="public-user-rank-box" style="margin: 3px 0;"></div>
-                    <p id="public-user-email" style="font-size: 0.68rem; color: #777;">...</p>
-                    <p id="public-user-phone" style="font-size: 0.68rem; color: var(--dark-orange); font-weight:700; margin-top:2px;">...</p>
+                    <p id="public-user-email" style="font-size: 0.68rem; color: #64748b;">...</p>
+                    <p id="public-user-phone" style="font-size: 0.68rem; color: var(--accent-gold); font-weight:700; margin-top:2px;">...</p>
                 </div>
 
                 <div class="card">
@@ -1275,7 +1280,6 @@
         let currentEditGoalId = null;
         let currentDeleteGoalId = null;
 
-        // إخفاء شاشة البداية سريعاً
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -1419,11 +1423,10 @@
             } else {
                 currentUser = null;
                 document.getElementById('auth-screen').style.display = 'flex';
-                hideSplashScreen(); // إخفاء التحميل إن لم يكن مسجلاً
+                hideSplashScreen();
             }
         });
 
-        // إنشاء حساب مع التحميل الكسول
         async function handleEmailRegister(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-register-submit');
@@ -1439,7 +1442,6 @@
             if (phone.length < 10) return showToast("يرجى إدخال رقم هاتف صحيح", true);
             if (pass !== confirmPass) return showToast("كلمات المرور غير متطابقة", true);
 
-            // تفعيل حالة التحميل الكسول على الزر
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إنشاء الحساب...`;
             btn.disabled = true;
 
@@ -1479,7 +1481,6 @@
                 });
         }
 
-        // تسجيل دخول مع التحميل الكسول
         function handleEmailLogin(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-login-submit');
@@ -1515,7 +1516,7 @@
                     document.getElementById('profile-user-rank-badge').innerHTML = `<span class="rank-badge-tag ${rank.css}">${rank.title}</span>`;
 
                     updateSmartGreeting();
-                    hideSplashScreen(); // إخفاء شاشة البداية بمجرد توفر البيانات الأساسية
+                    hideSplashScreen();
                 }
             });
 
@@ -1577,6 +1578,7 @@
             }).catch(() => showToast("حدث خطأ أثناء الحفظ", true));
         }
 
+        // تحديث لون الهيدر العلوي بذكاء: يصبح #365570 في البروفايل
         function navigateTab(tabId) {
             currentActiveTab = tabId;
 
@@ -1597,6 +1599,14 @@
 
             document.getElementById('header-title').innerText = titles[tabId].t;
             document.getElementById('header-subtitle').innerText = titles[tabId].s;
+
+            // تغيير لون الهيدر العلوي في صفحة البروفايل
+            const header = document.getElementById('main-top-header');
+            if (tabId === 'profile') {
+                header.style.background = 'linear-gradient(135deg, #365570, #1e3a5f)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue))';
+            }
 
             document.getElementById('btn-back').style.display = 'none';
             document.getElementById('bottom-nav-bar').style.display = 'flex';
@@ -1642,7 +1652,7 @@
                 habitsText.innerText = habitRate + "%";
                 habitsChart.style.background = totalHabits === 0 
                     ? `conic-gradient(#e0e6ed 0% 100%)` 
-                    : `conic-gradient(var(--success) 0% ${habitRate}%, var(--dark-orange) ${habitRate}% 100%)`;
+                    : `conic-gradient(var(--success) 0% ${habitRate}%, var(--accent-gold) ${habitRate}% 100%)`;
             }
 
             const goalsChart = document.getElementById('chart-goals');
@@ -1651,7 +1661,7 @@
                 goalsText.innerText = goalRate + "%";
                 goalsChart.style.background = totalGoals === 0 
                     ? `conic-gradient(#e0e6ed 0% 100%)` 
-                    : `conic-gradient(var(--success) 0% ${goalRate}%, var(--dark-orange) ${goalRate}% 100%)`;
+                    : `conic-gradient(var(--success) 0% ${goalRate}%, var(--accent-gold) ${goalRate}% 100%)`;
             }
 
             const elHabitsTotal = document.getElementById('stat-habits-total');
@@ -1838,8 +1848,8 @@
 
                 tr.innerHTML = `
                     <td style="font-weight:700; color:var(--dark-blue);">${g.title}</td>
-                    <td style="color:#666;">${addDate}</td>
-                    <td style="color:${doneDate.includes('—') || doneDate.includes('لم') ? '#999' : 'var(--success)'}; font-weight:700;">${doneDate}</td>
+                    <td style="color:#64748b;">${addDate}</td>
+                    <td style="color:${doneDate.includes('—') || doneDate.includes('لم') ? '#94a3b8' : 'var(--success)'}; font-weight:700;">${doneDate}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1988,19 +1998,19 @@
                 const item = document.createElement('div');
                 item.className = 'goal-item';
                 const iconHtml = isDone 
-                    ? `<i class="fa-solid fa-square-check" style="color: #28a745; font-size: 0.82rem;"></i>`
-                    : `<i class="fa-regular fa-square" style="color: #bbb; font-size: 0.82rem;"></i>`;
+                    ? `<i class="fa-solid fa-square-check" style="color: var(--success); font-size: 0.82rem;"></i>`
+                    : `<i class="fa-regular fa-square" style="color: #cbd5e1; font-size: 0.82rem;"></i>`;
 
                 item.innerHTML = `
                     ${iconHtml}
-                    <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
+                    <span style="${isDone ? 'text-decoration: line-through; color: #94a3b8;' : ''}">${g.title}</span>
                 `;
                 if (g.type === 'yly') ylyBox.appendChild(item);
                 else perBox.appendChild(item);
             });
         }
 
-        // --- سجل طلبات الدعم السريع ---
+        // --- سجل طلبات الدعم ---
         function loadUserSupportHistory() {
             db.collection('problems').where('userId', '==', currentUser.uid).onSnapshot(snap => {
                 const box = document.getElementById('user-support-history');
