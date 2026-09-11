@@ -17,16 +17,19 @@
 
     <style>
         :root {
-            --egyptian-blue: #1034A8;
-            --dark-blue: #0A2270;
-            --slate-blue: #365570;
+            --slate-header: linear-gradient(135deg, #365570, #1e3a5f);
+            --slate-mid: #2c4761;
+            --slate-light: #446584;
+            --dark-blue: #1e3a5f;
+            --egyptian-blue: #365570;
+            --dark-orange: #FE8F01;
             --accent-gold: #F2A51A;
-            --success: #20B486; /* لون الإنجاز المهدئ الجديد */
-            --save-green: #1a966f; /* لون زر الحفظ الوقور */
+            --success: #20B486; /* لون الإنجاز الأخضر المريح */
+            --save-green: #1a966f;
             --white: #FFFFFF;
-            --bg-gray: #EEF3F8; /* خلفية الصفحات السحابية الناعمة */
-            --card-shadow: 0 4px 16px rgba(16, 52, 168, 0.06);
+            --bg-gray: #EEF3F8;
             --silver-border: 0.75px solid #cbd5e1;
+            --card-shadow: 0 4px 16px rgba(30, 58, 95, 0.08);
         }
 
         * {
@@ -37,9 +40,9 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* خلفية الموقع العامة: تدرج شعاعي هادئ وفاخر */
+        /* خلفية الموقع العامة: الدرجة السابقة للوسط من التدرج المعتمد */
         body {
-            background: radial-gradient(circle at 50% 20%, #2554c7 0%, #1034A8 40%, #061547 100%);
+            background: linear-gradient(135deg, #27435f, #1a334d);
             color: #1e293b;
             display: flex;
             justify-content: center;
@@ -67,11 +70,11 @@
             }
         }
 
-        /* شاشة البداية */
+        /* شاشة البداية بنفس تدرج الهيدر المعتمد */
         #splash-screen {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at center, #2563eb 0%, #1034A8 45%, #06174a 100%);
+            background: var(--slate-header);
             z-index: 99999;
             display: flex;
             flex-direction: column;
@@ -138,11 +141,11 @@
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.error { background: #b91c1c; }
 
-        /* Modals */
+        /* شاشة تسجيل الدخول بنفس تدرج الهيدر المعتمد */
         .modal-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(145deg, rgba(10,34,112,0.96), rgba(16,52,168,0.96));
+            background: var(--slate-header);
             z-index: 2000;
             display: none;
             align-items: center;
@@ -179,7 +182,7 @@
         }
 
         .auth-header { margin-bottom: 6px; }
-        .auth-header h2 { font-size: 1.1rem; color: var(--egyptian-blue); font-weight: 800; }
+        .auth-header h2 { font-size: 1.1rem; color: var(--slate-blue); font-weight: 800; }
         .auth-header p { font-size: 0.68rem; color: #64748b; }
 
         .auth-toggle {
@@ -202,7 +205,7 @@
             transition: 0.2s;
         }
         .auth-toggle button.active {
-            background: var(--egyptian-blue);
+            background: var(--dark-blue);
             color: var(--white);
         }
 
@@ -213,19 +216,18 @@
             border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.75rem; outline: none;
             background: #f8fafc;
         }
-        .form-control:focus { border-color: var(--egyptian-blue); background: var(--white); }
+        .form-control:focus { border-color: var(--dark-blue); background: var(--white); }
 
         .btn-main {
-            width: 100%; height: 32px; background: var(--egyptian-blue);
+            width: 100%; height: 32px; background: var(--dark-blue);
             color: var(--white); border: none; border-radius: 8px; font-weight: 700;
             font-size: 0.78rem; cursor: pointer; margin-top: 6px;
-            box-shadow: 0 3px 8px rgba(16, 52, 168, 0.25); transition: 0.2s;
+            box-shadow: 0 3px 8px rgba(30, 58, 95, 0.25); transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 4px;
         }
         .btn-main:active { transform: scale(0.98); }
         .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* زر الحفظ الأخضر الوقور والمهدئ */
         .btn-save-custom {
             background: linear-gradient(135deg, #20B486, #168a64) !important;
             box-shadow: 0 3px 8px rgba(32, 180, 134, 0.28) !important;
@@ -240,25 +242,24 @@
         .reg-avatar-container { margin-bottom: 6px; display: flex; justify-content: center; }
         .reg-avatar-box {
             position: relative; width: 50px; height: 50px; border-radius: 50%;
-            background: #f1f5f9; border: 1.5px dashed var(--egyptian-blue);
+            background: #f1f5f9; border: 1.5px dashed var(--dark-blue);
             display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden;
         }
         .reg-avatar-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .reg-avatar-box i { color: var(--egyptian-blue); font-size: 1.1rem; }
+        .reg-avatar-box i { color: var(--dark-blue); font-size: 1.1rem; }
 
-        /* Top Header */
+        /* Top Header - موحد في كل الموقع بنفس التدرج الفخم */
         .top-header {
-            background: linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue));
+            background: var(--slate-header) !important;
             color: var(--white);
             padding: 6px 10px;
             border-radius: 0 0 14px 14px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.14);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.18);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             gap: 6px;
             min-height: 42px;
-            transition: background 0.3s ease;
         }
         .header-logo {
             width: 30px; height: 30px; border-radius: 50%; object-fit: contain;
@@ -324,7 +325,7 @@
             border: var(--silver-border);
         }
 
-        /* Cards Design */
+        /* Cards Design - درجة وسطى أنيقة */
         .card {
             background: var(--white);
             border-radius: 12px;
@@ -337,7 +338,7 @@
         .card-title {
             font-size: 0.82rem;
             font-weight: 700;
-            color: var(--egyptian-blue);
+            color: var(--dark-blue);
             margin-bottom: 6px;
             display: flex;
             align-items: center;
@@ -372,7 +373,7 @@
         }
         .records-btn-calm:hover {
             background: #e2e8f0;
-            color: var(--egyptian-blue);
+            color: var(--dark-blue);
         }
 
         .profile-edit-btn-calm {
@@ -391,12 +392,12 @@
         }
         .profile-edit-btn-calm:hover {
             background: #e2e8f0;
-            color: var(--egyptian-blue);
+            color: var(--dark-blue);
         }
 
-        /* Dashboard Greeting Box */
+        /* حاوية الترحيب بنفس تدرج الهيدر المعتمد */
         .dashboard-visual-box {
-            background: linear-gradient(135deg, #1034A8, #0A2270);
+            background: var(--slate-header) !important;
             color: var(--white);
             border-radius: 10px;
             padding: 8px 10px;
@@ -404,7 +405,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 14px rgba(10,34,112,0.18);
+            box-shadow: 0 4px 14px rgba(30, 58, 95, 0.22);
             border: var(--silver-border);
             gap: 6px;
         }
@@ -430,23 +431,24 @@
             margin-top: 2px;
         }
 
+        /* الدائرة تعرض فقط لون الإنجاز الأخضر #20B486 والباقي شفاف وفارغ */
         .pie-chart-container {
             position: relative;
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: conic-gradient(var(--success) 0% 0%, var(--accent-gold) 0% 100%);
+            background: conic-gradient(var(--success) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.25);
         }
         .pie-chart-inner {
             width: 28px;
             height: 28px;
-            background: #0A2270;
+            background: #1e3a5f;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -459,14 +461,14 @@
         .stats-section-header {
             font-size: 0.65rem;
             font-weight: 800;
-            color: var(--slate-blue);
+            color: var(--dark-blue);
             margin: 3px 0 2px 0;
             display: inline-block;
             border-bottom: 1.5px solid var(--accent-gold);
             padding-bottom: 1px;
         }
 
-        /* Stats Grid سطور العدادات */
+        /* عدادات الإحصائيات: تأثير مرايا سيلفر شبه شفاف كريستالي خفيف على المعالج */
         .stats-grid-5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -474,12 +476,14 @@
             margin-bottom: 4px;
         }
         .stat-card-mini {
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             padding: 1px 1px;
             border-radius: 6px;
             text-align: center;
-            border: var(--silver-border);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
             height: 32px;
             display: flex;
             flex-direction: column;
@@ -488,22 +492,22 @@
         .stat-card-mini .num {
             font-size: 0.72rem;
             font-weight: 800;
-            color: var(--egyptian-blue);
+            color: #1e3a5f; /* لون موحد */
             line-height: 1;
         }
         .stat-card-mini .label {
             font-size: 0.46rem;
-            color: #64748b;
+            color: #475569;
             font-weight: 700;
             line-height: 1;
             margin-top: 1px;
         }
         
         .stat-card-share-sleek {
-            background: linear-gradient(135deg, #1034A8, #0A2270);
+            background: var(--slate-header);
             color: var(--white);
             cursor: pointer;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.4);
             transition: transform 0.15s;
             height: 32px;
         }
@@ -528,7 +532,7 @@
             padding: 6px 8px; font-size: 0.68rem; font-weight: 600; color: #444;
             cursor: pointer; transition: 0.15s; white-space: nowrap;
         }
-        .custom-dropdown-item:hover { background: #eef4ff; color: var(--egyptian-blue); }
+        .custom-dropdown-item:hover { background: #eef4ff; color: var(--dark-blue); }
 
         /* Period Tabs */
         .period-tabs-duo {
@@ -539,9 +543,9 @@
             flex: 1; text-align: center; padding: 5px 4px; font-size: 0.72rem;
             font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; transition: 0.2s;
         }
-        .period-tab-duo.active { background: var(--egyptian-blue); color: var(--white); }
+        .period-tab-duo.active { background: var(--dark-blue); color: var(--white); }
 
-        /* Goals Dual Column & Item Actions */
+        /* Goals Dual Column */
         .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
         .goal-column {
             background: #f8fafc; border-radius: 8px; padding: 6px; border: 1px solid #e2e8f0;
@@ -555,12 +559,19 @@
             border-radius: 5px; margin-bottom: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             display: flex; align-items: center; gap: 5px;
         }
+        /* تفعيل الهدف يكون باللون الأخضر المريح #20B486 */
+        .goal-checkbox {
+            accent-color: var(--success);
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+        }
         .goal-actions { margin-right: auto; display: flex; align-items: center; gap: 6px; }
         .goal-action-icon { font-size: 0.68rem; cursor: pointer; color: #94a3b8; transition: 0.15s; }
-        .goal-action-icon:hover { color: var(--egyptian-blue); }
+        .goal-action-icon:hover { color: var(--dark-blue); }
         .goal-action-icon.del:hover { color: #dc2626; }
 
-        /* Badge الرتبة بالذهبي المحدث */
+        /* Badge الرتبة */
         .rank-badge-tag {
             font-size: 0.62rem; font-weight: 800; padding: 2px 7px;
             border-radius: 12px; display: inline-flex; align-items: center; gap: 3px;
@@ -570,21 +581,24 @@
         .badge-gold { background: #fef08a; color: #854d0e; }
         .badge-legend { background: linear-gradient(135deg, var(--accent-gold), #b45309); color: #fff; }
 
-        /* بطاقة العضو السيلفر الفاخرة (الرئيسية والشرف) */
+        /* بطاقات الأعضاء: لون موحد سيلفر لامع نصف شفاف + إطار لمبة سيلفر مضيئة */
         .member-card {
             display: flex; align-items: center; gap: 8px; padding: 8px 10px;
             border-radius: 10px; margin-bottom: 6px;
-            background: linear-gradient(135deg, #ffffff 0%, #f3f6f9 50%, #e7edf3 100%);
-            border: var(--silver-border); box-shadow: 0 3px 10px rgba(0,0,0,0.04); cursor: pointer;
+            background: rgba(248, 250, 252, 0.92);
+            border: 1px solid #e2e8f0;
+            /* هالة اللمبة السيلفر المضيئة */
+            box-shadow: 0 0 10px rgba(226, 232, 240, 0.85), 0 2px 8px rgba(30, 58, 95, 0.08);
+            cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         .member-card:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(16, 52, 168, 0.10);
+            box-shadow: 0 0 14px rgba(203, 213, 225, 1), 0 4px 12px rgba(30, 58, 95, 0.12);
         }
         .member-avatar {
             width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--egyptian-blue); cursor: pointer; flex-shrink: 0;
+            border: 2px solid var(--dark-blue); cursor: pointer; flex-shrink: 0;
         }
         .member-details-col { flex: 1; }
         .member-row-top { display: flex; justify-content: space-between; align-items: center; }
@@ -599,8 +613,10 @@
         .leaderboard-card {
             display: flex; align-items: center; gap: 8px; padding: 7px 10px;
             border-radius: 10px; margin-bottom: 6px;
-            background: linear-gradient(135deg, #ffffff 0%, #f3f6f9 50%, #e7edf3 100%);
-            border: var(--silver-border); box-shadow: 0 3px 10px rgba(0,0,0,0.04); cursor: pointer;
+            background: rgba(248, 250, 252, 0.92);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 0 10px rgba(226, 232, 240, 0.85), 0 2px 8px rgba(30, 58, 95, 0.08);
+            cursor: pointer;
         }
         .rank-circle-badge {
             width: 24px; height: 24px; border-radius: 50%;
@@ -622,7 +638,7 @@
         /* Profile Layout */
         .profile-head { text-align: center; padding: 4px 0; }
         .profile-img-box { position: relative; width: 65px; height: 65px; margin: 0 auto 4px; }
-        .profile-img-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--egyptian-blue); cursor: pointer; }
+        .profile-img-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--dark-blue); cursor: pointer; }
         .upload-icon {
             position: absolute; bottom: 0; right: 0; background: var(--accent-gold);
             color: var(--white); width: 20px; height: 20px; border-radius: 50%;
@@ -661,7 +677,7 @@
             flex: 1; text-align: center; padding: 4px 2px; font-size: 0.7rem;
             font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; transition: 0.2s;
         }
-        .records-filter-tab.active { background: var(--egyptian-blue); color: var(--white); }
+        .records-filter-tab.active { background: var(--dark-blue); color: var(--white); }
 
         .records-table {
             width: 100%; border-collapse: collapse; font-size: 0.68rem; text-align: right; margin-top: 2px;
@@ -713,7 +729,7 @@
             flex-direction: column; align-items: center; font-size: 0.62rem; gap: 2px;
         }
         .nav-link i { font-size: 1.05rem; }
-        .nav-link.active { color: var(--egyptian-blue); font-weight: 700; }
+        .nav-link.active { color: var(--dark-blue); font-weight: 700; }
 
         /* Floating WhatsApp Button */
         .whatsapp-float {
@@ -744,13 +760,13 @@
         .close-viewer-btn { position: absolute; top: 16px; right: 16px; color: var(--white); font-size: 1.5rem; cursor: pointer; }
 
         .tab { flex: 1; text-align: center; padding: 5px; font-size: 0.72rem; background: #e2e8f0; border-radius: 6px; cursor: pointer; color: #475569; }
-        .tab.active { background: var(--egyptian-blue); color: var(--white); font-weight: 700; }
+        .tab.active { background: var(--dark-blue); color: var(--white); font-weight: 700; }
         textarea.form-control { height: 60px; padding: 6px 8px; resize: none; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة البداية -->
+    <!-- شاشة البداية بنفس تدرج الهيدر المعتمد -->
     <div id="splash-screen">
         <div class="splash-logo-box">
             <div class="splash-spinner"></div>
@@ -837,7 +853,7 @@
             </div>
         </div>
 
-        <!-- Auth Screen Modal -->
+        <!-- Auth Screen Modal بنفس تدرج الهيدر المعتمد -->
         <div id="auth-screen" class="modal-overlay" style="display: flex;">
             <div class="modal-box">
                 <div class="auth-header">
@@ -896,7 +912,7 @@
             </div>
         </div>
 
-        <!-- Top Header (يتغير لونه في صفحة البروفايل لسيلت بلوز #365570) -->
+        <!-- Top Header - موحد في كل الموقع -->
         <div class="top-header" id="main-top-header">
             <button id="btn-back" class="btn-back" onclick="goBack()"><i class="fa-solid fa-arrow-right"></i></button>
             <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png" class="header-logo" alt="YLY Logo">
@@ -939,7 +955,7 @@
             <!-- PAGE 2: Control & Goals -->
             <div id="page-control" class="page">
                 
-                <!-- شريحة الترحيب التوأم -->
+                <!-- شريحة الترحيب بنفس تدرج الهيدر المعتمد والدائرتين المهدئتين (أخضر فقط وفارغ) -->
                 <div class="dashboard-visual-box">
                     <div class="dashboard-visual-info">
                         <h3 id="greeting-title">مرحباً بك</h3>
@@ -961,7 +977,7 @@
                     </div>
                 </div>
 
-                <!-- Add Goal/Habit Form مع زر الحفظ الأخضر الوقور -->
+                <!-- Add Goal/Habit Form -->
                 <div class="card">
                     <div class="card-title"><div class="card-title-text"><i class="fa-solid fa-plus-circle"></i> إضافة جديدة</div></div>
                     <div style="display: flex; gap: 4px; margin-bottom: 5px;">
@@ -1058,7 +1074,7 @@
                             <label for="img-upload-input" class="upload-icon" title="تغيير الصورة"><i class="fa-solid fa-camera"></i></label>
                             <input type="file" id="img-upload-input" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
                         </div>
-                        <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
+                        <h3 id="profile-display-name" style="font-size: 0.9rem; color: var(--dark-blue);">...</h3>
                         <div id="profile-user-rank-badge" style="margin-top: 3px;"></div>
                     </div>
 
@@ -1110,7 +1126,7 @@
 
                 <button class="btn-main" onclick="handleLogout()" style="background: #d32f2f; margin-bottom: 8px;">تسجيل الخروج</button>
 
-                <!-- بطاقة إحصائياتي المنقولة - مصغرة ومريحة بصرياً -->
+                <!-- بطاقة إحصائياتي: عدادات بتأثير المرايا السيلفر النصف شفافة الخفيفة جداً -->
                 <div class="card" style="margin-top: 4px; padding: 8px 10px;">
                     <div class="card-title" style="margin-bottom: 4px;">
                         <div class="card-title-text"><i class="fa-solid fa-chart-simple"></i> ملخص إنجازاتي الشاملة</div>
@@ -1123,11 +1139,11 @@
                             <span class="label">الإجمالي</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-habits-completed" style="color: var(--success);">0</span>
+                            <span class="num" id="stat-habits-completed">0</span>
                             <span class="label">منفذة اليوم</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-habits-pending" style="color: var(--accent-gold);">0</span>
+                            <span class="num" id="stat-habits-pending">0</span>
                             <span class="label">المتبقية</span>
                         </div>
                         <div class="stat-card-mini">
@@ -1147,11 +1163,11 @@
                             <span class="label">الإجمالي</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-goals-completed" style="color: var(--success);">0</span>
+                            <span class="num" id="stat-goals-completed">0</span>
                             <span class="label">المنفذة</span>
                         </div>
                         <div class="stat-card-mini">
-                            <span class="num" id="stat-goals-pending" style="color: var(--accent-gold);">0</span>
+                            <span class="num" id="stat-goals-pending">0</span>
                             <span class="label">قيد التنفيذ</span>
                         </div>
                         <div class="stat-card-mini">
@@ -1173,7 +1189,7 @@
                     <div class="profile-img-box">
                         <img id="public-user-avatar" src="https://via.placeholder.com/70" alt="avatar" onclick="openImageViewer(this.src)">
                     </div>
-                    <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--egyptian-blue);">...</h3>
+                    <h3 id="public-user-name" style="font-size: 0.9rem; color: var(--dark-blue);">...</h3>
                     <div id="public-user-rank-box" style="margin: 3px 0;"></div>
                     <p id="public-user-email" style="font-size: 0.68rem; color: #64748b;">...</p>
                     <p id="public-user-phone" style="font-size: 0.68rem; color: var(--accent-gold); font-weight:700; margin-top:2px;">...</p>
@@ -1578,7 +1594,6 @@
             }).catch(() => showToast("حدث خطأ أثناء الحفظ", true));
         }
 
-        // تحديث لون الهيدر العلوي بذكاء: يصبح #365570 في البروفايل
         function navigateTab(tabId) {
             currentActiveTab = tabId;
 
@@ -1600,14 +1615,6 @@
             document.getElementById('header-title').innerText = titles[tabId].t;
             document.getElementById('header-subtitle').innerText = titles[tabId].s;
 
-            // تغيير لون الهيدر العلوي في صفحة البروفايل
-            const header = document.getElementById('main-top-header');
-            if (tabId === 'profile') {
-                header.style.background = 'linear-gradient(135deg, #365570, #1e3a5f)';
-            } else {
-                header.style.background = 'linear-gradient(135deg, var(--egyptian-blue), var(--dark-blue))';
-            }
-
             document.getElementById('btn-back').style.display = 'none';
             document.getElementById('bottom-nav-bar').style.display = 'flex';
         }
@@ -1616,6 +1623,7 @@
             navigateTab(currentActiveTab);
         }
 
+        // --- محرك الترحيب وتحديث الدوائر البيانية (أخضر فقط وفارغ) ---
         function updateSmartGreeting() {
             const hour = new Date().getHours();
             const isMorning = hour >= 4 && hour < 12;
@@ -1646,24 +1654,22 @@
             document.getElementById('greeting-title').innerText = `${timeWord} يا ${firstName}`;
             document.getElementById('greeting-msg').innerText = desc;
 
+            // تحديث الدوائر: لون الإنجاز الأخضر #20B486 فقط والباقي فارغ
             const habitsChart = document.getElementById('chart-habits');
             const habitsText = document.getElementById('text-habits-chart');
             if (habitsChart && habitsText) {
                 habitsText.innerText = habitRate + "%";
-                habitsChart.style.background = totalHabits === 0 
-                    ? `conic-gradient(#e0e6ed 0% 100%)` 
-                    : `conic-gradient(var(--success) 0% ${habitRate}%, var(--accent-gold) ${habitRate}% 100%)`;
+                habitsChart.style.background = `conic-gradient(var(--success) 0% ${habitRate}%, rgba(255,255,255,0.15) ${habitRate}% 100%)`;
             }
 
             const goalsChart = document.getElementById('chart-goals');
             const goalsText = document.getElementById('text-goals-chart');
             if (goalsChart && goalsText) {
                 goalsText.innerText = goalRate + "%";
-                goalsChart.style.background = totalGoals === 0 
-                    ? `conic-gradient(#e0e6ed 0% 100%)` 
-                    : `conic-gradient(var(--success) 0% ${goalRate}%, var(--accent-gold) ${goalRate}% 100%)`;
+                goalsChart.style.background = `conic-gradient(var(--success) 0% ${goalRate}%, rgba(255,255,255,0.15) ${goalRate}% 100%)`;
             }
 
+            // تحديث عدادات الإحصائيات (تأثير المرايا الفضي الموحد)
             const elHabitsTotal = document.getElementById('stat-habits-total');
             if (elHabitsTotal) {
                 elHabitsTotal.innerText = totalHabits;
@@ -1750,7 +1756,7 @@
             const item = document.createElement('div');
             item.className = 'goal-item';
             item.innerHTML = `
-                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleGoalExecution('${g.id}', ${!isDone}, '${g.period || 'goal'}')">
+                <input type="checkbox" class="goal-checkbox" ${isDone ? 'checked' : ''} onchange="toggleGoalExecution('${g.id}', ${!isDone}, '${g.period || 'goal'}')">
                 <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
                 <div class="goal-actions">
                     <i class="fa-solid fa-pen-to-square goal-action-icon" title="تعديل" onclick="openMiniEdit('${g.id}', '${g.title.replace(/'/g, "\\'")}')"></i>
@@ -1888,6 +1894,7 @@
             showToast("تم تحميل التقرير بنجاح");
         }
 
+        // --- بطاقة المشاركة 1:1 ---
         function openShareModal() {
             if (!currentUserData.fullName) return showToast("جاري تحميل بياناتك...");
 
@@ -1931,6 +1938,7 @@
             }).catch(() => showToast("تعذر تحميل البطاقة", true));
         }
 
+        // --- بروفايل الزملاء ---
         function openPublicProfile(userId, userData) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-public-profile').classList.add('active');
@@ -2003,7 +2011,7 @@
 
                 item.innerHTML = `
                     ${iconHtml}
-                    <span style="${isDone ? 'text-decoration: line-through; color: #94a3b8;' : ''}">${g.title}</span>
+                    <span style="${isDone ? 'text-decoration: line-through; color: #888;' : ''}">${g.title}</span>
                 `;
                 if (g.type === 'yly') ylyBox.appendChild(item);
                 else perBox.appendChild(item);
