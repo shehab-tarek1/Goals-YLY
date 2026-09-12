@@ -1,0 +1,329 @@
+/* ==========================================================================
+   لوحة تحكم المشرف YLY - ملف التنسيقات (admin-style.css)
+   ========================================================================== */
+
+:root {
+    --slate-header: linear-gradient(135deg, #365570, #1e3a5f);
+    --slate-mid: #2c4761;
+    --slate-light: #446584;
+    --dark-blue: #1e3a5f;
+    --egyptian-blue: #365570;
+    --dark-orange: #FE8F01;
+    --accent-gold: #F2A51A;
+    --success: #20B486; /* لون الإنجاز الأخضر المريح */
+    --danger: #dc2626;
+    --white: #FFFFFF;
+    --bg-gray: #EEF3F8;
+    --silver-border: 0.75px solid #cbd5e1; /* المقاس الموحد المعتمد */
+    --card-shadow: 0 4px 16px rgba(30, 58, 95, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* خلفية الموقع العامة */
+body {
+    background: linear-gradient(135deg, #27435f, #1a334d);
+    color: #1e293b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.app-viewport {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    background-color: var(--bg-gray);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+}
+
+@media (min-width: 450px) {
+    .app-viewport {
+        border-radius: 24px;
+        height: 95dvh;
+    }
+}
+
+/* Toast */
+.toast {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #1e293b;
+    color: #f8fafc;
+    border: 0.75px solid rgba(255, 255, 255, 0.15);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    z-index: 9999;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease;
+    text-align: center;
+    width: auto;
+    max-width: 80%;
+    white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--danger); }
+
+/* شاشة تسجيل الدخول الخاصة بالمشرف */
+#admin-auth-screen {
+    position: absolute;
+    inset: 0;
+    background: var(--slate-header);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+}
+
+.auth-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 340px;
+    border-radius: 16px;
+    padding: 20px 16px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+    text-align: center;
+}
+.auth-card h2 { font-size: 1.15rem; color: var(--dark-blue); font-weight: 800; margin-bottom: 4px; }
+.auth-card p { font-size: 0.7rem; color: #64748b; margin-bottom: 14px; }
+
+.form-group { margin-bottom: 8px; text-align: right; }
+.form-group label { display: block; font-size: 0.68rem; font-weight: 700; margin-bottom: 2px; color: #334155; }
+.form-control {
+    width: 100%; height: 32px; padding: 0 8px;
+    border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.78rem; outline: none;
+    background: #f8fafc;
+}
+.form-control:focus { border-color: var(--dark-blue); background: var(--white); }
+
+.btn-main {
+    width: 100%; height: 34px; background: var(--dark-blue);
+    color: var(--white); border: none; border-radius: 8px;
+    font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 8px;
+    box-shadow: 0 3px 8px rgba(30, 58, 95, 0.25); transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.btn-main:active { transform: scale(0.98); }
+.btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* Top Header */
+.top-header {
+    background: var(--slate-header) !important;
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+}
+.header-logo {
+    width: 32px; height: 32px; border-radius: 50%; object-fit: contain;
+    border: var(--silver-border); padding: 1px; flex-shrink: 0;
+}
+.top-header-info { flex: 1; }
+.top-header h1 { font-size: 0.88rem; font-weight: 800; line-height: 1.2; margin: 0; }
+.top-header p { font-size: 0.62rem; opacity: 0.85; margin: 0; }
+.logout-btn {
+    background: rgba(255, 255, 255, 0.15); border: none; color: var(--white);
+    width: 28px; height: 28px; border-radius: 6px; display: flex;
+    align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 25px;
+}
+
+/* أزرار الفلترة العلوية الثلاثة */
+.admin-nav-tabs {
+    display: flex; gap: 6px; margin-bottom: 8px;
+}
+.admin-tab {
+    flex: 1; text-align: center; padding: 6px 2px; font-size: 0.72rem;
+    background: #e2e8f0; border-radius: 8px; cursor: pointer; font-weight: 700; color: #475569;
+    border: var(--silver-border); transition: 0.2s;
+}
+.admin-tab.active {
+    background: var(--dark-blue); color: var(--white); border-color: var(--dark-blue);
+}
+
+/* حقل البحث */
+.search-outer-box {
+    background: #e2e8f0;
+    padding: 4px;
+    border-radius: 25px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+.search-inner-box {
+    background: var(--white);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    height: 34px;
+    border: var(--silver-border);
+}
+.search-inner-box input {
+    flex: 1; border: none; outline: none; font-size: 0.75rem; background: transparent;
+}
+.search-inner-box i { color: #888; font-size: 0.85rem; margin-left: 6px; }
+
+.admin-section { display: none; }
+.admin-section.active { display: block; animation: fadeIn 0.2s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    background: var(--white); border-radius: 12px; padding: 10px;
+    margin-bottom: 8px; box-shadow: var(--card-shadow); border: var(--silver-border);
+}
+.card-title {
+    font-size: 0.82rem; font-weight: 700; color: var(--dark-blue);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+
+/* شبكة العدادات الأربعة: تأثير المرايا السيلفر بإطار 0.75px */
+.stats-quad {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 8px;
+}
+.quad-box {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 6px 2px; border-radius: 8px;
+    text-align: center;
+    border: 0.75px solid #cbd5e1 !important; /* إطار 0.75px */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03), inset 0 1px 1px rgba(255,255,255,0.9);
+}
+.quad-box .num { font-size: 0.88rem; font-weight: 800; display: block; }
+.quad-box .label { font-size: 0.55rem; color: #64748b; font-weight: 700; }
+
+/* شريحة الدائرتين التوأم لمراقبة المنصة */
+.admin-visual-panel {
+    background: var(--slate-header) !important;
+    color: var(--white); border-radius: 12px; padding: 10px 12px;
+    margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    border: var(--silver-border); box-shadow: 0 4px 14px rgba(30, 58, 95, 0.22); gap: 6px;
+}
+.twin-admin-charts {
+    display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+}
+.chart-unit {
+    display: flex; flex-direction: column; align-items: center;
+}
+.chart-unit .tag { font-size: 0.52rem; font-weight: 700; color: #cbd5e1; margin-top: 2px; }
+
+/* الدوائر تعرض لون الإنجاز الأخضر فقط #20B486 والباقي فارغ */
+.admin-pie-box {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    background: conic-gradient(var(--success) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
+}
+.admin-pie-core {
+    width: 28px; height: 28px; background: #1e3a5f; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; font-weight: 800; color: white;
+}
+
+/* شرف الثلاثة الأوائل */
+.leaderboard-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+.lb-tab {
+    flex: 1; text-align: center; padding: 4px; font-size: 0.68rem;
+    background: #e2e8f0; border-radius: 6px; cursor: pointer; color: #475569;
+}
+.lb-tab.active { background: var(--dark-blue); color: white; font-weight: 700; }
+
+.top-member-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+    border-radius: 8px; margin-bottom: 5px; background: #f8fafc;
+    border: 0.75px solid #e2e8f0; /* إطار 0.75px */
+}
+.rank-medal {
+    width: 22px; height: 22px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: white;
+    flex-shrink: 0;
+}
+
+/* بطاقات الأعضاء الإدارية: سيلفر موحد لامع + إطار لمبة سيلفر مضيئة 0.75px */
+.admin-member-card {
+    background: rgba(248, 250, 252, 0.94);
+    border-radius: 12px; padding: 10px;
+    margin-bottom: 8px;
+    border: 0.75px solid #cbd5e1 !important; /* إطار 0.75px */
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.7), 0 2px 8px rgba(30, 58, 95, 0.08);
+}
+.member-header-row { display: flex; align-items: center; gap: 8px; }
+.member-avatar {
+    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--dark-blue); flex-shrink: 0;
+}
+.member-info-col { flex: 1; }
+.member-name-row { display: flex; justify-content: space-between; align-items: center; }
+.member-name { font-size: 0.8rem; font-weight: 700; color: var(--dark-blue); }
+.member-date { font-size: 0.62rem; color: #64748b; }
+.member-sub-row { display: flex; justify-content: space-between; font-size: 0.65rem; color: #475569; margin-top: 2px; }
+
+/* شارات الرتب */
+.rank-badge-tag {
+    font-size: 0.58rem; font-weight: 800; padding: 1px 6px; border-radius: 10px; display: inline-block;
+}
+.badge-bronze { background: #fed7aa; color: #9a3412; }
+.badge-silver { background: #e2e8f0; color: #334155; }
+.badge-gold { background: #fef08a; color: #854d0e; }
+.badge-legend { background: linear-gradient(135deg, var(--accent-gold), #b45309); color: #fff; }
+
+/* سطر الإجراءات */
+.action-row {
+    display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1;
+}
+.action-btn {
+    flex: 1; height: 28px; border: none; border-radius: 6px; font-size: 0.68rem;
+    font-weight: 700; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 4px; text-decoration: none;
+}
+.btn-edit { background: #eef3f8; color: var(--dark-blue); border: 0.75px solid #cbd5e1; }
+.btn-delete { background: #fee2e2; color: var(--danger); border: 0.75px solid #fecaca; }
+.btn-wa { background: #dcfce7; color: #166534; border: 0.75px solid #bbf7d0; }
+.btn-confirm-del { background: var(--danger); color: white; }
+.btn-cancel-del { background: #e2e8f0; color: #333; }
+
+.member-inline-edit {
+    display: none; margin-top: 8px; padding: 8px; background: #ffffff;
+    border-radius: 8px; border: 0.75px solid #cbd5e1; animation: fadeIn 0.2s ease;
+}
+
+/* بطاقات الدعم: إطار 0.75px */
+.support-card {
+    background: var(--white); border-radius: 12px; padding: 10px;
+    margin-bottom: 8px; border: 0.75px solid #cbd5e1 !important; box-shadow: var(--card-shadow);
+}
+.problem-text-box {
+    background: #fff8eb; border: 1px solid #fde68a; border-radius: 8px;
+    padding: 8px; font-size: 0.72rem; color: #78350f; margin: 8px 0; line-height: 1.4;
+}
