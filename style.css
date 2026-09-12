@@ -461,28 +461,37 @@ body {
     gap: 3px;
     margin-bottom: 4px;
 }
+
+/* ==========================================================================
+   تحديث الإطارات الداخلية للعناصر (0.75px)
+   ========================================================================== */
+
+/* 1. إطارات بطاقات العدادات الرقمية الفردية الداخلية */
 .stat-card-mini {
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    padding: 1px 1px;
+    padding: 2px 1px;
     border-radius: 6px;
     text-align: center;
-    border: 0.75px solid rgba(255, 255, 255, 0.85); /* إطار 0.75px */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
-    height: 32px;
+    /* إطار 0.75px صريح للعداد الفردي */
+    border: 0.75px solid #cbd5e1 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    height: 34px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 .stat-card-mini .num {
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 800;
     color: #1e3a5f;
     line-height: 1;
 }
+
 .stat-card-mini .label {
-    font-size: 0.46rem;
+    font-size: 0.48rem;
     color: #475569;
     font-weight: 700;
     line-height: 1;
@@ -493,13 +502,52 @@ body {
     background: var(--slate-header);
     color: var(--white);
     cursor: pointer;
-    border: 0.75px solid rgba(255, 255, 255, 0.4);
+    /* إطار 0.75px للزر المخصص أيضاً */
+    border: 0.75px solid rgba(255, 255, 255, 0.6) !important;
     transition: transform 0.15s;
-    height: 32px;
+    height: 34px;
 }
 .stat-card-share-sleek:active { transform: scale(0.95); }
 .stat-card-share-sleek i { font-size: 0.68rem; }
 .stat-card-share-sleek span { font-size: 0.46rem; font-weight: 800; }
+
+
+/* 2. إطارات بطاقات الأعضاء الفردية الداخلية (الرئيسية ولوحة الشرف) */
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: rgba(248, 250, 252, 0.94);
+    /* إطار سيلفر 0.75px صريح حول بطاقة العضو نفسها */
+    border: 0.75px solid #cbd5e1 !important;
+    /* هالة اللمبة السيلفر المضيئة */
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.7), 0 2px 8px rgba(30, 58, 95, 0.08);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 14px rgba(203, 213, 225, 1), 0 4px 12px rgba(30, 58, 95, 0.12);
+}
+
+/* بطاقة المتصدر في لوحة الشرف الفردية */
+.leaderboard-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: rgba(248, 250, 252, 0.94);
+    /* إطار سيلفر 0.75px صريح حول بطاقة المتصدر نفسها */
+    border: 0.75px solid #cbd5e1 !important;
+    box-shadow: 0 0 10px rgba(203, 213, 225, 0.7), 0 2px 8px rgba(30, 58, 95, 0.08);
+    cursor: pointer;
+}
 
 /* Custom Dropdown Styling */
 .custom-dropdown-box { position: relative; flex: 1; }
