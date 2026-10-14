@@ -26,10 +26,8 @@ function getUserAvatar(u) {
     if (u && u.photoURL && u.photoURL.trim() !== "" && !u.photoURL.includes('ecmjgwmjnhyvfpviggwx')) {
         return u.photoURL;
     }
-    const name = (u && u.fullName) ? u.fullName : "عضو YLY";
-    const parts = name.trim().split(/\s+/);
-    const initials = parts.length >= 2 ? (parts[0][0] + "+" + parts[1][0]) : (parts[0][0] || "Y");
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=1e3a5f&color=ffffff&bold=true&size=512`;
+    const name = (u && u.fullName) ? u.fullName : "عضو";
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
 }
 
 // متغيرات الحالة العامة
@@ -230,9 +228,7 @@ async function handleEmailRegister(e) {
     btn.disabled = true;
 
     // توليد صورة افتراضية باحترافية تحتوي أول حرفين من الاسم بألوان المنصة
-    const nameParts = name.trim().split(/\s+/);
-    const initials = nameParts.length >= 2 ? (nameParts[0][0] + "+" + nameParts[1][0]) : (nameParts[0][0] || "Y");
-    let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=1e3a5f&color=ffffff&bold=true&size=512`;
+    let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
 
     if (regAvatarFile) {
         try {
