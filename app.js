@@ -218,8 +218,10 @@ async function handleEmailRegister(e) {
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إنشاء الحساب...`;
     btn.disabled = true;
 
-    // وضع اللوجو كافتراضي في حال عدم اختيار صورة
-    let photoURL = DEFAULT_SYSTEM_LOGO;
+    // توليد صورة افتراضية باحترافية تحتوي أول حرفين من الاسم بألوان المنصة
+    const nameParts = name.trim().split(/\s+/);
+    const initials = nameParts.length >= 2 ? (nameParts[0][0] + "+" + nameParts[1][0]) : (nameParts[0][0] || "Y");
+    let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=1e3a5f&color=ffffff&bold=true&size=512`;
 
     if (regAvatarFile) {
         try {
