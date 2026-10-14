@@ -21,6 +21,17 @@ const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dsxrjmcxs/image/upload";
 const CLOUDINARY_PRESET = "My_public_preset";
 const DEFAULT_SYSTEM_LOGO = "https://res.cloudinary.com/dsxrjmcxs/image/upload/c_limit,w_1200,q_auto,f_auto/v1789071039/ecmjgwmjnhyvfpviggwx.png";
 
+// دالة ذكية: إذا لم يرفع المستخدم صورة، تنشئ له صورة بالحرفين بألوان المنصة فوراً
+function getUserAvatar(u) {
+    if (u && u.photoURL && u.photoURL.trim() !== "" && !u.photoURL.includes('ecmjgwmjnhyvfpviggwx')) {
+        return u.photoURL;
+    }
+    const name = (u && u.fullName) ? u.fullName : "عضو YLY";
+    const parts = name.trim().split(/\s+/);
+    const initials = parts.length >= 2 ? (parts[0][0] + "+" + parts[1][0]) : (parts[0][0] || "Y");
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=1e3a5f&color=ffffff&bold=true&size=512`;
+}
+
 // متغيرات الحالة العامة
 let currentUser = null;
 let currentUserData = {};
@@ -288,7 +299,7 @@ function loadUserData() {
             document.getElementById('view-email').innerText = currentUserData.email || "";
             document.getElementById('view-points').innerText = `${currentUserData.points || 0} نقطة`;
             
-            const avatarUrl = currentUserData.photoURL || DEFAULT_SYSTEM_LOGO;
+            const avatarUrl = getUserAvatar(currentUserData);
             document.getElementById('user-avatar').src = avatarUrl;
             
             const rank = getUserRankBadge(currentUserData.points);
@@ -669,7 +680,7 @@ function openShareModal(shareType) {
     document.getElementById('share-user-name').innerText = currentUserData.fullName || "عضو YLY";
 
     // استدعاء الصورة بدقة w_1200 لضمان النقاء الكريستالي
-    const rawPhoto = currentUserData.photoURL || DEFAULT_SYSTEM_LOGO;
+    const rawPhoto = getUserAvatar(currentUserData);
     document.getElementById('share-avatar-img').src = getHighResPhotoUrl(rawPhoto);
 
     const rank = getUserRankBadge(currentUserData.points);
@@ -759,7 +770,7 @@ function openPublicProfile(userId, userData) {
     document.getElementById('public-user-email').innerText = userData.email || "";
     document.getElementById('public-user-phone').innerText = userData.phone ? "هاتف: " + userData.phone : "";
     
-    const pubPhoto = userData.photoURL || DEFAULT_SYSTEM_LOGO;
+    const pubPhoto = getUserAvatar(userData);
     document.getElementById('public-user-avatar').src = pubPhoto;
 
     const ylyBox = document.getElementById('public-yly-container');
@@ -909,7 +920,7 @@ function loadSharedMembers() {
             card.className = 'member-card';
             card.onclick = () => openPublicProfile(doc.id, u);
 
-            const mPhoto = u.photoURL || DEFAULT_SYSTEM_LOGO;
+            const mPhoto = getUserAvatar(u);
 
             card.innerHTML = `
                 <img src="${mPhoto}" class="member-avatar" onclick="event.stopPropagation(); openImageViewer(this.src)">
@@ -960,7 +971,7 @@ function loadLeaderboard() {
             else if (rank === 2) badgeClass = "rank-secondary";
             else if (rank === 3) badgeClass = "rank-bronze";
 
-            const lbPhoto = u.photoURL || DEFAULT_SYSTEM_LOGO;
+            const lbPhoto = getUserAvatar(u);
 
             item.innerHTML = `
                 <div class="rank-circle-badge ${badgeClass}">#${rank}</div>
