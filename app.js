@@ -27,7 +27,8 @@ function getUserAvatar(u) {
         return u.photoURL;
     }
     const name = (u && u.fullName) ? u.fullName : "عضو";
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
+    const firstTwoWords = name.trim().split(/\s+/).slice(0, 2).join(' ');
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstTwoWords)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
 }
 
 // متغيرات الحالة العامة
@@ -228,7 +229,8 @@ async function handleEmailRegister(e) {
     btn.disabled = true;
 
     // توليد صورة افتراضية باحترافية تحتوي أول حرفين من الاسم بألوان المنصة
-    let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
+    const firstTwoWords = name.trim().split(/\s+/).slice(0, 2).join(' ');
+    let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstTwoWords)}&length=2&background=1e3a5f&color=ffffff&bold=true&size=512`;
 
     if (regAvatarFile) {
         try {
