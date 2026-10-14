@@ -659,7 +659,7 @@ body {
 }
 .rank-secondary { background: linear-gradient(135deg, #c0c0c0, #94a3b8); }
 .rank-bronze { background: linear-gradient(135deg, #cd7f32, #a05a2c); }
-.rank-regular { background: linear-gradient(135deg, var(--slate-blue), #1e293b); }
+.rank-regular { background: linear-gradient(135deg, #365570, #1e3a5f); color: #ffffff; }
 
 .lb-center { flex: 1; }
 .lb-name { font-size: 0.78rem; font-weight: 700; color: #1e293b; }
