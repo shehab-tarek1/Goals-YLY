@@ -194,14 +194,27 @@ function previewRegisterAvatar(e) {
     }
 }
 
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async (user) => {
     if (user) {
         currentUser = user;
-        document.getElementById('auth-screen').style.display = 'none';
-        loadUserData();
-        loadSharedMembers();
-        loadLeaderboard();
-        loadUserSupportHistory();
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                document.getElementById('auth-screen').style.display = 'none';
+                loadUserData();
+                loadSharedMembers();
+                loadLeaderboard();
+                loadUserSupportHistory();
+            } else {
+                // إذا كان الحساب آدمن ولا يملك ملف مستخدم عادي
+                await auth.signOut();
+                currentUser = null;
+                document.getElementById('auth-screen').style.display = 'flex';
+                hideSplashScreen();
+            }
+        } catch (err) {
+            hideSplashScreen();
+        }
     } else {
         currentUser = null;
         document.getElementById('auth-screen').style.display = 'flex';
