@@ -279,10 +279,10 @@ async function handleEmailRegister(e) {
         });
 }
 
-function handleEmailLogin(e) {
+async function handleEmailLogin(e) {
     e.preventDefault();
     const btn = document.getElementById('btn-login-submit');
-    const originalText = btn.innerHTML;
+    const originalText = "دخول";
 
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value;
@@ -290,12 +290,28 @@ function handleEmailLogin(e) {
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري تسجيل الدخول...`;
     btn.disabled = true;
 
-    auth.signInWithEmailAndPassword(email, pass)
-        .catch(err => {
-            showToast("البريد أو كلمة السر غير صحيحة", true);
+    try {
+        const res = await auth.signInWithEmailAndPassword(email, pass);
+        // التحقق هل الحساب عضو عادي أم حساب آدمن
+        const userDoc = await db.collection('users').doc(res.user.uid).get();
+        if (!userDoc.exists) {
+            await auth.signOut();
+            showToast("هذا الحساب مخصص للإدارة، يرجى الدخول من صفحة الآدمن", true);
             btn.innerHTML = originalText;
             btn.disabled = false;
-        });
+            document.getElementById('login-pass').value = "";
+            return;
+        }
+        // إعادة تهيئة الزر والحقول بنجاح
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        document.getElementById('login-email').value = "";
+        document.getElementById('login-pass').value = "";
+    } catch (err) {
+        showToast("البريد أو كلمة السر غير صحيحة", true);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
 }
 
 // --- 7. تحميل بيانات المستخدم الحالي ---
@@ -1037,9 +1053,26 @@ function uploadProfileImage(event) {
         .catch(() => showToast("فشل رفع الصورة", true));
 }
 
-function handleLogout() { auth.signOut(); }
+function handleLogout() {
+    // تفريغ الحقول وإعادة الزر لحالته الطبيعية
+    const emailField = document.getElementById('login-email');
+    const passField = document.getElementById('login-pass');
+    const loginBtn = document.getElementById('btn-login-submit');
+
+    if (emailField) emailField.value = "";
+    if (passField) passField.value = "";
+    if (loginBtn) {
+        loginBtn.innerHTML = "دخول";
+        loginBtn.disabled = false;
+    }
+
+    auth.signOut().then(() => {
+        showToast("تم تسجيل الخروج بنجاح");
+    });
+}
 
 function switchLeaderboardTab(el) {
     document.querySelectorAll('#page-leaderboard .tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
 }
+
